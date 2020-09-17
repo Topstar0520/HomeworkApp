@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view opaque="NO" contentMode="scaleToFill" id="iN0-l3-epB" userLabel="HeaderView" customClass="HeaderView" customModule="Note_Editor" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="20" height="20"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="H" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YAg-yF-slI">
+                    <rect key="frame" x="0.0" y="0.0" width="20" height="24"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="1" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LL5-fV-cNj">
+                    <rect key="frame" x="13" y="-2" width="7" height="36"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="8"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="LL5-fV-cNj" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="7y7-qn-G1u"/>
+                <constraint firstItem="YAg-yF-slI" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="82c-ED-DLL"/>
+                <constraint firstItem="LL5-fV-cNj" firstAttribute="trailing" secondItem="YAg-yF-slI" secondAttribute="trailing" id="Dpd-7a-EtU"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="YAg-yF-slI" secondAttribute="bottom" constant="-8" id="IgJ-EW-lyP"/>
+                <constraint firstItem="LL5-fV-cNj" firstAttribute="baseline" secondItem="YAg-yF-slI" secondAttribute="firstBaseline" constant="17.5" id="MCz-Oq-4gR"/>
+                <constraint firstItem="YAg-yF-slI" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="n4b-62-0b8"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="YAg-yF-slI" secondAttribute="trailing" id="rxF-xf-vPo"/>
+                <constraint firstItem="LL5-fV-cNj" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="13" id="xP0-Gm-0RE"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <connections>
+                <outlet property="subscriptNumber" destination="LL5-fV-cNj" id="a6m-f3-ED4"/>
+                <outlet property="title" destination="YAg-yF-slI" id="8Bw-Iw-GGh"/>
+            </connections>
+            <point key="canvasLocation" x="29" y="-152.5"/>
+        </view>
+    </objects>
+</document>
