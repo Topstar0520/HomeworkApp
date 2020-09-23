@@ -239,7 +239,7 @@ class HomeworkViewController: B4GradViewController, UITableViewDataSource, UITab
         self.emptyHomescreenView.translatesAutoresizingMaskIntoConstraints = true
         self.tableView.addSubview(emptyHomescreenView)
         self.emptyHomescreenView.alpha = 0
-        if (self.tableView.numberOfRows(inSection: 0) == 0 && self.tableView.numberOfRows(inSection: 1) == 0) {
+        if (self.tableView.numberOfRows(inSection: 0) == 0 /*&& self.tableView.numberOfRows(inSection: 1) == 0*/) {
             self.emptyHomescreenView.alpha = 1
         } else {
             self.tableView.contentInset.top = self.tableView.contentInset.top + 3
@@ -324,7 +324,7 @@ class HomeworkViewController: B4GradViewController, UITableViewDataSource, UITab
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         if #available(iOS 11.0, *) {
-            self.emptyHomescreenView.frame = CGRect(x: 0, y: 0, width: self.tableView.bounds.width, height: self.tableView.bounds.height - (self.tableView.contentInset.bottom + self.tableView.contentInset.top + self.additionalSafeAreaInsets.top + self.additionalSafeAreaInsets.bottom + self.tabBarController!.tabBar.frame.size.height + self.navigationController!.navigationBar.frame.size.height + UIApplication.shared.statusBarFrame.size.height))
+            /*self.emptyHomescreenView.frame = CGRect(x: 0, y: 0, width: self.tableView.bounds.width, height: self.tableView.bounds.height - (self.tableView.contentInset.bottom + self.tableView.contentInset.top + self.additionalSafeAreaInsets.top + self.additionalSafeAreaInsets.bottom + self.tabBarController!.tabBar.frame.size.height + self.navigationController!.navigationBar.frame.size.height + UIApplication.shared.statusBarFrame.size.height))*/
         } else {
             self.emptyHomescreenView.frame = CGRect(x: 0, y: 0, width: self.tableView.bounds.width, height: self.tableView.bounds.height - (self.tableView.contentInset.bottom + self.tableView.contentInset.top))
         }

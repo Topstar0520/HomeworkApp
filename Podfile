@@ -8,7 +8,7 @@ target 'B4Grad' do
   use_frameworks!
 
   # Pods for B4Grad
-pod 'RealmSwift', '~> 3.7.5'
+pod 'RealmSwift', '~> 3.20.0'
 pod 'Parse'
 #pod 'Parse/FacebookUtils' #causes error w/ FB SDK.
 pod 'Parse/TwitterUtils'

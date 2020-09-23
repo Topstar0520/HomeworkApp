@@ -14,7 +14,8 @@ protocol noteEditorDelegate {
     func deleteNoteCell(cell:NoteTableViewCell)
 }
 
-class BasicNoteViewController: NoteEditorViewController {
+//class BasicNoteViewController: NoteEditorViewController {
+class BasicNoteViewController: UIViewController {
     
     // @IBOutlet title
     var task: RLMTask!

@@ -161,8 +161,8 @@ class NoteBrowserViewController: UIViewController, UITableViewDataSource, UITabl
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         selectedNote = noteDescriptors[indexPath.row]
         tableView.deselectRow(at: indexPath, animated: true)
-        //performSegue(withIdentifier: NOTE_EDITOR_SEGUE, sender: self)
-        openBasicNoteEditor()
+        performSegue(withIdentifier: NOTE_EDITOR_SEGUE, sender: self)
+        //openBasicNoteEditor()
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {

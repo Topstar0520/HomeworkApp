@@ -28,7 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, KochavaTrackerDelegate {
         let configuration = Realm.Configuration(
             // Set the new schema version. This must be greater than the previously used
             // version (if you've never set a schema version before, the version is 0).
-            schemaVersion: 7,
+            schemaVersion: 12,
             //already we have change existing schemaversion to 7
             
             //realmtass
@@ -51,7 +51,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, KochavaTrackerDelegate {
         //** Parse **//
         
         //Parse.setApplicationId("p1eGg31YomJ7I6fP8hr2yehTHQhvtSHXw2FwOOCw",
-            //clientKey: "KgZVJRNHsys0mkARKI537s4Z3v85bQX2Z00o2lzr")
+         //   clientKey: "KgZVJRNHsys0mkARKI537s4Z3v85bQX2Z00o2lzr")
         
         /*let parseConfig = ParseClientConfiguration {
             $0.applicationId = "p1eGg31YomJ7I6fP8hr2yehTHQhvtSHXw2FwOOCw"

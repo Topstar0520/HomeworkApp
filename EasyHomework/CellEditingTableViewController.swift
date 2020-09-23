@@ -72,10 +72,15 @@ class CellEditingTableViewController: UITableViewController,noteEditorDelegate
     var firstAppearance = true
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        if (self.helperObject.mode == TaskEditingMode.Create && firstAppearance == true) {
-            let titleCell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as! TitleTableViewCell
-            titleCell.titleTextView.becomeFirstResponder()
-            firstAppearance = false
+        if (self.helperObject.mode == TaskEditingMode.Create && firstAppearance == true && self.tableView != nil) {
+            //let titleCell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as! TitleTableViewCell
+            if self.tableView.visibleCells.count > 0    //added by @solysky20200920
+            {
+                let titleCell = self.tableView.visibleCells[0] as! TitleTableViewCell
+                titleCell.titleTextView.becomeFirstResponder()
+                firstAppearance = false
+            }
+            
         }
     }
     

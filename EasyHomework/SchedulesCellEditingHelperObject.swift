@@ -89,7 +89,14 @@ class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dictionary[section]!.count
+        if(dictionary.count < section)
+        {
+            return dictionary[section]!.count
+        }
+        else
+        {
+            return 0
+        }
     }
     
     
@@ -411,9 +418,9 @@ class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
             dueDateCell.dueDateLabel.textColor = UIColor.white
             dueDateCell.iconImageView.image = #imageLiteral(resourceName: "DefaultCalendar")
             var segueIdentifier = "showDueDate"
-            /*if (self.mode == TaskEditingMode.Edit) {
+            if (self.mode == TaskEditingMode.Edit) {
                 segueIdentifier += "Detail"
-            }*/
+            }
             self.cellEditingTVC.performSegue(withIdentifier: segueIdentifier, sender: cell)
             return
         }
@@ -421,9 +428,9 @@ class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
             startTimeCell.startTimeLabel.textColor = UIColor.white
             startTimeCell.iconImageView.image = #imageLiteral(resourceName: "DefaultStartClock")
             var segueIdentifier = "showStartTime"
-            /*if (self.mode == TaskEditingMode.Edit) {
+            if (self.mode == TaskEditingMode.Edit) {
                 segueIdentifier += "Detail"
-            }*/
+            }
             self.cellEditingTVC.performSegue(withIdentifier: segueIdentifier, sender: cell)
             return
         }
@@ -431,35 +438,35 @@ class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
             endTimeCell.endTimeLabel.textColor = UIColor.white
             endTimeCell.iconImageView.image = #imageLiteral(resourceName: "DefaultStopClock")
             var segueIdentifier = "showEndTime"
-            /*if (self.mode == TaskEditingMode.Edit) {
+            if (self.mode == TaskEditingMode.Edit) {
              segueIdentifier += "Detail"
-             }*/
+             }
             self.cellEditingTVC.performSegue(withIdentifier: segueIdentifier, sender: cell)
             return
         }
         if let typeCell = cell as? TypeTableViewCell {
-            /*var segueIdentifier = "showTaskType"
+            var segueIdentifier = "showTaskType"
             if (self.mode == TaskEditingMode.Edit) {
                 segueIdentifier += "Detail"
             }
-            self.cellEditingTVC.performSegue(withIdentifier: segueIdentifier, sender: cell)*/
+            self.cellEditingTVC.performSegue(withIdentifier: segueIdentifier, sender: cell)
             return
         }
         if let courseCell = cell as? CourseTableViewCell {
-            /*var segueIdentifier = "showCourseSelection"
+            var segueIdentifier = "showCourseSelection"
             if (self.mode == TaskEditingMode.Edit) {
                 segueIdentifier += "Detail"
             }
-            self.cellEditingTVC.performSegue(withIdentifier: segueIdentifier, sender: cell)*/
+            self.cellEditingTVC.performSegue(withIdentifier: segueIdentifier, sender: cell)
             return
         }
         if let repeatsCell = cell as? RepeatsTableViewCell {
             repeatsCell.repeatsLabel.textColor = UIColor.white
             repeatsCell.iconImageView.image = #imageLiteral(resourceName: "DefaultRepeats")
             var segueIdentifier = "showRepeatsType"
-            /*if (self.mode == TaskEditingMode.Edit) {
+            if (self.mode == TaskEditingMode.Edit) {
              segueIdentifier += "Detail"
-             }*/
+             }
             self.cellEditingTVC.performSegue(withIdentifier: segueIdentifier, sender: cell)
             return
         }

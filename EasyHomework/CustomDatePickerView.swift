@@ -38,7 +38,7 @@ class CustomDatePickerView: UIDatePicker {
         }
         
         self.setValue(UIColor.white, forKey: "textColor")
-        self.sendAction(Selector("setHighlightsToday:"), to: nil, for: nil) //suppress this warning
+        //self.sendAction(Selector("setHighlightsToday:"), to: nil, for: nil) //suppress this warning ysky
     }
     
 }
