@@ -29,9 +29,7 @@ class SyntaxStylizer: NSObject  {
             extendedRange = NSUnionRange(extendedRange, lineRange)
         }
         return extendedRange
-    }
-    
-    
+    } 
     
     static func stylizeSyntaxElements(range: NSRange, attrs: NSMutableAttributedString, checkingStr: String) -> NSRange {
         
@@ -47,7 +45,7 @@ class SyntaxStylizer: NSObject  {
         
         print(attrs)
         if checkingStr.contains("*")  {
-            scanningRange = BoldSyntaxBuilder.instance.stylizeSyntaxElements(in: scanningRange, with: attrs)
+            scanningRange = BoldSyntaxBuilder.instance.stylizeSyntaxElements(in: scanningRange, with: attrs) 
         }
         
         if checkingStr.contains("/")  {

@@ -20,6 +20,7 @@ class SubTaskTableViewCell: UITableViewCell {
 
     @IBOutlet weak var checkMarkButton: UIButton!
     @IBOutlet weak var subscribeButton: UIButton!
+    @IBOutlet weak var subscribeImage: UIImageView!
     @IBOutlet weak var subTaskTextView: SZTextView!
 //    @IBOutlet weak var textViewHeightConstraint: NSLayoutConstraint!
 
@@ -30,7 +31,7 @@ class SubTaskTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         subTaskTextView.tintColor = UIColor(hex: "7A7A7A")
-        subTaskTextView.placeholderTextColor = UIColor.init(red: 255, green: 255, blue: 255, alpha: 0.2)
+        subTaskTextView.placeholderTextColor = UIColor(displayP3Red: 255, green: 255, blue: 255, alpha: 0.3)
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -63,6 +64,7 @@ extension SubTaskTableViewCell: UITextViewDelegate {
         if checkMarkButton.imageView?.image == #imageLiteral(resourceName: "plus_light") || checkMarkButton.imageView?.image == #imageLiteral(resourceName: "plus_dark") {
             checkMarkButton.setImage(#imageLiteral(resourceName: "plus_light") , for: .normal)
         }
+      
     }
 
     func textViewDidChange(_ textView: UITextView) {

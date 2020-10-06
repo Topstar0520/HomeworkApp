@@ -39,8 +39,8 @@ class LogInTableViewController: UITableViewController, UITextFieldDelegate {
         self.passwordCell.separatorInset = UIEdgeInsets.zero
         self.passwordCell.layoutMargins = UIEdgeInsets.zero
         
-        self.passwordTextField.attributedPlaceholder = NSAttributedString(string: "Keep private", attributes: [ NSAttributedStringKey.foregroundColor : UIColor.init(red: 255, green: 255, blue: 255, alpha: 0.2) ])
-        self.emailTextField.attributedPlaceholder = NSAttributedString(string: "Ex) jbob2@uwo.ca", attributes: [ NSAttributedStringKey.foregroundColor : UIColor.init(red: 255, green: 255, blue: 255, alpha: 0.2) ])
+        self.passwordTextField.attributedPlaceholder = NSAttributedString(string: "Keep private", attributes: [ NSAttributedStringKey.foregroundColor : UIColor(displayP3Red: 255, green: 255, blue: 255, alpha: 0.3) ])
+        self.emailTextField.attributedPlaceholder = NSAttributedString(string: "Ex) jbob2@uwo.ca", attributes: [ NSAttributedStringKey.foregroundColor : UIColor(displayP3Red: 255, green: 255, blue: 255, alpha: 0.3) ])
         
         self.emailTextField.delegate = self
         self.passwordTextField.delegate = self
@@ -99,12 +99,16 @@ class LogInTableViewController: UITableViewController, UITextFieldDelegate {
         if (cell.contentView.backgroundColor != UIColor.clear) {
             cell.backgroundColor = cell.contentView.backgroundColor
         }
+        cell.contentView.backgroundColor = nil //since iOS13
     }
 
     func login() {
         self.logInCell.isUserInteractionEnabled = false
         PFUser.logInWithUsername(inBackground: self.emailTextField.text!, password: self.passwordTextField.text!, block: { (user, error) -> Void in
             if (error == nil) {
+                let appdelegate = UIApplication.shared.delegate as! AppDelegate
+                appdelegate.requestForPushNotification()
+                StoreKitManager.shared.fetchUserSubscriptionInfo()
                 self.tableView.endEditing(true)
                 self.dismiss(animated: true, completion: { })
             } else {

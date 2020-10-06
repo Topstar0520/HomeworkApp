@@ -10,11 +10,13 @@ import UIKit
 
 class TransparentSectionHeaderView: UITableViewHeaderFooterView {
     
+    @IBOutlet weak var bgVisualEffectView: UIVisualEffectView!
     @IBOutlet weak var titleLabel: UILabel!
-
+    @IBOutlet weak var btnInfo: UIButton!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
-        
+        btnInfo.isHidden = true
     }
     
     override func layoutSubviews() {

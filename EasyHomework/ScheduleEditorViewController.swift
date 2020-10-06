@@ -8,9 +8,10 @@
 
 import UIKit
 import RealmSwift
+import FTPopOverMenu_Swift
 
 class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIPickerViewDelegate, HomeworkTableViewCellDelegate {
-    
+
     //ToDo: Eventually bring this over to a UITableViewController so that keyboard behaviour is handled.
 
     @IBOutlet var tableView: B4GradTableView!
@@ -31,24 +32,26 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
     var semesterDates = [String:Array<Date>]()
     //PickerView-related & DatePickerView-related variables
     var pickerActivated = false
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        TaskManagerTracker.addTaskManager(tableView: self.tableView)
         //self.title = "Anonymous's Schedule"
-        self.setTitle()
+        setupUI()
+
         self.defaultSemester = self.determineDefaultSemester()
         //change this to be modified based on the University's/Course's semester schedule.
         self.tableView.estimatedRowHeight = 44
         self.tableView.rowHeight = UITableViewAutomaticDimension
         self.tableView.dataSource = self
         self.tableView.delegate = self
-        
+
         self.tableView.keyboardDismissMode = .onDrag
-        
+
         //Keep in mind: Unlike HWViewController, ScheduleEditorVC puts the results from the realm queries and inserts them into a dictionary.
-        
+
         //Add all tasks to tableView's datasource (self.dictionary):
-        
+
         //First, Assignments are added for the Assignments section.
         let realm = try! Realm()
         let coursePredicate = NSPredicate(format: "course = %@", self.course as CVarArg)
@@ -75,7 +78,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
         let finalScheduleRowContentArray = self.convertRLMTaskCollectionToScheduleRowContentArray(tasks: finals)
         self.dictionary[5]?.insert(contentsOf: finalScheduleRowContentArray, at: 0)
     }
-    
+
     func convertRLMTaskCollectionToScheduleRowContentArray(tasks: [RLMTask]) -> [ScheduleRowContent] {
         var scheduleRowContentArray = [ScheduleRowContent]()
         for task in tasks {
@@ -84,15 +87,57 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
         }
         return scheduleRowContentArray
     }
-    
-    func setTitle() {
-        if (self.course.courseCode != nil) {
-            self.title = self.course.courseCode! + "'s Schedule"
-        } else {
-            self.title = self.course.courseName + "'s Schedule"
-        }
+
+    private func setupUI() {
+        let moreItem = UIBarButtonItem(image: UIImage(named: "more_horiz"), style: .done, target: self, action: #selector(onMoreItem(sender:event:)))
+        self.navigationItem.rightBarButtonItem = moreItem
+
+        let configuration = FTConfiguration.shared
+        configuration.backgoundTintColor = UIColor.white
+        configuration.cornerRadius = 15.0
+        configuration.cellSelectionStyle = .default
     }
-    
+
+    func setTitle() {
+        var currentTitle = ""
+        if (self.course.courseCode != nil) {
+            //self.title = self.course.courseCode! + "'s Schedule"
+            currentTitle = self.course.courseCode!
+        } else {
+            //self.title = self.course.courseName + "'s Schedule"
+            currentTitle = self.course.courseName
+        }
+
+        let titleView = UIView()
+        titleView.backgroundColor = .clear
+
+        let iconImage = UIImageView()
+        iconImage.image = UIImage(named: self.course.facultyName!)?.scaleImage(toSize: CGSize(width: 25.0, height: 25.0))
+        iconImage.contentMode = .scaleAspectFit
+        titleView.addSubview(iconImage)
+
+        let navLabel = UILabel()
+        navLabel.textAlignment = .center
+        navLabel.font = UIFont.systemFont(ofSize: 17.0, weight: UIFont.Weight.medium)
+        navLabel.textColor = .white
+        navLabel.text = currentTitle
+        titleView.addSubview(navLabel)
+
+        iconImage.translatesAutoresizingMaskIntoConstraints = false
+        navLabel.translatesAutoresizingMaskIntoConstraints = false
+        iconImage.widthAnchor.constraint(equalToConstant: 25.0).isActive = true
+        iconImage.heightAnchor.constraint(equalToConstant: 25.0).isActive = true
+        iconImage.leadingAnchor.constraint(equalTo: titleView.leadingAnchor, constant: 0.0).isActive = true
+        iconImage.topAnchor.constraint(equalTo: titleView.topAnchor, constant: 0.0).isActive = true
+        iconImage.bottomAnchor.constraint(equalTo: titleView.bottomAnchor, constant: 0.0).isActive = true
+        iconImage.trailingAnchor.constraint(equalTo: navLabel.leadingAnchor, constant: -5.0).isActive = true
+        navLabel.topAnchor.constraint(equalTo: titleView.topAnchor, constant: 0.0).isActive = true
+        navLabel.bottomAnchor.constraint(equalTo: titleView.bottomAnchor, constant: 0.0).isActive = true
+        navLabel.trailingAnchor.constraint(equalTo: titleView.trailingAnchor, constant: 0.0).isActive = true
+
+        self.navigationItem.titleView = titleView
+    }
+
     override func viewWillAppear(_ animated: Bool) { //Remember: Set TableView's subclass to B4GradTableView !
         super.viewWillAppear(true)
         self.registerKeyboardNotifications()
@@ -113,16 +158,50 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
                 self.tableView.deselectRow(at: selectedRowIndexPath!, animated: true)
             }
         }
+        self.setTitle()
     }
-    
+
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         self.unregisterKeyboardNotifications()
     }
-    
+
+    @objc func onMoreItem(sender: UIBarButtonItem, event: UIEvent) {
+
+        let cellConfi = FTCellConfiguration()
+        cellConfi.textColor = UIColor.black
+        cellConfi.textFont = UIFont.boldSystemFont(ofSize: 16)
+
+        let cellConfis = Array(repeating: cellConfi, count: 2)
+
+        let courseColorImage = self.course.color!.getUIColorObject().image(size: CGSize(width: 40, height: 40))!.maskRoundedImage(radius: 20)
+
+        FTPopOverMenu.showForEvent(event: event, with: ["Color", "Symbol"], menuImageArray: [courseColorImage, self.course.facultyName!], cellConfigurationArray: cellConfis, done: { (selectedIndex) in
+            if selectedIndex == 0 {
+                //if (UserDefaults.standard.bool(forKey: "isSubscribed") == true) {
+                    let nextVc = self.storyboard?.instantiateViewController(withIdentifier: "ColorPickerTableViewController") as! ColorPickerTableViewController
+                    nextVc.colorStaticValue = self.course.colorStaticValue
+                    nextVc.editScheduleVc = self
+                    self.navigationController?.pushViewController(nextVc, animated: true)
+                /*} else {
+                    let storyboard = UIStoryboard(name: "Subscription", bundle: nil)
+                    let subscriptionPlansVC = storyboard.instantiateViewController(withIdentifier: "SubscriptionPlansViewController")
+                    self.present(subscriptionPlansVC, animated: true, completion: nil)
+                }*/
+            } else if selectedIndex == 1 {
+                let nextVc = self.storyboard?.instantiateViewController(withIdentifier: "FacultyCollectionViewController") as! FacultyCollectionViewController
+                nextVc.facultyName = self.course.facultyName
+                nextVc.editScheduleVc = self
+                self.navigationController?.pushViewController(nextVc, animated: true)
+            }
+        }) {
+
+        }
+    }
+
     //**Solves the odd tableView scrollView offset bug that occurs when tableView.beginUpdates(..) and tableView.endUpdates(..) get called.**
     //http://stackoverflow.com/a/33397350/6051635
-    
+
     var heightAtIndexPath = NSMutableDictionary()
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         let height = self.heightAtIndexPath.object(forKey: indexPath)
@@ -132,49 +211,50 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             return UITableViewAutomaticDimension
         }
     }
-    
+
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let height = cell.frame.size.height
         self.heightAtIndexPath.setObject(height, forKey: indexPath as NSCopying)
-        
+
         if (UIDevice.current.userInterfaceIdiom == .pad) {
             cell.backgroundColor = UIColor(red: 36/255, green: 41/255, blue: 36/255, alpha: 1.0)
             if (cell.contentView.backgroundColor != UIColor.clear) {
                 cell.backgroundColor = cell.contentView.backgroundColor
             }
         }
+        cell.contentView.backgroundColor = nil //since iOS13
     }
-    
+
     //**End of Bug Solution.**
-    
+
     //TableView Datasource/Delegate
-    
+
     func numberOfSections(in tableView: UITableView) -> Int {
         return dictionary.count
     }
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return dictionary[section]!.count
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cellContent = dictionary[(indexPath as NSIndexPath).section]![(indexPath as NSIndexPath).row] as ScheduleRowContent
         let cell = tableView.dequeueReusableCell(withIdentifier: cellContent.identifier, for: indexPath)
-        
+
         if (cellContent.identifier == "CourseNameCell") {
             let nameCell = cell as! CourseNameEditingTableViewCell
             nameCell.textField.text = cellContent.name
             nameCell.textField.delegate = self
             return nameCell
         }
-        
+
         if (cellContent.identifier == "CourseCodeCell") {
             let codeCell = cell as! CourseCodeEditingTableViewCell
             codeCell.textField.text = cellContent.name
+
             codeCell.textField.delegate = self
             return codeCell
         }
-        
         if (cellContent.identifier == "SemesterCell") {
             let semesterCell = cell as! SemesterTableViewCell
             if (cellContent.pickerTitleForRow == nil) {
@@ -183,7 +263,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             semesterCell.rhsLabel.text = cellContent.pickerTitleForRow
             return semesterCell
         }
-        
+
         if (cellContent.identifier == "SectionCell") {
             let semesterCell = cell as! SectionTableViewCell
             if (cellContent.pickerTitleForRow == nil) {
@@ -192,14 +272,14 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             semesterCell.rhsLabel.text = cellContent.pickerTitleForRow
             return semesterCell
         }
-        
+
         if (cellContent.identifier == "ProfessorCell") {
             let profCell = cell as! ProfessorTableViewCell
             profCell.textField.text = cellContent.name
             profCell.textField.delegate = self
             return profCell
         }
-        
+
         if (cellContent.identifier == "HomeworkTableViewCell") {
             let cell = cell as! HomeworkTableViewCell
             let task = cellContent.task!
@@ -210,9 +290,9 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
                     print(view.description)
                 }
             }*/
-            
+
             CellCustomizer.cellForRowCustomization(task: task, cell: cell, taskManager: self)
-            
+
             if self.tableView.indexPathForSelectedRow != nil {
                 if (self.tableView.indexPathForSelectedRow! == indexPath) {
                     cell.cardView.backgroundColor = UIColor(red: 180/255, green: 180/255, blue: 180/255, alpha: 1.0)
@@ -220,17 +300,17 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
                     cell.cardView.backgroundColor = UIColor.white
                 }
             }
-            
+
             if (self.lastSelectedRowIndexPath != nil && self.useLastSelectedRowIndexPath == true) {
                 if (self.lastSelectedRowIndexPath!.row == indexPath.row && ((self.lastSelectedRowIndexPath?.section) != nil)) {
                     cell.cardView.backgroundColor = UIColor(red: 180/255, green: 180/255, blue: 180/255, alpha: 1.0)
                     self.useLastSelectedRowIndexPath = false
                 }
             }
-            
+
             return cell
         }
-        
+
         if (cellContent.identifier == "FinalReminderCell") { //depcrecated
             let finalReminderCell = cell as! FinalReminderTableViewCell
             finalReminderCell.textField.delegate = self
@@ -243,7 +323,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             finalReminderCell.rhsLabel.text = formatter.string(from: cellContent.date! as Date)
             return finalReminderCell
         }
-        
+
         if (cellContent.identifier == "AssignmentCell") { //depcrecated
             let assignmentCell = cell as! AssignmentTableViewCell
             var counter = 0
@@ -255,7 +335,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
                     }
                 }
             }
-            assignmentCell.textField.attributedPlaceholder = NSAttributedString(string: "Assignment " + String(counter), attributes: [ NSAttributedStringKey.foregroundColor : UIColor.init(red: 255, green: 255, blue: 255, alpha: 0.2) ])
+            assignmentCell.textField.attributedPlaceholder = NSAttributedString(string: "Assignment " + String(counter), attributes: [ NSAttributedStringKey.foregroundColor : UIColor(displayP3Red: 255, green: 255, blue: 255, alpha: 0.3) ])
             assignmentCell.textField.text = cellContent.name
             assignmentCell.textField.delegate = self
             if (cellContent.date == nil) {
@@ -267,7 +347,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             assignmentCell.rhsLabel.text = formatter.string(from: cellContent.date! as Date)
             return assignmentCell
         }
-        
+
         if (cellContent.identifier == "QuizCell") {
             let quizCell = cell as! QuizTableViewCell
             var counter = 0
@@ -279,7 +359,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
                     }
                 }
             }
-            quizCell.textField.attributedPlaceholder = NSAttributedString(string: "Quiz " + String(counter), attributes: [ NSAttributedStringKey.foregroundColor : UIColor.init(red: 255, green: 255, blue: 255, alpha: 0.2) ])
+            quizCell.textField.attributedPlaceholder = NSAttributedString(string: "Quiz " + String(counter), attributes: [ NSAttributedStringKey.foregroundColor : UIColor(displayP3Red: 255, green: 255, blue: 255, alpha: 0.3) ])
             quizCell.textField.text = cellContent.name
             quizCell.textField.delegate = self
             if (cellContent.date == nil) {
@@ -291,7 +371,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             quizCell.rhsLabel.text = formatter.string(from: cellContent.date! as Date)
             return quizCell
         }
-        
+
         if (cellContent.identifier == "MidtermCell") {
             let midtermCell = cell as! MidtermTableViewCell
             var counter = 0
@@ -303,7 +383,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
                     }
                 }
             }
-            midtermCell.textField.attributedPlaceholder = NSAttributedString(string: "Midterm " + String(counter), attributes: [ NSAttributedStringKey.foregroundColor : UIColor.init(red: 255, green: 255, blue: 255, alpha: 0.2) ])
+            midtermCell.textField.attributedPlaceholder = NSAttributedString(string: "Midterm " + String(counter), attributes: [ NSAttributedStringKey.foregroundColor : UIColor(displayP3Red: 255, green: 255, blue: 255, alpha: 0.3) ])
             midtermCell.textField.text = cellContent.name
             midtermCell.textField.delegate = self
             if (cellContent.date == nil) {
@@ -315,7 +395,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             midtermCell.rhsLabel.text = formatter.string(from: cellContent.date! as Date)
             return midtermCell
         }
-        
+
         if (cellContent.identifier == "FinalToggleCell") {
             let finalToggleCell = cell
             if (cellContent.toggle == true) {
@@ -325,12 +405,12 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             }
             return finalToggleCell
         }
-        
+
         if (cellContent.identifier == "FinalCell") {
             let finalCell = cell as! FinalTableViewCell
             return finalCell
         }
-        
+
         if (cellContent.identifier == "PickerTableViewCell") {
             let pickerCell = cell as! PickerTableViewCell
             pickerCell.pickerView.indexPath = indexPath
@@ -357,7 +437,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             }
             return pickerCell
         }
-        
+
         if (cellContent.identifier == "DatePickerTableViewCell") {
             let datePickerCell = cell as! DatePickerTableViewCell
             datePickerCell.datePicker.indexPath = indexPath
@@ -370,53 +450,53 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             }
             return datePickerCell
         }
-        
+
         return cell
-        
+
     }
-    
+
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         let cell = tableView.cellForRow(at: indexPath) as? HomeworkTableViewCell
         cell?.cardView.backgroundColor = UIColor(red: 180/255, green: 180/255, blue: 180/255, alpha: 1.0) //This color is also set in a method above and in B4GradTableView.
         return true
     }
-    
+
     func tableView(_ tableView: UITableView, didHighlightRowAt indexPath: IndexPath) {
         let cell = tableView.cellForRow(at: indexPath) as? HomeworkTableViewCell
         cell?.cardView.backgroundColor = UIColor(red: 180/255, green: 180/255, blue: 180/255, alpha: 1.0)
     }
-    
+
     func tableView(_ tableView: UITableView, didUnhighlightRowAt indexPath: IndexPath) {
         let cell = tableView.cellForRow(at: indexPath) as? HomeworkTableViewCell
         cell?.cardView.backgroundColor = UIColor.white
     }
-    
+
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         let cell = tableView.cellForRow(at: indexPath) as? HomeworkTableViewCell
         cell?.cardView.backgroundColor = UIColor.white
     }
-    
+
     func tableView(_ tableView: UITableView, willDeselectRowAt indexPath: IndexPath) -> IndexPath? {
         let cell = tableView.cellForRow(at: indexPath) as? HomeworkTableViewCell
         cell?.cardView.backgroundColor = UIColor.white
         return indexPath
     }
-    
+
     //The sections sometimes visually glitching are because of the 'headers shouldn't be cells' bug. (FIXED!)
     //http://stackoverflow.com/questions/12772197/what-is-the-meaning-of-the-no-index-path-for-table-cell-being-reused-message-i
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let cell = tableView.cellForRow(at: indexPath)
-        
+
         if (cell is HomeworkTableViewCell) {
             let hwCell = cell as! HomeworkTableViewCell
             hwCell.cardView.backgroundColor = UIColor(red: 180/255, green: 180/255, blue: 180/255, alpha: 1.0)
             self.lastSelectedRowIndexPath = indexPath
         }
-        
+
         if (cell?.reuseIdentifier == "HomeworkTableViewCell") {
             let scheduleRowContent = self.dictionary[indexPath.section]![indexPath.row]
             let task = scheduleRowContent.task!
-            
+
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             let cellEditingVC = storyboard.instantiateViewController(withIdentifier: "CellEditingVC") as! CellEditingTableViewController
             cellEditingVC.helperObject = SchedulesCellEditingHelperObject(cellEditingTVC: cellEditingVC, task: task, taskManagerVC: self, homeVC: self.homeVC)
@@ -426,9 +506,22 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             cellEditingVC.helperObject.task = task
             cellEditingVC.helperObject.taskManagerVC = self
             self.show(cellEditingVC, sender: nil)
+            
+            if (((UserDefaults.standard.object(forKey: "DateSinceFirstLaunched") as! Date).daysTo(Date())!) >= 3 && UserDefaults.standard.bool(forKey: "isSubscribed") == false) {
+                //display subscription screen with no 'X' and state 'free trial is over'.
+                let storyboard = UIStoryboard(name: "Subscription", bundle: nil)
+                let subscriptionPlansVC = storyboard.instantiateViewController(withIdentifier: "SubscriptionPlansViewController") as! SubscriptionPlansViewController
+                subscriptionPlansVC.customHeadlineText = "Your Free Trial has Expired. Purchase to Continue."
+                subscriptionPlansVC.view.viewWithTag(101)?.isHidden = true
+                if #available(iOS 13.0, *) {
+                    subscriptionPlansVC.isModalInPresentation = true
+                }
+                self.present(subscriptionPlansVC, animated: true, completion: nil)
+            }
+            
             return
         }
-        
+
         if (cell?.reuseIdentifier == "NewAssignmentCell") {
             tableView.deselectRow(at: indexPath, animated: true)
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
@@ -443,7 +536,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             self.present(navigationController, animated: true, completion: nil)
             return
         }
-        
+
         if (cell?.reuseIdentifier == "NewQuizCell") {
             tableView.deselectRow(at: indexPath, animated: true)
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
@@ -458,7 +551,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             self.present(navigationController, animated: true, completion: nil)
             return
         }
-        
+
         if (cell?.reuseIdentifier == "NewMidtermCell") {
             tableView.deselectRow(at: indexPath, animated: true)
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
@@ -473,7 +566,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             self.present(navigationController, animated: true, completion: nil)
             return
         }
-        
+
         if (cell?.reuseIdentifier == "NewFinalCell") {
             tableView.deselectRow(at: indexPath, animated: true)
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
@@ -488,9 +581,9 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             self.present(navigationController, animated: true, completion: nil)
             return
         }
-        
+
         //--
-        
+
         if (cell?.reuseIdentifier == "SemesterCell") {
             tableView.deselectRow(at: indexPath, animated: true)
             self.activeField?.resignFirstResponder()
@@ -519,7 +612,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             }
             return
         }
-        
+
         if (cell?.reuseIdentifier == "SectionCell") {
             tableView.deselectRow(at: indexPath, animated: true)
             self.activeField?.resignFirstResponder()
@@ -547,7 +640,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             }
             return
         }
-        
+
         if (cell?.reuseIdentifier == "AssignmentCell") {
             tableView.deselectRow(at: indexPath, animated: true)
             self.activeField?.resignFirstResponder()
@@ -578,7 +671,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             }
             return
         }
-        
+
         if (cell?.reuseIdentifier == "QuizCell") {
             tableView.deselectRow(at: indexPath, animated: true)
             self.activeField?.resignFirstResponder()
@@ -609,7 +702,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             }
             return
         }
-        
+
         if (cell?.reuseIdentifier == "MidtermCell") {
             tableView.deselectRow(at: indexPath, animated: true)
             self.activeField?.resignFirstResponder()
@@ -640,7 +733,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             }
             return
         }
-        
+
         if (cell?.reuseIdentifier == "FinalToggleCell") {
             tableView.deselectRow(at: indexPath, animated: true)
             self.activeField?.resignFirstResponder()
@@ -654,7 +747,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
                 let newFinalCellContent = ScheduleRowContent(identifier: "NewFinalCell")
                 self.dictionary[(indexPath as NSIndexPath).section]?.insert(newFinalCellContent, at: ((indexPath as NSIndexPath).row + 2))
                 //tableView.insertRows(at: [IndexPath(row: (indexPath as NSIndexPath).row + 1, section: (indexPath as NSIndexPath).section), IndexPath(row: (indexPath as NSIndexPath).row + 2, section: (indexPath as NSIndexPath).section)], with: .automatic)
-                
+
                 let realm = try! Realm()
                 let coursePredicate = NSPredicate(format: "course = %@", self.course as CVarArg)
                 let finalsWithoutNullDueDates = realm.objects(RLMTask.self).filter("removed = false AND dueDate != null AND type = 'Final'").filter(coursePredicate).sorted(byKeyPath: "dueDate", ascending: true)
@@ -662,7 +755,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
                 let finals = finalsWithoutNullDueDates.toArray() + finalsWithNullDueDates.toArray()
                 let finalScheduleRowContentArray = self.convertRLMTaskCollectionToScheduleRowContentArray(tasks: finals)
                 self.dictionary[(indexPath as NSIndexPath).section]?.insert(contentsOf: finalScheduleRowContentArray, at: self.dictionary[(indexPath as NSIndexPath).section]!.count - 1)
-                
+
                 var indexPaths = [IndexPath]()
                 for (rowCount, row) in self.dictionary[(indexPath as NSIndexPath).section]!.enumerated() {
                     if (row.identifier != "FinalToggleCell") {
@@ -670,7 +763,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
                     }
                 }
                 tableView.insertRows(at: indexPaths, with: .automatic)
-                    
+
                 tableView.endUpdates()
             } else {
                 self.dictionary[(indexPath as NSIndexPath).section]?[(indexPath as NSIndexPath).row].toggle = false
@@ -698,7 +791,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             tableView.endUpdates()
             return*/
         }
-        
+
         if (cell?.reuseIdentifier == "FinalReminderCell") {
             tableView.deselectRow(at: indexPath, animated: true)
             self.activeField?.resignFirstResponder()
@@ -729,9 +822,9 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             }
             return
         }
-        
+
     }
-    
+
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerView = UIView()
         headerView.backgroundColor = rgbaToUIColor(red: 17/255, green: 17/255, blue: 17/255, alpha: 1.0)
@@ -747,38 +840,38 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             let headerView = SectionHeaderView.construct("General", owner: tableView)
             return headerView
         }
-        
+
         if (section == 2) {
             let headerView = SectionHeaderView.construct("Assignments", owner: tableView)
             return headerView
         }
-        
+
         if (section == 3) {
             let headerView = SectionHeaderView.construct("Quizzes", owner: tableView)
             return headerView
         }
-        
+
         if (section == 4) {
             let headerView = SectionHeaderView.construct("Midterms", owner: tableView)
             return headerView
         }
-        
+
         if (section == 5) {
             let headerView = SectionHeaderView.construct("Final", owner: tableView)
             return headerView
         }
-        
+
         if (section == 6) {
             let headerView = SectionHeaderView.construct("Labs/Tutorials", owner: tableView)
             return headerView
         }
-        
+
         let invisView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
         invisView.backgroundColor = UIColor.clear
         return invisView
-        
+
     }
-    
+
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if (section == 0 || section == 7 || section == 8) {
             return CGFloat.leastNormalMagnitude
@@ -786,7 +879,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             return 21.0
         }
     }
-    
+
     func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
         if (self.dictionary[(indexPath as NSIndexPath).section]?[(indexPath as NSIndexPath).row].identifier == "FinalCell") {
             let alertController = UIAlertController(title: "Final Exam", message: "You will be reminded to add a date for this exam when the final exam schedule is released.", preferredStyle: .alert)
@@ -807,7 +900,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             return
         }
     }
-    
+
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         let cell = tableView.cellForRow(at: indexPath)
         if (cell?.reuseIdentifier == "FinalReminderCell") {
@@ -826,11 +919,11 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             return false
         }
     }
-    
+
     func tableView(_ tableView: UITableView, titleForDeleteConfirmationButtonForRowAt indexPath: IndexPath) -> String? {
         return "Clear"
     }
-    
+
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         let cell = tableView.cellForRow(at: indexPath)
         if (editingStyle == UITableViewCellEditingStyle.delete && cell?.reuseIdentifier == "FinalReminderCell") {
@@ -850,11 +943,11 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             return
         }
     }
-    
+
     //UITextFieldDelegate
-    
+
     var activeField : UITextField?
-    
+
     func textFieldDidBeginEditing(_ textField: UITextField) {
         self.activeField = textField
         self.hideAllPickerViews()
@@ -866,7 +959,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
         let indexPath = self.tableView.indexPathForRow(at: point)
         self.dictionary[((indexPath! as NSIndexPath).section)]![(indexPath! as NSIndexPath).row].name = textField.text
         self.activeField = nil
-        
+
         let identifier = self.dictionary[((indexPath! as NSIndexPath).section)]![(indexPath! as NSIndexPath).row].identifier
         if (identifier == "CourseNameCell") {
             textField.resignFirstResponder()
@@ -885,13 +978,13 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             do {
                 try realm.commitWrite()
             } catch let error {
-                
+
             }
             self.setTitle()
             self.coursesVC.tableView.reloadData()
             self.homeVC.tableView.reloadData()
         }
-        
+
         if (identifier == "CourseCodeCell") {
             textField.resignFirstResponder()
             if (textField.text!.characters.count == 0) {
@@ -909,7 +1002,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             do {
                 try realm.commitWrite()
             } catch let error {
-                
+
             }
             self.setTitle()
             self.coursesVC.tableView.reloadData()
@@ -917,13 +1010,13 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
         }
 
     }
-    
+
     //After tapping 'Done' or 'Next'
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         let point = self.tableView.convert(CGPoint.zero, from: textField)
         let indexPath = self.tableView.indexPathForRow(at: point)
         let identifier = self.dictionary[((indexPath! as NSIndexPath).section)]![(indexPath! as NSIndexPath).row].identifier
-        
+
         if (identifier == "CourseNameCell") {
             let courseCodeCell = self.tableView.cellForRow(at: IndexPath(row: (indexPath?.row)! + 1, section: (indexPath?.section)!)) as! CourseCodeEditingTableViewCell
             if (self.traitCollection.horizontalSizeClass == .compact && self.traitCollection.verticalSizeClass == .compact) {
@@ -931,23 +1024,23 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             }
             courseCodeCell.textField.becomeFirstResponder()
         }
-        
+
         if (identifier == "CourseCodeCell") {
             textField.resignFirstResponder()
         }
-        
+
         if (identifier == "ProfessorCell") {
             textField.resignFirstResponder()
             self.tableView.selectRow(at: IndexPath(row: ((indexPath as NSIndexPath?)?.row)! + 1, section: 1), animated: true, scrollPosition: .middle)
             self.tableView(self.tableView, didSelectRowAt: IndexPath(row: ((indexPath as NSIndexPath?)?.row)! + 1, section: 1))
         }
-        
+
         if (identifier == "AssignmentCell") {
             textField.resignFirstResponder()
             self.tableView.selectRow(at: IndexPath(row: (indexPath! as NSIndexPath).row, section: (indexPath! as NSIndexPath).section), animated: true, scrollPosition: .none)
             self.tableView(self.tableView, didSelectRowAt: IndexPath(row: (indexPath! as NSIndexPath).row, section: (indexPath! as NSIndexPath).section))
         }
-        
+
         if (identifier == "QuizCell") {
             textField.resignFirstResponder()
             self.tableView.selectRow(at: IndexPath(row: (indexPath! as NSIndexPath).row, section: (indexPath! as NSIndexPath).section), animated: true, scrollPosition: .none)
@@ -958,31 +1051,31 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             //var scrollToFrame = self.tableView.cellForRowAtIndexPath(datePickerCellIndexPath)!.frame
             //self.tableView.scrollRectToVisible(scrollToFrame, animated: true) //also occasionally causes odd behaviour as-is.
         }
-        
+
         if (identifier == "MidtermCell") {
             textField.resignFirstResponder()
             self.tableView.selectRow(at: IndexPath(row: (indexPath! as NSIndexPath).row, section: (indexPath! as NSIndexPath).section), animated: true, scrollPosition: .none)
             self.tableView(self.tableView, didSelectRowAt: IndexPath(row: (indexPath! as NSIndexPath).row, section: (indexPath! as NSIndexPath).section))
         }
-     
+
         return true
      }
-    
-    
+
+
     //Keyboard Notifications.
-    
+
     func registerKeyboardNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(ScheduleEditorViewController.keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(ScheduleEditorViewController.keyboardWillBeHidden(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
-    
+
     func unregisterKeyboardNotifications() {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
-    
+
     @IBOutlet var baseConstraint: NSLayoutConstraint!
-    
+
     @objc func keyboardWillShow(_ aNotification: Notification)    {
         //Collect information about keyboard using its notification.
         let info = (aNotification as NSNotification).userInfo!
@@ -996,7 +1089,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
                 (value: Bool) in
         })
     }
-    
+
     @objc func keyboardWillBeHidden(_ aNotification: Notification)    {
         let info = (aNotification as NSNotification).userInfo!
         let duration = (info[UIKeyboardAnimationDurationUserInfoKey] as! NSValue) as! Double
@@ -1008,57 +1101,57 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
                 (value: Bool) in
         })
     }
-    
+
     //UIPickerViewDelegate
-    
+
     func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
         let customPickerView = pickerView as! CustomPickerView
         let cellContent = self.dictionary[customPickerView.indexPath.section]![customPickerView.indexPath.row]
         let titleForRow = cellContent.pickerDataSource?.dataArray[row]
-        let attributedTitleForRow = NSAttributedString(string: titleForRow!, attributes: [NSAttributedStringKey.foregroundColor : UIColor.init(red: 255, green: 255, blue: 255, alpha: 1.0)])
+        let attributedTitleForRow = NSAttributedString(string: titleForRow!, attributes: [NSAttributedStringKey.foregroundColor : UIColor(displayP3Red: 255, green: 255, blue: 255, alpha: 1.0)])
         return attributedTitleForRow
     }
-    
+
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         //Get title from pickerViewer row.
         let customPickerView = pickerView as! CustomPickerView
         let cellContent = self.dictionary[customPickerView.indexPath.section]![customPickerView.indexPath.row]
         let titleForRow = cellContent.pickerDataSource?.dataArray[row]
-        
+
         //Update information in pickerViewCell.
         let pickerViewCellContent = self.dictionary[customPickerView.indexPath.section]![customPickerView.indexPath.row]
         pickerViewCellContent.pickerTitleForRow = pickerViewCellContent.pickerDataSource?.dataArray[row]
-        
+
         //Update tableView accordingly.
         self.tableView.beginUpdates()
         let cellContentNeedingModification = self.dictionary[customPickerView.indexPath.section]![customPickerView.indexPath.row - 1]
         cellContentNeedingModification.pickerTitleForRow = titleForRow
         self.tableView.reloadRows(at: [IndexPath(row: customPickerView.indexPath.row - 1, section: customPickerView.indexPath.section)], with: .none)
         self.tableView.endUpdates()
-        
+
         if (self.dictionary[customPickerView.indexPath.section]![customPickerView.indexPath.row - 1].identifier == "SemesterCell") {
             self.minimumDate = self.semesterDates[self.dictionary[customPickerView.indexPath.section]![customPickerView.indexPath.row - 1].pickerTitleForRow!]![0]
             self.maximumDate = self.semesterDates[self.dictionary[customPickerView.indexPath.section]![customPickerView.indexPath.row - 1].pickerTitleForRow!]![1]
         }
     }
-    
+
     //UIDatePickerAction (essentially a delegate).
-    
+
     @IBAction func DatePickerValueChanged(_ sender: AnyObject) {
         //Get date from customDatePickerView.
         let customDatePickerView = sender as! CustomDatePickerView
-        
+
         //Update information in datePickerViewCell.
         let datePickerViewCellContent = self.dictionary[customDatePickerView.indexPath.section]![customDatePickerView.indexPath.row]
         datePickerViewCellContent.date = customDatePickerView.date
-        
+
         //Update tableView accordingly.
         self.tableView.beginUpdates()
         let cellContentNeedingModification = self.dictionary[customDatePickerView.indexPath.section]![customDatePickerView.indexPath.row - 1]
         cellContentNeedingModification.date = customDatePickerView.date
         self.tableView.reloadRows(at: [IndexPath(row: customDatePickerView.indexPath.row - 1, section: customDatePickerView.indexPath.section)], with: .none)
         self.tableView.endUpdates()
-        
+
         /*let scheduledNotifications: [UILocalNotification]? = UIApplication.shared.scheduledLocalNotifications
         if (scheduledNotifications != nil) {
             for notification in scheduledNotifications! { // loop through notifications...
@@ -1068,11 +1161,11 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
                 }
             }
         }
-        
+
        let notification = UILocalNotification()
         notification.alertBody = "It is time to schedule Finals. Go knock 'em out." // text that will be displayed in the notification
         //notification.alertAction = "" // text that is displayed after "slide to..." on the lock screen - defaults to "slide to view"
-        
+
         let gregorian = Calendar(identifier: .gregorian)
         let fireDate = datePickerViewCellContent.date
         var components = gregorian.dateComponents([.year, .month, .day, .hour, .minute, .second], from: fireDate!)
@@ -1080,18 +1173,18 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
         components.hour = 4
         components.minute = 30
         components.second = 0
-        
+
         let date = gregorian.date(from: components)!
         notification.fireDate = fireDate // todo item due date (when notification will be fired) notification.soundName = UILocalNotificationDefaultSoundName // play default sound
         notification.userInfo = ["type" : "Final Reminder", "date" : cellContentNeedingModification.date!] // assign a unique identifier to the notification so that we can retrieve it later
-        
+
         UIApplication.shared.scheduleLocalNotification(notification)*/
-        
+
     }
-    
-    
+
+
     //Other
-    
+
     func determineDefaultSemester() -> String {
         self.determineMinAndMaxDatesForSemester()
         let date = Date()
@@ -1114,26 +1207,26 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             return PickerDataSource(source: .standardSemester).dataArray[2]
         }
     }
-    
+
     func determineMinAndMaxDatesForSemester() {
         //let nowDate = NSDate()
-        
+
         var minDate = createDateFromComponents(9, day: 8, year: 2016)
         var maxDate = createDateFromComponents(12, day: 23, year: 2016)
-        
+
         self.semesterDates["Fall"] = [minDate, maxDate]
-        
+
         minDate = createDateFromComponents(1, day: 4, year: 2017)
         maxDate = createDateFromComponents(4, day: 30, year: 2017)
-        
+
         self.semesterDates["Spring"] = [minDate, maxDate]
-        
+
         minDate = createDateFromComponents(5, day: 9, year: 2017)
         maxDate = createDateFromComponents(8, day: 20, year: 2017)
-        
+
         self.semesterDates["Summer"] = [minDate, maxDate]
     }
-    
+
     func createDateFromComponents(_ month: Int, day: Int, year: Int) -> Date {
         var dateComponents = DateComponents()
         dateComponents.year = year
@@ -1143,7 +1236,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
         dateComponents.minute = 0
         return Calendar.current.date(from: dateComponents)!
     }
-    
+
     func hideAllPickerViews() {
         //This prevents crash.
         var pickerViewsNeedHiding = false
@@ -1152,11 +1245,11 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
                 pickerViewsNeedHiding = true
             }
         }
-        
+
         if (pickerViewsNeedHiding == false) {
             return
         }
-        
+
         var sectionCounter = 0
         for _ in self.dictionary {
             for (index, rowContent) in (self.dictionary[sectionCounter]?.enumerated())! {
@@ -1168,7 +1261,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             sectionCounter += 1
         }
     }
-    
+
     func hideAllPickerViews(_ section : Int) -> Bool { //For use when New[Assignment][Quiz][etc..]Cell tapped.
         var sameSection = false
         //This prevents crash.
@@ -1178,11 +1271,11 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
                 pickerViewsNeedHiding = true
             }
         }
-        
+
         if (pickerViewsNeedHiding == false) {
             return false
         }
-        
+
         var sectionCounter = 0
         for _ in self.dictionary {
             for (index, rowContent) in (self.dictionary[sectionCounter]?.enumerated())! {
@@ -1201,11 +1294,11 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
         }
         return sameSection
     }
-    
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
-    
+
     func getScheduleRowContentWithIdentifier(identifier: String) -> ScheduleRowContent? {
         for (section, rows) in self.dictionary {
             for row in rows {
@@ -1216,9 +1309,9 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
         }
         return nil
     }
-    
+
     // MARK: - HomeworkTableViewCellDelegate
-    
+
     func taskDeleted(_ task: RLMTask) {
         let indexPathForRow = self.homeVC.indexOfTask(task: task)
         let scheduleEditorIndexPath = self.indexOfTask(task: task)
@@ -1257,12 +1350,12 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             }
             return
         }
-        
+
         var cellWasSelected = false
         if (self.homeVC.tableView.cellForRow(at: indexPathForRow!)?.isSelected == true) {
             cellWasSelected = true
         }
-        
+
         let realm = try! Realm()
         realm.beginWrite()
         //realm.delete(task)
@@ -1276,18 +1369,18 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             return
         }
         self.dictionary[scheduleEditorIndexPath!.section]?.remove(at: scheduleEditorIndexPath!.row)
-        
+
         // use the UITableView to animate the removal of this row
         self.homeVC.tableView.beginUpdates()
         self.homeVC.tableView.deleteRows(at: [indexPathForRow!], with: .left)
         self.homeVC.tableView.endUpdates()
-        
+
         self.tableView.beginUpdates()
         self.tableView.deleteRows(at: [scheduleEditorIndexPath!], with: .left)
         self.tableView.endUpdates()
-        
+
         self.homeVC.playDeleteSound()
-        
+
         //Remove Completed Today Section if needed.
         self.homeVC.tableView.beginUpdates()
         if (self.homeVC.completedTodayTasks.count == 0) {
@@ -1299,7 +1392,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
         }
         self.homeVC.tableView.endUpdates()
         //
-        
+
         //Remove Extended Section if needed.
         self.homeVC.tableView.beginUpdates()
         if (self.homeVC.extendedTasks.count == 0) {
@@ -1311,11 +1404,11 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
         }
         self.homeVC.tableView.endUpdates()
         //
-        
+
         if (self.homeVC.splitViewController!.isCollapsed == false && cellWasSelected == true) {
             self.homeVC.splitViewController!.viewControllers[1] = self.storyboard!.instantiateViewController(withIdentifier: "BlankTabBarController")
         }
-        
+
         //Close SplitViewController secondary VC if it is a CellEditingTVC representing the deleted task.
         if (self.homeVC.splitViewController!.viewControllers.count <= 1) {
             return
@@ -1334,11 +1427,11 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
         }
 
     }
-    
+
     func taskCompleted(_ task: RLMTask) {
         let indexPath = self.homeVC.indexOfTask(task: task)
         //insert code to customize HWCell in ScheduleEditor Here.
-        
+
         if (task.completed != true) {
             let cell = self.tableView.cellForRow(at: self.indexOfTask(task: task)!) as? HomeworkTableViewCell
             cell?.leadingCompletionConstraint.constant = 32
@@ -1370,14 +1463,16 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
         if (indexPath == nil) {
             if (task.completed != true) {
                 self.homeVC.playCompletedSound()
+                self.homeVC.taptic.feedback()
             } else {
                 self.homeVC.playNotCompletedSound()
+                self.homeVC.taptic.feedback()
             }
             return
         }
         let section = indexPath!.section
         let index = indexPath!.row
-        
+
         if (task.completed != true) {
             let indexPathForRow = IndexPath(row: index, section: section)
             let cell = self.homeVC.tableView.cellForRow(at: indexPathForRow) as? HomeworkTableViewCell
@@ -1386,7 +1481,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
                 UIView.animate(withDuration: 0.07, delay: 0, usingSpringWithDamping: 1.0, initialSpringVelocity: 1.0, options: UIViewAnimationOptions.curveEaseOut, animations: { cell?.transform = CGAffineTransform(scaleX: 0.95, y: 0.95) }, completion: {
                     finished in
                     UIView.animate(withDuration: 0.07, delay: 0, usingSpringWithDamping: 1.0, initialSpringVelocity: 1.0, options: UIViewAnimationOptions.curveEaseOut, animations: { cell?.transform = CGAffineTransform(scaleX: 1.0, y: 1.0) }, completion: { finished in
-                        
+
                     })
                 })
             })
@@ -1406,7 +1501,8 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             cell?.completionImageView.layer.shadowRadius = 0.5
             cell?.completionImageView.layer.shadowOpacity = 1.0
             self.homeVC.playCompletedSound()
-            
+            self.homeVC.taptic.feedback()
+
         } else {
             let indexPathForRow = IndexPath(row: index, section: section)
             let cell = self.homeVC.tableView.cellForRow(at: indexPathForRow) as? HomeworkTableViewCell
@@ -1415,7 +1511,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
                 UIView.animate(withDuration: 0.07, delay: 0, usingSpringWithDamping: 1.0, initialSpringVelocity: 1.0, options: UIViewAnimationOptions.curveEaseOut, animations: { cell?.transform = CGAffineTransform(scaleX: 0.95, y: 0.95) }, completion: {
                     finished in
                     UIView.animate(withDuration: 0.07, delay: 0, usingSpringWithDamping: 1.0, initialSpringVelocity: 1.0, options: UIViewAnimationOptions.curveEaseOut, animations: { cell?.transform = CGAffineTransform(scaleX: 1.0, y: 1.0) }, completion: { finished in
-                        
+
                     })
                 })
             })
@@ -1433,13 +1529,14 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             cell?.completionImageView.layer.shadowOpacity = 0.25
             //cell.cardView.alpha = 1.0
             self.homeVC.playNotCompletedSound()
+            self.homeVC.taptic.feedback()
         }
     }
-    
+
     func moveTask(_ cell: HomeworkTableViewCell, _ task: RLMTask) {
         var indexPath = self.homeVC.indexOfTask(task: task)
         if (indexPath == nil) { //As of Tuesday, Feb 6, 2018: A bunch of code got deleted to stop tasks from SchedulesVC from appearing unexpectedly in Agenda view.
-            
+
             //Save Task and Insert Task into Completed Today Section.
             let realm = try! Realm()
             realm.beginWrite()
@@ -1473,7 +1570,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
                     self.homeVC.tableView.insertRows(at: [indexPathInHomeVC], with: .fade)
                 }
             self.homeVC.tableView.endUpdates()
-            
+
             UIView.animate(withDuration: 0.27, delay: 0.0, options: [], animations: {
                 if (task.completed == true) {
                     cell.titleLabel.textColor = self.homeVC.FADED_BLACK_COLOR
@@ -1487,7 +1584,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
         }
         //Crash is from inconsistency in HomeVC Data Model. i.e. A task completed that wasn't originally on HomeVC now should be because it was Completed Today. The opposite also occurs: A completed task that is uncompleted and wasn't originally on HomeVC should now be deleted from HomeVC. For both of these circumstances, the task could also be 'Extended', meaning it SHOULD have a dateOfExtension set if the due date is over two weeks away. It is fine for tasks to become extended from completion/uncompletion, as uncompleting/completing a task does mean it is/was extended. (so do not modify saving or HomeVC)
         //^^ Fix HomeVC handling of completion/uncompletion in this method.
-        
+
         //Add Completed Today Section if needed.
         self.homeVC.tableView.beginUpdates()
         if (task.completed == false && self.homeVC.completedTodayTasks.count == 0) {
@@ -1505,8 +1602,8 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
         }
         self.homeVC.tableView.endUpdates()
         //
-        
-        
+
+
         //Add Extended Section if needed.
         self.homeVC.tableView.beginUpdates()
         if (task.dueDate?.overScopeThreshold(task: task) == true && self.homeVC.extendedTasks.count == 0) { //&& task.completed == true
@@ -1520,7 +1617,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
         }
         self.homeVC.tableView.endUpdates()
         //
-        
+
         let realm = try! Realm()
         realm.beginWrite()
         task.completed = !task.completed
@@ -1542,12 +1639,12 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             self.present(errorVC, animated: true, completion: nil)
             return
         }
-        
+
         var newIndexPath = self.homeVC.indexOfTask(task: task)!
         /*if (self.completedTodayTasks.count == 0) {
          newIndexPath.section += 1
          }*/
-        
+
         UIView.animate(withDuration: 0.27, delay: 0.0, options: [], animations: {
             self.homeVC.tableView.beginUpdates()
             if (indexPath != nil) {
@@ -1561,7 +1658,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             }
             self.homeVC.tableView.endUpdates()
         }, completion: nil)
-        
+
         //Remove Completed Today Section if needed.
         self.homeVC.tableView.beginUpdates()
         if (self.homeVC.completedTodayTasks.count == 0) {
@@ -1573,7 +1670,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
         }
         self.homeVC.tableView.endUpdates()
         //
-        
+
         //Remove Extended Section if needed.
         self.homeVC.tableView.beginUpdates()
         if (self.homeVC.extendedTasks.count == 0) {
@@ -1586,7 +1683,7 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
         self.homeVC.tableView.endUpdates()
         //
     }
-    
+
     func indexOfTask(task: RLMTask) -> IndexPath? {
         for (section, rows) in self.dictionary {
             var rowCounter = 0
@@ -1599,11 +1696,11 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
         }
         return nil
     }
-    
+
     //
-    
+
     // MARK: - Navigation
-    
+
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destinationViewController.
@@ -1623,6 +1720,6 @@ class ScheduleEditorViewController: UIViewController, UITableViewDataSource, UIT
             }
         }
     }
-    
+
 
 }

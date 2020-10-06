@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
-        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -24,19 +21,19 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Main Title" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" minimumScaleFactor="0.89999997615814209" translatesAutoresizingMaskIntoConstraints="NO" id="f1A-LF-IpL">
-                                <rect key="frame" x="40" y="305" width="255" height="20"/>
+                                <rect key="frame" x="40" y="317.5" width="255" height="20.5"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Description" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" minimumScaleFactor="0.89999997615814209" translatesAutoresizingMaskIntoConstraints="NO" id="v8J-vl-FNV">
-                                <rect key="frame" x="40" y="338" width="255" height="18"/>
+                                <rect key="frame" x="40" y="351" width="255" height="18"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="748" image="Brush Arrow" translatesAutoresizingMaskIntoConstraints="NO" id="Cnb-sE-5dg">
-                                <rect key="frame" x="208" y="505" width="100" height="92"/>
+                                <rect key="frame" x="195" y="476" width="100" height="91"/>
                                 <constraints>
                                     <constraint firstAttribute="height" relation="lessThanOrEqual" constant="100" id="DD3-f2-jbl">
                                         <variation key="heightClass=compact-widthClass=compact" constant="60"/>
@@ -48,13 +45,13 @@
                                     </constraint>
                                 </constraints>
                             </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="748" image="smiley" translatesAutoresizingMaskIntoConstraints="NO" id="IdS-mM-YuD">
-                                <rect key="frame" x="110.5" y="156.5" width="115" height="115"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="748" image="GradCap" translatesAutoresizingMaskIntoConstraints="NO" id="IdS-mM-YuD">
+                                <rect key="frame" x="67.5" y="143.5" width="200" height="140"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" relation="lessThanOrEqual" constant="115" id="cj9-bp-YCu">
+                                    <constraint firstAttribute="height" relation="lessThanOrEqual" constant="140" id="cj9-bp-YCu">
                                         <variation key="heightClass=compact-widthClass=compact" constant="50"/>
                                     </constraint>
-                                    <constraint firstAttribute="width" constant="115" id="h8o-05-iDY">
+                                    <constraint firstAttribute="width" constant="200" id="h8o-05-iDY">
                                         <variation key="heightClass=compact-widthClass=compact" constant="50"/>
                                     </constraint>
                                 </constraints>
@@ -66,11 +63,11 @@
                                 <variation key="heightClass=compact-widthClass=compact" constant="15"/>
                             </constraint>
                             <constraint firstItem="IdS-mM-YuD" firstAttribute="top" secondItem="Zhd-oa-HS9" secondAttribute="top" constant="20" id="D0R-4Y-AhB"/>
-                            <constraint firstAttribute="trailing" secondItem="Cnb-sE-5dg" secondAttribute="trailing" constant="27" id="Gkr-zB-EMK">
+                            <constraint firstAttribute="trailing" secondItem="Cnb-sE-5dg" secondAttribute="trailing" constant="40" id="Gkr-zB-EMK">
                                 <variation key="heightClass=compact-widthClass=compact" constant="20"/>
                             </constraint>
-                            <constraint firstItem="Cnb-sE-5dg" firstAttribute="height" secondItem="IdS-mM-YuD" secondAttribute="height" multiplier="0.8" id="JUV-7B-xjW"/>
-                            <constraint firstAttribute="bottom" secondItem="Cnb-sE-5dg" secondAttribute="bottom" constant="30" id="Jh1-ye-8yG"/>
+                            <constraint firstItem="Cnb-sE-5dg" firstAttribute="height" secondItem="IdS-mM-YuD" secondAttribute="height" multiplier="0.65" id="JUV-7B-xjW"/>
+                            <constraint firstAttribute="bottom" secondItem="Cnb-sE-5dg" secondAttribute="bottom" constant="60" id="Jh1-ye-8yG"/>
                             <constraint firstItem="IdS-mM-YuD" firstAttribute="centerX" secondItem="f1A-LF-IpL" secondAttribute="centerX" id="aYs-pM-ckt"/>
                             <constraint firstAttribute="centerX" secondItem="v8J-vl-FNV" secondAttribute="centerX" id="cKk-dL-FZF"/>
                             <constraint firstItem="f1A-LF-IpL" firstAttribute="leading" secondItem="Zhd-oa-HS9" secondAttribute="leading" constant="40" id="fgQ-qk-6C6"/>
@@ -113,6 +110,7 @@
             <connections>
                 <outlet property="arrowImageView" destination="Cnb-sE-5dg" id="TNA-3Z-hNL"/>
                 <outlet property="descriptionLabel" destination="v8J-vl-FNV" id="8ra-3O-6k3"/>
+                <outlet property="mainImageView" destination="IdS-mM-YuD" id="fGd-zI-E3h"/>
                 <outlet property="mainTitleLabel" destination="f1A-LF-IpL" id="QgQ-Yq-dFX"/>
                 <outlet property="visualEffectView" destination="rOI-ue-Qgg" id="CXo-ZZ-sGA"/>
             </connections>
@@ -121,6 +119,6 @@
     </objects>
     <resources>
         <image name="Brush Arrow" width="267" height="263"/>
-        <image name="smiley" width="512" height="512"/>
+        <image name="GradCap" width="722" height="478"/>
     </resources>
 </document>

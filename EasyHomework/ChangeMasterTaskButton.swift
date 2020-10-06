@@ -9,7 +9,7 @@
 import UIKit
 
 class ChangeMasterTaskButton: UIButton {
-    
+
     class func construct(_ owner : AnyObject) -> ChangeMasterTaskButton {
         var nibViews = Bundle.main.loadNibNamed("ChangeMasterTaskButton", owner: owner, options: nil)
         let changeMasterTaskButton = nibViews?[0] as! ChangeMasterTaskButton
@@ -17,7 +17,7 @@ class ChangeMasterTaskButton: UIButton {
         changeMasterTaskButton.setBackgroundColor(color: UIColor(red: 62/255, green: 62/255, blue: 62/255, alpha: 1.0), forState: .highlighted)
         return changeMasterTaskButton
     }
-
+    
     /*
     // Only override draw() if you perform custom drawing.
     // An empty implementation adversely affects performance during animation.

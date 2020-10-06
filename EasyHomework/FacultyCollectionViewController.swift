@@ -7,10 +7,13 @@
 //
 
 import UIKit
+import RealmSwift
 
 class FacultyCollectionViewController: UICollectionViewController {
 
-    var addCourseVC: AddCourseTableViewController!
+    var addCourseVC: AddCourseTableViewController?
+    var editScheduleVc: ScheduleEditorViewController?
+    var facultyName: String? = "DefaultFaculty"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,7 +51,8 @@ class FacultyCollectionViewController: UICollectionViewController {
 
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.addCourseVC.defaultFacultiesArray.count
+        //return self.addCourseVC.defaultFacultiesArray.count
+        return FacultyDataModel.shared.defaultFacultiesArray.count
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -56,8 +60,8 @@ class FacultyCollectionViewController: UICollectionViewController {
     
         // Configure the cell
         //print(self.addCourseVC.defaultFacultiesArray[indexPath.row][0])
-        cell.imageView.image = UIImage(named: self.addCourseVC.defaultFacultiesArray[indexPath.row][0])
-        cell.label.text = self.addCourseVC.defaultFacultiesArray[indexPath.row][0]
+        cell.imageView.image = UIImage(named: FacultyDataModel.shared.defaultFacultiesArray[indexPath.row][0])
+        cell.label.text = FacultyDataModel.shared.defaultFacultiesArray[indexPath.row][0]
         
         return cell
     }
@@ -88,10 +92,25 @@ class FacultyCollectionViewController: UICollectionViewController {
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let cell = collectionView.cellForItem(at: indexPath) as! FacultyIconCollectionViewCell
         cell.backgroundColor = UIColor(red: 62/255, green: 62/255, blue: 62/255, alpha: 1.0)
-        self.addCourseVC.array[0].optionString1 = self.addCourseVC.defaultFacultiesArray[indexPath.row][0]
-        self.addCourseVC.array[0].optionBool1 = true
-        let courseNameCell = self.addCourseVC.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as! CourseNameTableViewCell
-        courseNameCell.facultyButton.setImage(UIImage(named: self.addCourseVC.array[0].optionString1!), for: .normal)
+        
+        if let addCourseVC = self.addCourseVC {
+            addCourseVC.array[0].optionString1 = FacultyDataModel.shared.defaultFacultiesArray[indexPath.row][0]
+            addCourseVC.array[0].optionBool1 = true
+            let courseNameCell = addCourseVC.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as! CourseNameTableViewCell
+            courseNameCell.facultyButton.setImage(UIImage(named: addCourseVC.array[0].optionString1!), for: .normal)
+            addCourseVC.tableView.reloadData()
+        } else if let editScheduleVc = self.editScheduleVc {
+            let realm = try! Realm()
+            realm.beginWrite()
+            editScheduleVc.course.facultyName = FacultyDataModel.shared.defaultFacultiesArray[indexPath.row][0]
+            do {
+                try realm.commitWrite()
+            } catch let error {
+                print("error = ", error)
+            }
+            editScheduleVc.tableView.reloadData()
+            editScheduleVc.homeVC.tableView.reloadData()
+        }
         self.navigationController!.popViewController(animated: true)
     }
     

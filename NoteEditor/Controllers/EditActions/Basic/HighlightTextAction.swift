@@ -21,15 +21,36 @@ class HighlightTextAction: NSObject, EditAction {
     }
     
     func execute(in range: NSRange, with attrs: NSAttributedString,textview:UITextView) {
-        if let (replacingRange, replacingString) = HighlightSyntaxBuilder.instance.truncateMarkupSyntax(in: range, with: attrs) {
-            editor.replaceCharacters(in: replacingRange, with: replacingString, set: NSMakeRange(replacingRange.location, replacingString.length))
-        }else {
-            let (replacingRange, replacingString) = HighlightSyntaxBuilder.instance.addMarkupSyntax(in: range, with: attrs, optional: nil)
-            if replacingRange.length == 0 {
-                editor.replaceCharacters(in: replacingRange, with: replacingString, set: NSMakeRange(replacingRange.location + replacingString.length/2, 0))
-            }else {
+        if editor.isMakeHighLightFlag {
+            let checkAstrick = String("::::")
+            if attrs.string.contains(checkAstrick)
+            {
+                let (repRange, _) = HighlightSyntaxBuilder.instance.addMarkupSyntax(in: range, with: attrs, optional: nil)
+                if(range.location < attrs.string.length - 1)
+                {
+                    if let (replacingRange, replacingString) = HighlightSyntaxBuilder.instance.truncateMarkupSyntax(in: NSRange(location: repRange.location - 2 , length: repRange.length + 4), with: attrs) {
+                        editor.replaceCharacters(in: replacingRange, with: replacingString, set: NSMakeRange(replacingRange.location, replacingString.length))
+                    }
+                }
+                
+            }
+             
+            editor.textView.selectedTextRange = editor.textView.textRange(from: editor.textView.endOfDocument, to: editor.textView.endOfDocument)
+            
+            
+        } else {
+            if let (replacingRange, replacingString) = HighlightSyntaxBuilder.instance.truncateMarkupSyntax(in: range, with: attrs) {
                 editor.replaceCharacters(in: replacingRange, with: replacingString, set: NSMakeRange(replacingRange.location, replacingString.length))
+            }else {
+                let (replacingRange, replacingString) = HighlightSyntaxBuilder.instance.addMarkupSyntax(in: range, with: attrs, optional: nil)
+                if replacingRange.length == 0 {
+                    editor.replaceCharacters(in: replacingRange, with: replacingString, set: NSMakeRange(replacingRange.location + replacingString.length/2, 0))
+                }else {
+                    editor.replaceCharacters(in: replacingRange, with: replacingString, set: NSMakeRange(replacingRange.location, replacingString.length))
+                    
+                }
             }
         }
+        editor.isMakeHighLightFlag = !editor.isMakeHighLightFlag
     }
 }

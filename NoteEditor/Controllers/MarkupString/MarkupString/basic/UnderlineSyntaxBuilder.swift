@@ -13,7 +13,7 @@ class UnderlineSyntaxBuilder: MarkupSyntaxBuilder {
     static let instance = UnderlineSyntaxBuilder()
     
     func regex() -> NSRegularExpression {
-        let pattern = "(_)(|\\S|\\S.*?\\S)(_)"
+        let pattern = "(_)(|\\S|\\S.*?\\S)(_)"      
         let reg = try! NSRegularExpression(pattern: pattern, options: [])
         return reg
     }
@@ -23,6 +23,7 @@ class UnderlineSyntaxBuilder: MarkupSyntaxBuilder {
         regex().enumerateMatches(in: string.string , options: [], range: range, using: { (match, flags, stop) in
             
             if let startTagRange = match?.range(at: 1), let _ = match?.range(at: 2), let endTagRange = match?.range(at: 3) {
+                  
                 string.addAttributes([NSAttributedString.Key.foregroundColor: ThemeCenter.theme.syntaxColor, NSAttributedString.Key.baselineOffset: -1], range: startTagRange)
                 string.addAttributes([NSAttributedString.Key.underlineColor : ThemeCenter.theme.syntaxColor, NSAttributedString.Key.underlineStyle: 1], range: NSMakeRange(startTagRange.location, NSMaxRange(endTagRange) - startTagRange.location))
                 string.addAttributes([NSAttributedString.Key.foregroundColor: ThemeCenter.theme.syntaxColor, NSAttributedString.Key.baselineOffset: -1], range: endTagRange)
@@ -69,9 +70,11 @@ class UnderlineSyntaxBuilder: MarkupSyntaxBuilder {
                 let str = NSMutableAttributedString(string: "_")
                 str.append(string.attributedSubstring(from: word))
                 str.append(NSAttributedString(string: "_"))
+                str.insert(NSAttributedString(string: " "), at: 0)
+                str.append(NSAttributedString(string: " "))
                 return (word, str)
             }else {
-                return (NSMakeRange(range.location, 0), NSAttributedString(string: "__"))
+                return (NSMakeRange(range.location, 0), NSAttributedString(string: " __ "))
             }
         }else {
             let str = NSMutableAttributedString(attributedString: string.attributedSubstring(from: range))

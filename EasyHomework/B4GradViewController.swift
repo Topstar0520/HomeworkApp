@@ -10,20 +10,21 @@ import UIKit
 
 class B4GradViewController: UIViewController {
     
-    var b4GradTitleView : UIImageView!
+    var b4GradTitleView : UIImageView?
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.configureTitleView()
+        //self.configureTitleView()
+        
     }
     
     func configureTitleView() {
         self.b4GradTitleView = UIImageView(image: UIImage(named: "Graduation Cap White"))
-        b4GradTitleView.tintColor = UIColor.white
-        b4GradTitleView.contentMode = UIViewContentMode.scaleAspectFit
-        b4GradTitleView.frame.origin = CGPoint(x: 0, y: 0)
-        b4GradTitleView.frame.size = CGSize(width: 45, height: 45)
+        b4GradTitleView!.tintColor = UIColor.white
+        b4GradTitleView!.contentMode = UIViewContentMode.scaleAspectFit
+        b4GradTitleView!.frame.origin = CGPoint(x: 0, y: 0)
+        b4GradTitleView!.frame.size = CGSize(width: 45, height: 45)
         self.navigationItem.titleView = b4GradTitleView
     }
     
@@ -31,11 +32,12 @@ class B4GradViewController: UIViewController {
         super.viewDidLayoutSubviews()
         //The code below handles the sizing of the UINavigationController's titleView.
         if (self.traitCollection.verticalSizeClass == UIUserInterfaceSizeClass.compact) {
-            self.b4GradTitleView.frame.size = CGSize(width: 35, height: 35)
+            self.b4GradTitleView?.frame.size = CGSize(width: 35, height: 35)
         } else {
-            self.b4GradTitleView.frame.size = CGSize(width: 45, height: 45)
+            self.b4GradTitleView?.frame.size = CGSize(width: 45, height: 45)
         }
     }
+    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

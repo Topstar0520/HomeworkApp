@@ -14,10 +14,13 @@ class EmptyHomescreenView: UIView {
     @IBOutlet var mainTitleLabel: UILabel!
     @IBOutlet var descriptionLabel: UILabel!
     @IBOutlet var arrowImageView: UIImageView!
+    @IBOutlet var mainImageView: UIImageView!
+    
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        
+        self.frame = ScreenSize.SCREEN_BOUNDS
+        self.layoutIfNeeded()
     }
     
     override func layoutSubviews() {

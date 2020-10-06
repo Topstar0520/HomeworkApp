@@ -23,7 +23,7 @@ enum TextHeaderType: Int{
     case NoHeader
 }
 
-protocol EditAction: NSObjectProtocol {
+protocol EditAction: NSObjectProtocol { 
     var normalImage: UIImage {get}
     var selectedImage: UIImage {get}
     var editor: NoteEditor! {get set}

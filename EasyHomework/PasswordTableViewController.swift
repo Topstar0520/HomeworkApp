@@ -29,6 +29,7 @@ class PasswordTableViewController: UITableViewController, UITextFieldDelegate {
         if (cell.contentView.backgroundColor != UIColor.clear) {
             cell.backgroundColor = cell.contentView.backgroundColor
         }
+        cell.contentView.backgroundColor = nil //since iOS13
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -46,6 +47,8 @@ class PasswordTableViewController: UITableViewController, UITextFieldDelegate {
             if (error == nil) {
                 PFUser.logInWithUsername(inBackground: user.username!, password: user.password!, block: { (succeed, error) -> Void in
                     if (error == nil) {
+                        let appdelegate = UIApplication.shared.delegate as! AppDelegate
+                        appdelegate.requestForPushNotification()
                         self.passwordSaving = false
                         textField.resignFirstResponder()
                     } else {

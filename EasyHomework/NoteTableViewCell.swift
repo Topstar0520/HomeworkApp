@@ -17,6 +17,9 @@ class NoteTableViewCell: UITableViewCell { //in cellEditingVC
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        let selectedBackgroundView = UIView()   //added by @solysky20200929
+        selectedBackgroundView.backgroundColor = UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.12)  //added by @solysky20200929
+        self.selectedBackgroundView = selectedBackgroundView    //added by @solysky20200929
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {

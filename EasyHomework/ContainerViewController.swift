@@ -37,19 +37,22 @@ class ContainerViewController: UIViewController {
     // MARK: - Background
     
     func loadCurrentBackground() {
-        if let background =  UserDefaults.standard.string(forKey: "custom_background") {
-            setBackgroundImage(background)
-        }else {
-            let imageName = BackgroundList[0]
-            UserDefaults.standard.set(imageName, forKey: "custom_background")  //Integer
-            setBackgroundImage(imageName)
-        }
+        //if (UserDefaults.standard.bool(forKey: "isSubscribed") == true) {
+            if let background = UserDefaults.standard.string(forKey: "custom_background") {
+                setBackgroundImage(background)
+            } else {
+                backgroundImageView.image = UIImage(named: "DefaultBackground1")
+            }
+        /*} else {
+            backgroundImageView.image = UIImage(named: "DefaultBackground1")
+        }*/
+        
     }
     
     func setBackgroundImage(_ imageName: String) {
         if UIDevice.current.orientation.isLandscape {
             backgroundImageView.image = UIImage(named: imageName + "_landscape")
-        }else {
+        } else {
             backgroundImageView.image = UIImage(named: imageName + "_porttrait")
         }
     }

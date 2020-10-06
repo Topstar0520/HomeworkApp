@@ -51,6 +51,7 @@ class TutorialEditingTableViewController: UITableViewController, UIPickerViewDel
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let height = cell.frame.size.height
         self.heightAtIndexPath.setObject(height, forKey: indexPath as NSCopying)
+        cell.contentView.backgroundColor = nil //since iOS13
     }
     
     //**End of Bug Solution.**
@@ -552,7 +553,7 @@ class TutorialEditingTableViewController: UITableViewController, UIPickerViewDel
         let customPickerView = pickerView as! CustomPickerView
         let cellContent = self.dictionary[customPickerView.indexPath.section]![customPickerView.indexPath.row]
         let titleForRow = cellContent.pickerDataSource?.dataArray[row]
-        let attributedTitleForRow = NSAttributedString(string: titleForRow!, attributes: [NSAttributedStringKey.foregroundColor : UIColor.init(red: 255, green: 255, blue: 255, alpha: 1.0)])
+        let attributedTitleForRow = NSAttributedString(string: titleForRow!, attributes: [NSAttributedStringKey.foregroundColor : UIColor(displayP3Red: 255, green: 255, blue: 255, alpha: 1.0) ])
         return attributedTitleForRow
     }
     

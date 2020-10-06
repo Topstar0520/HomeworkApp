@@ -13,7 +13,7 @@ class B4GradTextField: UITextField {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
-        self.attributedPlaceholder = NSAttributedString(string: self.placeholder!, attributes: [ NSAttributedStringKey.foregroundColor : UIColor.init(red: 255, green: 255, blue: 255, alpha: 0.2) ])
+        self.attributedPlaceholder = NSAttributedString(string: self.placeholder!, attributes: [ NSAttributedStringKey.foregroundColor : UIColor(displayP3Red: 255, green: 255, blue: 255, alpha: 0.2) ])
         self.textColor = UIColor.white
         self.tintColor = rgbaToUIColor(red: 122/255, green: 122/255, blue: 122/255, alpha: 1.0)
         let clearButton = self.value(forKey: "clearButton") as? UIButton

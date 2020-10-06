@@ -31,6 +31,12 @@ class NoteEditor: NSObject {
    // private var truncateSplitLineAction: TruncateSplitLineAction!
     private var noteDescriptor: NoteDescriptor!
     
+    var isMakeBoldFlag : Bool = false
+    var isMakeItalicFlag : Bool = false
+    var isMakeStrikeFlag : Bool = false
+    var isMakeUnderLindFlag : Bool = false
+    var isMakeHighLightFlag : Bool = false
+    
     // MARK: - Init
     
     init(delegate: NoteEditorDelegate, textView: NETextView) {
@@ -39,6 +45,8 @@ class NoteEditor: NSObject {
         self.textView = textView
         self.textView.backgroundColor = ThemeCenter.theme.editorBackgroundColor
         self.addDefaultEditActions()
+        textView.allowsEditingTextAttributes = true
+        textView.isEditable = true
     }
     
     private func addDefaultEditActions() {

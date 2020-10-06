@@ -20,45 +20,39 @@ class MakeTextStrikeThroughAction: NSObject, EditAction {
         self.editor = editor
     }
     
-    func execute(in range: NSRange, with attrs: NSAttributedString,textview:UITextView) {
-        print(attrs.string)
-        var checkAstrick = String()
-        if attrs.string.contains("-"){
-            if let cursorPosition = textview.selectedTextRange?.start {
-                // cursorPosition is a UITextPosition object describing position in the text (text-wise description)
-                let str = textview.textStorage.attributedSubstring(from: textview.selectedRange)
-                print(str)
-                // text.selectedRange.
-                var lower =  textview.selectedRange.lowerBound
-                print(lower)
-                
-                if lower != 0{
-                    lower = lower - 1
-                }else{
-                    lower = 0
+    func execute(in range: NSRange, with attrs: NSAttributedString, textview:UITextView) {
+             
+            if editor.isMakeStrikeFlag {
+                let checkAstrick = String("--")
+                if attrs.string.contains(checkAstrick)
+                {
+                    let (repRange, _) = StrikeThroughSyntaxBuilder.instance.addMarkupSyntax(in: range, with: attrs, optional: nil)
+                    if(range.location < attrs.string.length)
+                    {
+                        if let (replacingRange, replacingString) = StrikeThroughSyntaxBuilder.instance.truncateMarkupSyntax(in: NSRange(location: repRange.location - 1 , length: repRange.length + 2), with: attrs) {
+                            editor.replaceCharacters(in: replacingRange, with: replacingString, set: NSMakeRange(replacingRange.location, replacingString.length))
+                        }
+                    }
+                    
                 }
+                 
+                editor.textView.selectedTextRange = editor.textView.textRange(from: editor.textView.endOfDocument, to: editor.textView.endOfDocument)
                 
-                let star = NSRange(location: lower, length: 1)
                 
-                let str1 = textview.textStorage.attributedSubstring(from: star)
-                checkAstrick = str1.string
-                print(checkAstrick)
+            } else {
+                if let (replacingRange, replacingString) = StrikeThroughSyntaxBuilder.instance.truncateMarkupSyntax(in: range, with: attrs) {
+                    editor.replaceCharacters(in: replacingRange, with: replacingString, set: NSMakeRange(replacingRange.location, replacingString.length))
+                }else {
+                    let (replacingRange, replacingString) = StrikeThroughSyntaxBuilder.instance.addMarkupSyntax(in: range, with: attrs, optional: nil)
+                    if replacingRange.length == 0 {
+                        editor.replaceCharacters(in: replacingRange, with: replacingString, set: NSMakeRange(replacingRange.location + replacingString.length/2, 0))
+                    }else {
+                        editor.replaceCharacters(in: replacingRange, with: replacingString, set: NSMakeRange(replacingRange.location, replacingString.length))
+                        
+                    }
+                }
             }
+            editor.isMakeStrikeFlag = !editor.isMakeStrikeFlag
         }
-        
-        if let (replacingRange, replacingString) = StrikeThroughSyntaxBuilder.instance.truncateMarkupSyntax(in: range, with: attrs) {
-            editor.replaceCharacters(in: replacingRange, with: replacingString, set: NSMakeRange(replacingRange.location, replacingString.length))
-        }else if checkAstrick.contains("-"){
-            if let (replacingRange, replacingString) = StrikeThroughSyntaxBuilder.instance.truncateMarkupSyntax(in: NSRange(location: range.location - 1 , length: range.length + 2), with: attrs) {
-                editor.replaceCharacters(in: replacingRange, with: replacingString, set: NSMakeRange(replacingRange.location, replacingString.length))
-            }
-        }else {
-            let (replacingRange, replacingString) = StrikeThroughSyntaxBuilder.instance.addMarkupSyntax(in: range, with: attrs, optional: nil)
-            if replacingRange.length == 0 {
-                editor.replaceCharacters(in: replacingRange, with: replacingString, set: NSMakeRange(replacingRange.location + replacingString.length/2, 0))
-            }else {
-                editor.replaceCharacters(in: replacingRange, with: replacingString, set: NSMakeRange(replacingRange.location, replacingString.length))
-            }
-        }
-    }
+     
 }

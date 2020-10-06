@@ -106,9 +106,7 @@ class StrikeThroughSyntaxBuilder: MarkupSyntaxBuilder {
             }
             
             
-            
-       
-        
+             
         
         
       

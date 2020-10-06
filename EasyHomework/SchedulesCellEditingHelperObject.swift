@@ -10,9 +10,9 @@ import UIKit
 import RealmSwift
 
 class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
-    
+
     var cellEditingTVC: CellEditingTableViewController!
-    
+
     var dictionary = [0 : [ScheduleRowContent(identifier: "TitleCell"), ScheduleRowContent(identifier: "DueDateCell")], 1 : [ScheduleRowContent(identifier: "TypeCell"), ScheduleRowContent(identifier: "CourseCell")] ] //2 : [ScheduleRowContent(identifier: "WriteReviewCell") //[Section : Rows]
     var task: RLMTask!
     var taskManagerVC: UIViewController? //i.e. HomeViewController or any other VC that actuallys shows the task that was selected. Cast this property to the expected UIViewController and use it.
@@ -34,14 +34,16 @@ class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
             self.task.name = self.generatePlaceholderTitle(isNewCourse: true)
             self.cellEditingTVC.title = self.task.name
         }
-        if (self.task.dueDate != nil) {
+        if (self.task.dueDate != nil) { //Also check at setupForCreateMode() in CellEditingTVC if modifying anything here.
             self.dictionary[0]?.insert(ScheduleRowContent(identifier: "StartTimeCell"), at: 2)
-            self.dictionary[2] = [ScheduleRowContent(identifier: "RepeatsCell")]
-            self.dictionary[3] = [ScheduleRowContent(identifier: "SubTaskCell")]
-            self.addRowsForSubTasks(index: 3)
-            self.subTaskSectionIndex = 3
+            //self.dictionary[2] = [ScheduleRowContent(identifier: "RepeatsCell")]
+            self.dictionary[2] = [ScheduleRowContent(identifier: "SubTaskCell")] //3
+            self.dictionary[3] = [ScheduleRowContent(identifier: "ReminderCell")] //4
+            self.subTaskSectionIndex = 2 //4
+            self.addRowsForSubTasks(index: 2) //4
         } else {
             self.dictionary[2] = [ScheduleRowContent(identifier: "SubTaskCell")]
+            self.dictionary[3] = [ScheduleRowContent(identifier: "ReminderCell")]
             self.addRowsForSubTasks(index: 2)
             self.subTaskSectionIndex = 2
         }
@@ -81,37 +83,31 @@ class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
             self.cellEditingTVC.tableView.endUpdates()
         })
     }
-    
+
     // MARK: - Table view data source
-    
+
     func numberOfSections(in tableView: UITableView) -> Int {
         return dictionary.count
     }
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if(dictionary.count < section)
-        {
-            return dictionary[section]!.count
-        }
-        else
-        {
-            return 0
-        }
+        return dictionary[section]!.count
     }
-    
-    
+
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cellContent = dictionary[(indexPath as NSIndexPath).section]![(indexPath as NSIndexPath).row] as ScheduleRowContent
         let cell = tableView.dequeueReusableCell(withIdentifier: cellContent.identifier, for: indexPath)
-        
+
         cell.preservesSuperviewLayoutMargins = false
         cell.separatorInset = UIEdgeInsets.zero
         cell.layoutMargins = UIEdgeInsets.zero
-        
+
         if (cell is TitleTableViewCell) {
             let titleCell = cell as! TitleTableViewCell
             titleCell.titleTextView.delegate = self
-            titleCell.titleTextView.placeholderTextColor = UIColor.init(red: 255, green: 255, blue: 255, alpha: 0.2)
+            titleCell.titleTextView.placeholderTextColor = UIColor(displayP3Red: 255, green: 255, blue: 255, alpha: 0.3)
+            //titleCell.titleTextView.placeholder = self.placeholderTitleText   //removed by @solysky20200923
             if (self.placeholderTitleText != cellContent.name) {
                 titleCell.titleTextView.text = cellContent.name
             } else {
@@ -119,7 +115,7 @@ class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
             }
             titleCell.clearButton.addTarget(self, action: #selector(clearCellText), for: .touchUpInside)
         }
-        
+
         if (cell is DueDateTableViewCell) {
             let dueDateCell = cell as! DueDateTableViewCell
             if (self.task.dueDate == nil) {
@@ -135,9 +131,9 @@ class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
                 dueDateCell.dueDateLabel.textColor = UIColor(red: 255/255, green: 255/255, blue: 255/255, alpha: 1.0)
                 dueDateCell.iconImageView.image = #imageLiteral(resourceName: "DefaultCalendar")
             }
-            
+
         }
-        
+
         if (cell is StartTimeTableViewCell) {
             let startTimeCell = cell as! StartTimeTableViewCell
             if (self.task.timeSet == false) {
@@ -157,9 +153,9 @@ class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
                 startTimeCell.startTimeLabel.textColor = UIColor(red: 255/255, green: 255/255, blue: 255/255, alpha: 1.0)
                 startTimeCell.iconImageView.image = #imageLiteral(resourceName: "DefaultStartClock")
             }
-            
+
         }
-        
+
         if (cell is EndTimeTableViewCell) {
             let endTimeCell = cell as! EndTimeTableViewCell
             if (self.task.endDateAndTime == nil) {
@@ -171,9 +167,9 @@ class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
                 endTimeCell.endTimeLabel.textColor = UIColor(red: 255/255, green: 255/255, blue: 255/255, alpha: 1.0)
                 endTimeCell.iconImageView.image = #imageLiteral(resourceName: "DefaultStopClock")
             }
-            
+
         }
-        
+
         if (cell is TypeTableViewCell) {
             let taskCell = cell as! TypeTableViewCell
             taskCell.taskLabel.text = self.task.type
@@ -181,7 +177,7 @@ class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
             taskCell.accessoryType = .none
             taskCell.selectionStyle = UITableViewCellSelectionStyle.none
         }
-        
+
         if (cell is CourseTableViewCell) {
             let courseCell = cell as! CourseTableViewCell
             if (self.task.course != nil) {
@@ -192,7 +188,7 @@ class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
             courseCell.accessoryType = .none
             courseCell.selectionStyle = UITableViewCellSelectionStyle.none
         }
-        
+
         if (cell is RepeatsTableViewCell) {
             let repeatsCell = cell as! RepeatsTableViewCell
             if (self.task.repeatingSchedule == nil) {
@@ -206,18 +202,58 @@ class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
             }
         }
 
+        if (cell is ReminderTitleCell) {
+            let titleCell = cell as! ReminderTitleCell
+            titleCell.subscribeImageView.isHidden = true
+            titleCell.subscribeButton.isHidden = true
+            /*if (UserDefaults.standard.bool(forKey: "isSubscribed") == false) {
+                titleCell.accessoryType = .none
+                titleCell.accessoryView = nil
+                titleCell.subscribeImageView.isHidden = false
+                titleCell.subscribeButton.isHidden = false
+            }*/
+            if self.task.reminders.count > 0 {
+                titleCell.lblTitle.textColor = UIColor(red: 255/255, green: 255/255, blue: 255/255, alpha: 1.0)
+                var strTitle = ""
+                let notification = self.task.reminders.last
+                if self.task.reminders.count == 1 {
+                    strTitle = strTitle + (notification?.notificationId)!
+                } else {
+                    let latestNotificationName = getLatestReminderName()
+                    strTitle = strTitle + latestNotificationName + ", and \(self.task.reminders.count - 1) more.."
+                }
+                //                for reminder in self.task.reminders {
+                //                    strTitle = strTitle + " \(reminder.notificationId),"
+                //                }
+                //                strTitle.removeLast()
+                titleCell.lblTitle.text = strTitle
+                let substring = strTitle.slice(from: "(", to: ")")
+                //print(substring)
+                if substring != nil {
+                    titleCell.lblTitle.halfTextColorChange(fullText: strTitle, changeText: "(\(substring!))")
+                }
+                titleCell.imgIcon.image = UIImage(named: "icons8-notification-96")
+            } else {
+                titleCell.imgIcon.image = UIImage(named: "notification_grey")
+                titleCell.lblTitle.textColor = UIColor(red: 255/255, green: 255/255, blue: 255/255, alpha: 0.4)
+                titleCell.lblTitle.text = "Reminders"
+            }
+        }
+
         if let cell = cell as? SubTaskTableViewCell {
             cell.delegate = cellEditingTVC
 //            cell.indexPath = indexPath
 
-            if UserDefaults.standard.bool(forKey: "isSubscribed") == true {
+            //if (UserDefaults.standard.bool(forKey: "isSubscribed") == true) {
                 cell.subscribeButton.isHidden = true
                 cell.subTaskTextView.isEditable = true
-            } else {
+                cell.subscribeImage.isHidden = true
+            /*} else {
                 cell.subTaskTextView.isEditable = false
                 cell.subscribeButton.isHidden = false
-            }
-            
+                cell.subscribeImage.isHidden = false
+            }*/
+
             if indexPath.row != task.subTasks.count {
                 let subTask = task.subTasks[indexPath.row]
                 cell.subTaskTextView.text = subTask.name
@@ -229,7 +265,7 @@ class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
                 } else {
                     cell.checkMarkButton.tintColor = UIColor(hex: "FFFFFF").withAlphaComponent(0.4)
                 }
-                
+
                 if subTask.completed == true {
                     cell.subTaskTextView.textColor = UIColor(hex: "FFFFFF").withAlphaComponent(0.4)
                     cell.checkMarkButton.setImage(#imageLiteral(resourceName: "selected_icon"), for: .normal)
@@ -244,10 +280,94 @@ class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
                 cell.checkMarkButton.setImage(#imageLiteral(resourceName: "plus_light"), for: .normal)
             }
         }
-        
+
         return cell
     }
-    
+
+    func getLatestReminderName() -> String {
+
+        var arrOccuringNotifications = [String]()
+        if self.task.dueDate != nil {
+            for reminder in self.task.reminders{
+                var strText = ""
+                var components : DateComponents? = nil
+                if reminder.reminderDate != nil {
+                    components = (Calendar.current as NSCalendar).components([.hour, .minute, .second], from: reminder.reminderDate! as Date)
+                }
+                let calendar: NSCalendar! = NSCalendar(calendarIdentifier: NSCalendar.Identifier.gregorian)
+                var notificationDate : NSDate? = nil
+                strText = (reminder.notificationId)
+                //strText = strText + ",\(reminder.selectedID)"
+                if reminder.selectedID == 11 {
+                    notificationDate = task.dueDate?.addingTimeInterval(-60*(60*24*30))
+                    notificationDate = calendar.date(bySettingHour: components!.hour!, minute: components!.minute!, second: 0, of: notificationDate! as Date, options: NSCalendar.Options.matchFirst)! as NSDate
+                } else if reminder.selectedID == 10 {
+                    notificationDate = task.dueDate?.addingTimeInterval(-60*(60*24*14))
+                    notificationDate = calendar.date(bySettingHour: components!.hour!, minute: components!.minute!, second: 0, of: notificationDate! as Date, options: NSCalendar.Options.matchFirst)! as NSDate
+                } else if reminder.selectedID == 9 {
+                    notificationDate = task.dueDate?.addingTimeInterval(-60*(60*24*7))
+                    notificationDate = calendar.date(bySettingHour: components!.hour!, minute: components!.minute!, second: 0, of: notificationDate! as Date, options: NSCalendar.Options.matchFirst)! as NSDate
+                } else if reminder.selectedID == 8 {
+                    notificationDate = task.dueDate?.addingTimeInterval(-60*(60*24*3))
+                    notificationDate = calendar.date(bySettingHour: components!.hour!, minute: components!.minute!, second: 0, of: notificationDate! as Date, options: NSCalendar.Options.matchFirst)! as NSDate
+                } else if reminder.selectedID == 7 {
+                    let formatter = DateFormatter()
+                    formatter.dateFormat = "yyyy/MM/dd HH:mm"
+                    notificationDate = task.dueDate?.addingTimeInterval(-60*(60*24))
+                    notificationDate = calendar.date(bySettingHour: components!.hour!, minute: components!.minute!, second: 0, of: notificationDate! as Date, options: NSCalendar.Options.matchFirst)! as NSDate
+
+                } else if reminder.selectedID == 6 {
+                    notificationDate = task.dueDate?.addingTimeInterval(-60*(60*2))
+                } else if reminder.selectedID == 5 {
+                    notificationDate = task.dueDate?.addingTimeInterval(-60*60)
+                } else if reminder.selectedID == 4 {
+                    notificationDate = task.dueDate?.addingTimeInterval(-60*30)
+                } else if reminder.selectedID == 3 {
+                    notificationDate = task.dueDate?.addingTimeInterval(-60*15)
+                } else if reminder.selectedID == 2 {
+                    notificationDate = task.dueDate?.addingTimeInterval(-60*5)
+                }else if reminder.selectedID == 1 {
+                    notificationDate = task.dueDate
+                }
+                let currentDate = Date()
+                if notificationDate! as Date >= currentDate {
+                    arrOccuringNotifications.append(strText)
+                }
+            }
+        }
+
+        if arrOccuringNotifications.count == 0 {
+            let firstremider = task.reminders.first
+            return (firstremider?.notificationId)!
+        } else {
+            if (arrOccuringNotifications.filter { $0.contains("1 Month Before") }).count > 0 {
+                return (arrOccuringNotifications.filter { $0.contains("1 Month Before") })[0]
+            } else if  (arrOccuringNotifications.filter { $0.contains("2 Weeks Before") }).count > 0 {
+                return (arrOccuringNotifications.filter { $0.contains("2 Weeks Before") })[0]
+            } else if  (arrOccuringNotifications.filter { $0.contains("1 Week Before") }).count > 0 {
+                return (arrOccuringNotifications.filter { $0.contains("1 Week Before") })[0]
+            } else if  (arrOccuringNotifications.filter { $0.contains("3 Days Before") }).count > 0 {
+                return (arrOccuringNotifications.filter { $0.contains("3 Days Before") })[0]
+            } else if  (arrOccuringNotifications.filter { $0.contains("1 Day Before") }).count > 0 {
+                return (arrOccuringNotifications.filter { $0.contains("1 Day Before") })[0]
+            } else if  arrOccuringNotifications.contains("2 Hours Before") {
+                return "2 Hours Before"
+            } else if  arrOccuringNotifications.contains("1 Hour Before") {
+                return "1 Hour Before"
+            } else if  arrOccuringNotifications.contains("30 Minutes Before") {
+                return "30 Minutes Before"
+            } else if  arrOccuringNotifications.contains("15 Minutes Before") {
+                return "15 Minutes Before"
+            } else if  arrOccuringNotifications.contains("5 Minutes Before") {
+                return "5 Minutes Before"
+            } else if  arrOccuringNotifications.contains("At Time of Event") {
+                return "At Time of Event"
+            }
+        }
+
+        return ""
+    }
+
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let cellContent = dictionary[(indexPath as NSIndexPath).section]![(indexPath as NSIndexPath).row] as ScheduleRowContent
         /*if (cellContent.identifier == "TitleCell") {
@@ -255,24 +375,24 @@ class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
          }*/
         return UITableViewAutomaticDimension
     }
-    
+
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         /* if (section == 0) {
          let headerView = SectionHeaderView.construct("Assignment 1", owner: tableView)
          return headerView
          }
-         
+
          if (section == 1) {
          let headerView = SectionHeaderView.construct("CS2210", owner: tableView)
          return headerView
          }*/
-        
+
         let invisView = UITableViewHeaderFooterView(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
         invisView.contentView.backgroundColor = UIColor.clear
         return invisView
-        
+
     }
-    
+
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if (section == 0) {
             return CGFloat.leastNormalMagnitude
@@ -280,14 +400,15 @@ class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
         return 21.0
         //return CGFloat.leastNormalMagnitude
     }
-    
+
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        cell.backgroundColor = UIColor(red: 36/255, green: 41/255, blue: 36/255, alpha: 1.0)
+        /*cell.backgroundColor = UIColor(red: 36/255, green: 41/255, blue: 36/255, alpha: 1.0)
         if (cell.contentView.backgroundColor != UIColor.clear) {
             cell.backgroundColor = cell.contentView.backgroundColor
-        }
+        }*/
+        cell.contentView.backgroundColor = UIColor.clear //since iOS13
     }
-    
+
     func tableView(_ tableView: UITableView, didHighlightRowAt indexPath: IndexPath) {
         let cell = tableView.cellForRow(at: indexPath)
         if let dueDateCell = cell as? DueDateTableViewCell {
@@ -306,8 +427,12 @@ class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
             repeatsCell.repeatsLabel.textColor = UIColor.white
             repeatsCell.iconImageView.image = #imageLiteral(resourceName: "DefaultRepeats")
         }
+        if let remindersCell = cell as? ReminderTitleCell {
+            remindersCell.lblTitle.textColor = UIColor.white
+            remindersCell.imgIcon.image = UIImage(named: "icons8-notification-96")
+        }
     }
-    
+
     func tableView(_ tableView: UITableView, didUnhighlightRowAt indexPath: IndexPath) {
         let cell = tableView.cellForRow(at: indexPath)
         if let dueDateCell = cell as? DueDateTableViewCell {
@@ -366,6 +491,25 @@ class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
                 repeatsCell.iconImageView.image = #imageLiteral(resourceName: "DefaultRepeats")
             }
         }
+        if let remindersCell = cell as? ReminderTitleCell {
+            if (self.task.reminders.count == 0) {
+                remindersCell.lblTitle.text = "Reminders"
+                remindersCell.lblTitle.textColor = UIColor(red: 255/255, green: 255/255, blue: 255/255, alpha: 0.4)
+                remindersCell.imgIcon.image = UIImage(named: "notification_grey")
+            } else {
+                var strTitle = ""
+                let notification = self.task.reminders.last
+                if self.task.reminders.count == 1 {
+                    strTitle = strTitle + (notification?.notificationId)!
+                } else {
+                    let latestNotificationName = getLatestReminderName()
+                    strTitle = strTitle + latestNotificationName + ", and \(self.task.reminders.count - 1) more.."
+                }
+                remindersCell.lblTitle.text = strTitle
+                remindersCell.lblTitle.textColor = UIColor.white
+                remindersCell.imgIcon.image = UIImage(named: "icons8-notification-96")
+            }
+        }
     }
 
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
@@ -407,7 +551,7 @@ class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
         return UISwipeActionsConfiguration(actions: [deleteAction])
 
     }
-    
+
     var selectedCell: UITableViewCell!
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let cell = tableView.cellForRow(at: indexPath)
@@ -418,9 +562,9 @@ class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
             dueDateCell.dueDateLabel.textColor = UIColor.white
             dueDateCell.iconImageView.image = #imageLiteral(resourceName: "DefaultCalendar")
             var segueIdentifier = "showDueDate"
-            if (self.mode == TaskEditingMode.Edit) {
+            /*if (self.mode == TaskEditingMode.Edit) {
                 segueIdentifier += "Detail"
-            }
+            }*/
             self.cellEditingTVC.performSegue(withIdentifier: segueIdentifier, sender: cell)
             return
         }
@@ -428,9 +572,9 @@ class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
             startTimeCell.startTimeLabel.textColor = UIColor.white
             startTimeCell.iconImageView.image = #imageLiteral(resourceName: "DefaultStartClock")
             var segueIdentifier = "showStartTime"
-            if (self.mode == TaskEditingMode.Edit) {
+            /*if (self.mode == TaskEditingMode.Edit) {
                 segueIdentifier += "Detail"
-            }
+            }*/
             self.cellEditingTVC.performSegue(withIdentifier: segueIdentifier, sender: cell)
             return
         }
@@ -438,43 +582,56 @@ class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
             endTimeCell.endTimeLabel.textColor = UIColor.white
             endTimeCell.iconImageView.image = #imageLiteral(resourceName: "DefaultStopClock")
             var segueIdentifier = "showEndTime"
-            if (self.mode == TaskEditingMode.Edit) {
+            /*if (self.mode == TaskEditingMode.Edit) {
              segueIdentifier += "Detail"
-             }
+             }*/
             self.cellEditingTVC.performSegue(withIdentifier: segueIdentifier, sender: cell)
             return
         }
         if let typeCell = cell as? TypeTableViewCell {
-            var segueIdentifier = "showTaskType"
+            /*var segueIdentifier = "showTaskType"
             if (self.mode == TaskEditingMode.Edit) {
                 segueIdentifier += "Detail"
             }
-            self.cellEditingTVC.performSegue(withIdentifier: segueIdentifier, sender: cell)
+            self.cellEditingTVC.performSegue(withIdentifier: segueIdentifier, sender: cell)*/
             return
         }
         if let courseCell = cell as? CourseTableViewCell {
-            var segueIdentifier = "showCourseSelection"
+            /*var segueIdentifier = "showCourseSelection"
             if (self.mode == TaskEditingMode.Edit) {
                 segueIdentifier += "Detail"
             }
-            self.cellEditingTVC.performSegue(withIdentifier: segueIdentifier, sender: cell)
+            self.cellEditingTVC.performSegue(withIdentifier: segueIdentifier, sender: cell)*/
             return
         }
         if let repeatsCell = cell as? RepeatsTableViewCell {
             repeatsCell.repeatsLabel.textColor = UIColor.white
             repeatsCell.iconImageView.image = #imageLiteral(resourceName: "DefaultRepeats")
             var segueIdentifier = "showRepeatsType"
-            if (self.mode == TaskEditingMode.Edit) {
+            /*if (self.mode == TaskEditingMode.Edit) {
              segueIdentifier += "Detail"
-             }
+             }*/
             self.cellEditingTVC.performSegue(withIdentifier: segueIdentifier, sender: cell)
             return
         }
+        if let remindersCell = cell as? ReminderTitleCell {
+            remindersCell.lblTitle.textColor = UIColor.white
+            remindersCell.imgIcon.image = UIImage(named: "icons8-notification-96")
+        }
         /* */
-        
+
         if (cell?.reuseIdentifier == "CreateCell") {
-            //save task
             let realm = try! Realm()
+            //User cannot make more than 3 tasks without Premium. (Added as of v1.1.1)
+            if ((realm.objects(RLMTask.self).count >= 2) && (UserDefaults.standard.bool(forKey: "isSubscribed") == false)) {
+                let storyboard = UIStoryboard(name: "Subscription", bundle: nil)
+                let subscriptionPlansVC = storyboard.instantiateViewController(withIdentifier: "SubscriptionPlansViewController") as! SubscriptionPlansViewController
+                subscriptionPlansVC.customHeadlineText = "Create Unlimited Tasks with B4Grad Premium!"
+                self.cellEditingTVC.present(subscriptionPlansVC, animated: true, completion: nil)
+                cell?.setSelected(false, animated: true)
+                return
+            }
+            //save task
             realm.beginWrite()
             realm.add(self.task)
             do {
@@ -502,6 +659,7 @@ class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
                 let scheduleIndexPathOfTask = self.indexOfTask(task: self.task, scheduleEditorVC: self.taskManagerVC as! ScheduleEditorViewController)!
                 scheduleEditorVC.tableView.insertRows(at: [scheduleIndexPathOfTask], with: .fade)
                 //scheduleEditorVC.tableView.insertRows(at: [IndexPath(row: scheduleEditorVC.dictionary[section]!.count - 2, section: section)], with: .fade)
+                self.homeVC?.calendarViewController.fetchTasks()
                 if (indexPathOfTask != nil) {
                     //UIView.animate(withDuration: 1.0, animations: { self.homeVC?.emptyHomescreenView.alpha = 0 })
                     UIView.animate(withDuration: 0.1, animations: { self.homeVC?.emptyHomescreenView.alpha = 0 })
@@ -510,11 +668,13 @@ class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
                     self.cellEditingTVC.dismiss(animated: true, completion: nil)
                 }
             })
+            let appdelegate = UIApplication.shared.delegate as! AppDelegate
+            appdelegate.setRemindersNotifications()
             return
         }
-        
+
     }
-    
+
     func generatePlaceholderTitle(isNewCourse: Bool) -> String {
         if (self.task.course != nil) {
             let realm = try! Realm()
@@ -546,8 +706,9 @@ class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
                 if textView.text.last == "\n" {
                     textView.text.removeLast()
                     textView.resignFirstResponder()
+                    cellEditingTVC?.didChange(0, cell: cell, didChange:true)
                 }
-                
+
                 // Our base height
                 let baseHeight: CGFloat = 35
 
@@ -555,9 +716,9 @@ class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
                     let newSize = textView.sizeThatFits(CGSize(width: fixedWidth, height: .greatestFiniteMagnitude))
                     let height: CGFloat = newSize.height > baseHeight ? newSize.height : baseHeight
 
-                    cellEditingTVC?.didChange(height, cell: cell)
+                    cellEditingTVC?.didChange(height, cell: cell, didChange:false)
                 } else {
-                    cellEditingTVC.didChange(baseHeight, cell: cell)
+                    cellEditingTVC.didChange(baseHeight, cell: cell, didChange: false)
                 }
             }
 
@@ -565,7 +726,23 @@ class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
 
         textFieldEdited(sender: textView)
     }
-    
+
+    func textViewDidEndEditing(_ textView: UITextView) {
+        guard let point = cellEditingTVC?.tableView.convert(CGPoint.zero, from: textView) else { return }
+        if let indexPath = cellEditingTVC?.tableView.indexPathForRow(at: point) {
+            if let cell = cellEditingTVC?.tableView.cellForRow(at: indexPath) as? TitleTableViewCell {
+                cellEditingTVC?.didChange(0, cell: cell, didChange:true)
+            }
+        }
+    }
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        guard let point = cellEditingTVC?.tableView.convert(CGPoint.zero, from: textView) else { return }
+        if let indexPath = cellEditingTVC?.tableView.indexPathForRow(at: point) {
+            if let cell = cellEditingTVC?.tableView.cellForRow(at: indexPath) as? TitleTableViewCell {
+                cellEditingTVC?.didChange(0, cell: cell, didChange:false)
+            }
+        }
+    }
     func textFieldEdited(sender: UITextView) {
         let textField = sender
         //print(textField.text)
@@ -573,21 +750,27 @@ class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
         if (titleString.characters.count == 0) {
             titleString = self.placeholderTitleText
         }
-        self.cellEditingTVC.title = titleString
-        
+
+        //Update title of VC, but ensure it's not too long.
+        if (titleString.count > 15 && UIDevice.current.userInterfaceIdiom != .pad) {
+            self.cellEditingTVC.title = String(titleString.prefix(15)) + ".."
+        } else {
+            self.cellEditingTVC.title = titleString
+        }
+
         //update cellContent.name property (Make sure that the cellContent dictionary index here is correct. It should be TitleCell.)
         let cellContent = dictionary[0]![0] as ScheduleRowContent
         if (cellContent.identifier != "TitleCell") {
             print("This is not the correct cell having it's cellContent.name updated. Check CellEditingTableViewController to fix this.")
         }
         cellContent.name = titleString
-        
+
         if (self.mode == .Create) { //if this is a new task and doesn't have a cell
             //then modify the task and return.
             self.task.name = titleString
             return
         }
-        
+
         let realm = try! Realm()
         realm.beginWrite()
         self.task.name = titleString
@@ -598,7 +781,7 @@ class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
             errorVC.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in }))
             self.cellEditingTVC.present(errorVC, animated: true, completion: nil)
         }
-        
+
         //update cell in ScheduleEditingVC
         let scheduleEditingVC = self.taskManagerVC as! ScheduleEditorViewController
         if (scheduleEditingVC.lastSelectedRowIndexPath != nil) {
@@ -608,7 +791,7 @@ class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
             scheduleEditingVC.tableView.endUpdates()
             scheduleEditingVC.tableView.selectRow(at: scheduleEditingVC.lastSelectedRowIndexPath!, animated: false, scrollPosition: .none)
         }
-        
+
         //update cell in HomeVC
         let taskIndexPath = self.homeVC?.indexOfTask(task: self.task)
         if (taskIndexPath == nil) {
@@ -622,14 +805,20 @@ class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
         //self.homeVC?.tableView.reloadRows(at: [selectedIndexPath!], with: .none) //original way of reloading cell.
         self.homeVC?.tableView.selectRow(at: taskIndexPath!, animated: false, scrollPosition: .none)
         self.homeVC?.heightAtIndexPath.removeValue(forKey: taskIndexPath!) //Since we no longer have correct cached height, we should remove it.
-        
+
+        for tableView in TaskManagerTracker.taskManagers() { //Handle any other existing TaskManagers.
+            if !(tableView?.parentViewController == self.homeVC || tableView?.parentViewController == self.taskManagerVC) {
+                tableView?.reloadData()
+            }
+        }
+
     }
-    
+
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         self.cellEditingTVC.tableView.endEditing(false)
         return true
     }
-    
+
     func getIndexWithCellIdentifier(identifier: String) -> IndexPath? {
         for (key, scheduleRowContentArray) in self.dictionary {
             var index = 0
@@ -643,13 +832,13 @@ class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
         print("Could not find the specified cell. Check CellEditingVC for details.")
         return nil
     }
-    
+
     //Method written Feb 23, 2018
     func indexOfTask(task: RLMTask, scheduleEditorVC: ScheduleEditorViewController) -> IndexPath? {
         var section = 0
         var row = Int()
         var dataArray = [RLMTask]()
-        
+
         /*let realm = try! Realm()
         let coursePredicate = NSPredicate(format: "course = %@", task.course! as CVarArg)
         let typePredicate = NSPredicate(format: "type = '%@'", task.type as CVarArg)
@@ -661,7 +850,7 @@ class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
                 row = index
             }
         }*/
-        
+
         if (task.type == "Assignment") {
             section = 2
         } else if (task.type == "Quiz") {
@@ -671,25 +860,25 @@ class SchedulesCellEditingHelperObject: NSObject, CellEditingProtocol {
         } else if (task.type == "Final") {
             section = 5
         }
-        
+
         for (index, scheduleContentRow) in scheduleEditorVC.dictionary[section]!.enumerated() {
             if (scheduleContentRow.task?.id == task.id) {
                 row = index
             }
         }
-        
+
         if let indexPath = IndexPath(row: row, section: section) as? IndexPath {
             return indexPath
         }
         return nil
     }
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+
+    /*func scrollViewDidScroll(_ scrollView: UIScrollView) {
         var frame: CGRect = self.cellEditingTVC.customInputButton.frame
         frame.origin.y = scrollView.contentOffset.y
         self.cellEditingTVC.customInputButton.frame = frame
-        
+
         self.cellEditingTVC.view.bringSubview(toFront: self.cellEditingTVC.customInputButton)
-    }
-    
+    }*/
+
 }

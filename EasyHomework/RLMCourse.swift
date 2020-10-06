@@ -40,5 +40,5 @@ class RLMCourse: Object {
             return self.courseName
         }
     }
-
+    
 }

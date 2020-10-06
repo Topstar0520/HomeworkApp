@@ -14,8 +14,7 @@ protocol noteEditorDelegate {
     func deleteNoteCell(cell:NoteTableViewCell)
 }
 
-//class BasicNoteViewController: NoteEditorViewController {
-class BasicNoteViewController: UIViewController {
+class BasicNoteViewController: NoteEditorViewController { 
     
     // @IBOutlet title
     var task: RLMTask!
@@ -27,8 +26,8 @@ class BasicNoteViewController: UIViewController {
     var delegate : noteEditorDelegate?
     
     override func viewDidLoad() {
-        self.noteDescriptor = NoteDescriptor()
-
+        self.noteDescriptor = NoteDescriptor() 
+        
         if task.note == nil {
             // create a note
             let realm = try! Realm()

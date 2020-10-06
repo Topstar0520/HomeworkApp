@@ -8,8 +8,15 @@
 
 import UIKit
 
+protocol CustomBackgroundCollectionViewCellDelegate: NSObjectProtocol {
+    func customBackgroundCollectionViewCellDidSelect(sender: CustomBackgroundCollectionViewCell)
+}
+
 class CustomBackgroundCollectionViewCell: UICollectionViewCell {
-    @IBOutlet weak var bg: UIButton!
+    weak var delegate: CustomBackgroundCollectionViewCellDelegate!
+    @IBOutlet weak var cellImageView: UIImageView!
+    @IBOutlet weak var checkMarkImageView: UIImageView!
+    @IBOutlet weak var bg: UIButton! //from master, delete if not used.
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -17,29 +24,33 @@ class CustomBackgroundCollectionViewCell: UICollectionViewCell {
         layer.borderColor = UIColor.white.cgColor
         layer.borderWidth = 1
     }
-    
+
+    /*func setCheckMark(_ value: Bool) {
+        checkMarkImageView.isHidden = value
+    }*/
+
     // MARK: - Touches
-    
+
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesBegan(touches, with: event)
         UIView.animate(withDuration: 0.1) {
-             self.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
+            self.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
         }
     }
-    
+
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesMoved(touches, with: event)
+
     }
-    
+
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesEnded(touches, with: event)
         UIView.animate(withDuration: 0.05) {
             self.transform = CGAffineTransform.identity
         }
+        //setCheckMark(false)
+        delegate.customBackgroundCollectionViewCellDidSelect(sender: self)
     }
-    
+
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         touchesEnded(touches, with: event)
     }
 }
-

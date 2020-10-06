@@ -27,7 +27,7 @@ let keyboardShowSelectedImage: UIImage = UIImage(named: "showkeyboard-selected-i
 let keyboardHideImage: UIImage = UIImage(named: "hidekeyboard-icon", in: bundle, compatibleWith: nil)!
 let keyboardHideSelectedImage: UIImage = UIImage(named: "hidekeyboard-selected-icon", in: bundle, compatibleWith: nil)!
 
-open class NoteEditorViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UITextViewDelegate, UIImagePickerControllerDelegate, UIDocumentMenuDelegate, UIDocumentPickerDelegate, UINavigationControllerDelegate, NoteEditorDelegate,AccessoryViewDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate {
+open class NoteEditorViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, /*UITextViewDelegate, */UIImagePickerControllerDelegate, UIDocumentMenuDelegate, UIDocumentPickerDelegate, UINavigationControllerDelegate, NoteEditorDelegate,AccessoryViewDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate {
     
 
     // MARK: - Properties
@@ -79,7 +79,7 @@ open class NoteEditorViewController: UIViewController, UICollectionViewDataSourc
         textView = NETextView(frame: view.bounds, textContainer: container)
 
         textView.backgroundColor = UIColor(red: 235.0/255.0, green: 235.0/255.0, blue: 235.0/255.0, alpha: 1.0)
-        textView.delegate = self
+        //textView.delegate = self  //removed by @solysky20200929 because NoteEditorDelegate exists...
         
         if #available(iOS 11.0, *) {
             textView.textDragInteraction?.isEnabled = false

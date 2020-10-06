@@ -16,33 +16,43 @@ enum TaskEditingMode: String {
 }
 
 //This represents the VC shown after tapping on a task cell like those on the homescreen.
-class CellEditingTableViewController: UITableViewController,noteEditorDelegate
-    
-{
-    
+class CellEditingTableViewController: UITableViewController, noteEditorDelegate{
+
     var helperObject: CellEditingProtocol!
-    
+
     //[Section : Rows]
-    //var dictionary :[Int:Array<ScheduleRowContent>] = [0 : [ScheduleRowContent(identifier: "TitleCell"), ScheduleRowContent(identifier: "DueDateCell")], 1 : [ScheduleRowContent(identifier: "TypeCell"), ScheduleRowContent(identifier: "CourseCell")] ] //2 : [ScheduleRowContent(identifier: "WriteReviewCell")
+    //var dictionary :[Int:Array<ScheduleRowContent>] =var : [ScheduleRowContent(identifier: "TitleCell"), ScheduleRowContent(identifier: "DueDateCell")], 1 : [ScheduleRowContent(identifier: "TypeCell"), ScheduleRowContent(identifier: "CourseCell")] ] //2 : [ScheduleRowContent(identifier: "WriteReviewCell")
     //var task: RLMTask!
     //var homeVC: HomeworkViewController?
     //var placeholderTitleText: String!
     //var mode: TaskEditingMode = TaskEditingMode.Edit //Edit is default mode.
-    var customInputButton: ChangeMasterTaskButton!
-    
+
+    var customInputButton: ChangeMasterTaskButton! //depcrecated
+    var isfromNotifiction = false
+
+    var customInputView: ChangeMasterTaskView! //depcrecated
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        let appdelegate = UIApplication.shared.delegate as! AppDelegate
+        appdelegate.requestForPushNotification()
+        
         if (self.helperObject.mode == .Edit) {
             if (self.helperObject.task.name == self.helperObject.generatePlaceholderTitle(isNewCourse: false)) {
                 self.title = self.helperObject.placeholderTitleText
             } else {
-                self.title = self.helperObject.task.name
+                //Update title of VC, but ensure it's not too long.
+                if (self.helperObject.task.name.count > 15 && UIDevice.current.userInterfaceIdiom != .pad) {
+                    self.title = String(self.helperObject.task.name.prefix(15)) + ".."
+                } else {
+                    self.title = self.helperObject.task.name
+                }
             }
         } else {
             self.title = self.helperObject.placeholderTitleText
         }
-        
+
         self.tableView.estimatedRowHeight = 44
 //        self.tableView.rowHeight = UITableViewAutomaticDimension
         self.tableView.dataSource = helperObject
@@ -53,41 +63,88 @@ class CellEditingTableViewController: UITableViewController,noteEditorDelegate
         if (self.helperObject.mode == TaskEditingMode.Create) {
             self.setupForCreateMode()
         }
-        
-        customInputButton = ChangeMasterTaskButton.construct(self) as ChangeMasterTaskButton
-        customInputButton.frame.size = CGSize(width: self.view.bounds.width, height: 44)
+
+        if isfromNotifiction == true {
+            let cancelButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancel(sender:)))
+            self.navigationController?.navigationBar.topItem?.leftBarButtonItem = cancelButton
+        }
+
+        //customInputButton = ChangeMasterTaskButton.construct(self) as ChangeMasterTaskButton
         //customInputButton.frame.origin = CGPoint(x: self.tableView.frame.origin.x, y: self.view.frame.height)
-        self.view.addSubview(customInputButton)
+        //self.view.addSubview(customInputButton)
+
+        /*customInputButton = ChangeMasterTaskButton.construct(self) as ChangeMasterTaskButton
+        //customInputButton.translatesAutoresizingMaskIntoConstraints = false
+        customInputButton.frame.size = CGSize(width: self.view.bounds.width, height: 44)
+        customInputButton.frame.origin = CGPoint(x: self.tableView.frame.origin.x, y: self.view.frame.height)
+        self.view.addSubview(customInputButton)*/
     }
-    
+
+    func setUpDefaultReminders() {
+        print(self.helperObject.task.type)
+        let name = self.helperObject.task.type
+        var strType = ""
+        if name == "Assignment" {
+            strType = "Assignments"
+        } else if name == "Quiz" {
+            strType = "Quizzes"
+        } else if name == "Midterm" {
+            strType = "Midterms"
+        } else if name == "Final" {
+            strType = "Finals"
+        } else if name == "Lecture" {
+            strType = "Lectures"
+        } else if name == "Lab" {
+            strType = "Labs"
+        } else if name == "Tutorial" {
+            strType = "Tutorials"
+        }
+
+        let realm = try! Realm()
+        let reminderSettings = realm.objects(RLMReminderSetting.self).filter("name = %@",strType)
+        let reminderSetting = reminderSettings[0]
+        
+        var totalReminders = [RLMReminder]()
+        for currentReminder in reminderSetting.reminders {
+            totalReminders.append(currentReminder)
+        }
+        
+        var totalListReminders = List<RLMReminder>()
+        for currentReminder1 in totalReminders{
+            totalListReminders.append(currentReminder1)
+        }
+        
+        self.helperObject.task.reminders = totalListReminders
+    }
+
     func setupForCreateMode() {
         //Add 'Cancel' in the top left of the navBar.
         let cancelButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancel(sender:)))
         self.navigationController?.navigationBar.topItem?.leftBarButtonItem = cancelButton
         //Add new 'Create' cell.
         self.helperObject.dictionary[4] = [ScheduleRowContent(identifier: "CreateCell")]
+        self.helperObject.dictionary[3] = [ScheduleRowContent(identifier: "ReminderCell")]
         self.helperObject.dictionary[2] = [ScheduleRowContent(identifier: "SubTaskCell")]
     }
-    
+
     var firstAppearance = true
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        if (self.helperObject.mode == TaskEditingMode.Create && firstAppearance == true && self.tableView != nil) {
-            //let titleCell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as! TitleTableViewCell
-            if self.tableView.visibleCells.count > 0    //added by @solysky20200920
-            {
-                let titleCell = self.tableView.visibleCells[0] as! TitleTableViewCell
-                titleCell.titleTextView.becomeFirstResponder()
-                firstAppearance = false
-            }
-            
+        if (self.helperObject.mode == TaskEditingMode.Create && firstAppearance == true) {
+            let titleCell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as! TitleTableViewCell
+            titleCell.titleTextView.becomeFirstResponder()
+            firstAppearance = false
         }
     }
-    
+
     @objc func cancel(sender: Any?) {
-        self.dismiss(animated: true, completion: nil)
+        self.dismiss(animated: true) {
+            if DeviceType.IS_IPAD {
+                NotificationCenter.default.post(name: Notification.Name("addQuickAddButton"), object: nil)
+            }
+        } 
     }
-    
+
     /*override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         let selectedRowIndexPath = self.tableView.indexPathForSelectedRow
@@ -100,12 +157,16 @@ class CellEditingTableViewController: UITableViewController,noteEditorDelegate
             })
         }
     }*/
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
+        if (self.helperObject.mode != .Edit) {
+            if self.helperObject.task.isReminderModified == false{
+                setUpDefaultReminders()
+            }
+        }
         let selectedRowIndexPath = self.tableView.indexPathForSelectedRow
         if ((selectedRowIndexPath) != nil) {
-            
             if let coordinator = transitionCoordinator {
                 let animationBlock: (UIViewControllerTransitionCoordinatorContext?) -> () = { [weak self] _ in
                     self!.tableView.deselectRow(at: selectedRowIndexPath!, animated: true)
@@ -121,8 +182,9 @@ class CellEditingTableViewController: UITableViewController,noteEditorDelegate
                 self.tableView.deselectRow(at: selectedRowIndexPath!, animated: true)
             }
         }
+        self.tableView.reloadData()
     }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         self.tableView.endEditing(true) //incase titleCell is first responder while other aspects of the task are about to be modified.
@@ -133,38 +195,141 @@ class CellEditingTableViewController: UITableViewController,noteEditorDelegate
         // Dispose of any resources that can be recreated.
     }
 
-    /*override var canBecomeFirstResponder: Bool {
+    override var canBecomeFirstResponder: Bool {
         return true
     }
- 
+
     //var sendButton: UIButton!
-    
-    override var inputAccessoryView: UIView? {
-        if (customInputButton == nil) {
-            customInputButton = ChangeMasterTaskButton.construct(self) as ChangeMasterTaskButton
-            customInputButton.frame.size = CGSize(width: self.view.bounds.width, height: 44)
-            ///customInputButton.frame.origin = CGPoint(x: self.view.frame.origin.x, y: 0)
-            //customInputButton.backgroundColor = UIColor.green
-            //customInputButton.titleLabel?.font =
+
+    /*override var inputAccessoryView: UIView? {
+        if (customInputView == nil) {
+            customInputView = ChangeMasterTaskView.construct(self) as ChangeMasterTaskView
+            customInputView.frame.size = CGSize(width: self.view.bounds.width, height: 49)
+            customInputView.changeMasterTaskButton.addTarget(self, action: #selector(changeMasterTaskButtonTouchUpInside), for: .touchUpInside)
+            customInputView.closeButton.addTarget(self, action: #selector(closeButtonTouchUpInside), for: .touchUpInside)
+            customInputView.isHidden = true
+
+            //Only show customInputView if the task is was just recently edited (viewWillAppear happened more than once or keyboard was shown), currently in .Edit mode, the task repeats, the masterTask is not nil, the task is not already the masterTask, and the task differs in some way from the masterTask.
+            self.compareTaskToMasterTask()
+
         }
-        return customInputButton
+        return customInputView
     }*/
+
+    @objc func changeMasterTaskButtonTouchUpInside(sender: UIButton!) {
+        //Show dialog window to confirm.
+        let actionSheetController: UIAlertController = UIAlertController(title: "Repeating Tasks", message: "Future tasks will use the same time, type, subtasks, and more. No existing tasks will be modified.", preferredStyle: .alert)
+        let cancelAction: UIAlertAction = UIAlertAction(title: "Cancel", style: .cancel) { action -> Void in
+            //If no then return.
+            return
+        }
+        actionSheetController.addAction(cancelAction)
+        let nextAction: UIAlertAction = UIAlertAction(title: "OK", style: .default) { action -> Void in
+            if (self.helperObject.task.repeatingSchedule == nil) {
+                let errorVC = UIAlertController(title: "Oops..", message: "This task is missing a schedule. Contact Support about this error.", preferredStyle: .alert)
+                errorVC.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in }))
+                self.present(errorVC, animated: true, completion: nil)
+                return
+            }
+            //Otherwise, then proceed to switch the masterTask and then hide the customInputView.
+            let realm = try! Realm()
+            realm.beginWrite()
+            self.helperObject.task.repeatingSchedule?.masterTask = self.helperObject.task
+            do {
+                try realm.commitWrite()
+            } catch let error {
+                let errorVC = UIAlertController(title: "Oops..", message: "Error: " + error.localizedDescription, preferredStyle: .alert)
+                errorVC.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in }))
+                self.present(errorVC, animated: true, completion: nil)
+            }
+            self.customInputView.isHidden = true
+        }
+        actionSheetController.addAction(nextAction)
+        self.present(actionSheetController, animated: true, completion: nil)
+    }
+
+    @objc func closeButtonTouchUpInside(sender: UIButton!) {
+        customInputView.isHidden = true
+    }
+
+    /* This method checks if properties for the currently selected task differ from the masterTask, and modifies the UI accordingly */
+    func compareTaskToMasterTask() {
+        let task = self.helperObject.task!
+        if (self.helperObject.mode == .Edit && task.repeatingSchedule != nil) {
+            if (task.repeatingSchedule?.masterTask != nil && task != task.repeatingSchedule?.masterTask) {
+                let masterTask = task.repeatingSchedule!.masterTask!
+                if ((task.dueDate as Date?)?.time != (masterTask.dueDate as Date?)?.time || task.endDateAndTime?.timeIntervalSinceReferenceDate != masterTask.endDateAndTime?.timeIntervalSinceReferenceDate ||
+                    task.type != masterTask.type || task.course != masterTask.course) {
+                    customInputView.isHidden = false
+                    return
+                }
+                if (task.repeatingSchedule!.schedule == "Weekly" || task.repeatingSchedule!.schedule == "Bi-Weekly") {
+                    //check day of week, if it's the same then don't do anything. If it's different show customInputView.
+                    if (task.dueDate?.dayNumberOfWeek() != masterTask.dueDate?.dayNumberOfWeek()) {
+                        customInputView.isHidden = false
+                        return
+                    }
+                    //Also make confirmation message specify information about day of week.
+
+                }
+                if (task.repeatingSchedule!.schedule == "Monthly") {
+                    //If it's a different day #, then show customInputView.
+                    if (task.dueDate != nil && masterTask.dueDate != nil) {
+                        let taskDayOfMonth = Calendar.current.ordinality(of: .day, in: .month, for: task.dueDate as! Date)
+                        let masterTaskDayOfMonth = Calendar.current.ordinality(of: .day, in: .month, for: masterTask.dueDate as! Date)
+                        if (taskDayOfMonth != masterTaskDayOfMonth) {
+                            //Consider the fact that they may differ only because one month has less days than the other.
+                            //if (masterTaskDayOfMonth <= #OFDAYSIN taskDayOfMonth's month) {
+
+                            //}
+                            customInputView.isHidden = false
+                            return
+                        }
+
+                    }
+                    //Also make confirmation message specify information about day of month.
+
+                }
+                //task.dueDate?.timeIntervalSinceReferenceDate != masterTask.dueDate?.timeIntervalSinceReferenceDate
+                if (task.subTasks.count != masterTask.subTasks.count) {
+                    customInputView.isHidden = false
+                    return
+                }
+                for i in 0 ..< task.subTasks.count {
+                    if (task.subTasks[i].name != masterTask.subTasks[i].name) {
+                        customInputView.isHidden = false
+                        return
+                    }
+                }
+                //If task & masterTask are identical for all of the above properties..
+                customInputView.isHidden = true
+                //..Hide customInputView.
+            }
+        }
+    }
+    
+    @IBAction func remindersSubscribeButtonTapped(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "Subscription", bundle: nil)
+        let subscriptionPlansVC = storyboard.instantiateViewController(withIdentifier: "SubscriptionPlansViewController")
+        self.present(subscriptionPlansVC, animated: true, completion: nil)
+    }
+    
 
     // MARK: - Table view data source
 
     /*override func numberOfSections(in tableView: UITableView) -> Int {
         return dictionary.count
     }
-    
+
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return dictionary[section]!.count
     }
 
-    
+
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cellContent = dictionary[(indexPath as NSIndexPath).section]![(indexPath as NSIndexPath).row] as ScheduleRowContent
         let cell = tableView.dequeueReusableCell(withIdentifier: cellContent.identifier, for: indexPath)
-        
+
         cell.preservesSuperviewLayoutMargins = false
         cell.separatorInset = UIEdgeInsets.zero
         cell.layoutMargins = UIEdgeInsets.zero
@@ -172,14 +337,14 @@ class CellEditingTableViewController: UITableViewController,noteEditorDelegate
         if (cell is TitleTableViewCell) {
             let titleCell = cell as! TitleTableViewCell
             titleCell.titleTextField.delegate = self
-            titleCell.titleTextField.attributedPlaceholder = NSAttributedString(string: self.placeholderTitleText, attributes: [ NSForegroundColorAttributeName : UIColor.init(red: 255, green: 255, blue: 255, alpha: 0.2) ])
+            titleCell.titleTextField.attributedPlaceholder = NSAttributedString(string: self.placeholderTitleText, attributes: [ NSForegroundColorAttributeName : UIColor(displayP3Red: 255, green: 255, blue: 255, alpha: 0.3) ])
             if (self.placeholderTitleText != cellContent.name) {
                 titleCell.titleTextField.text = cellContent.name
             } else {
                 titleCell.titleTextField.text = ""
             }
         }
-        
+
         if (cell is DueDateTableViewCell) {
             let dueDateCell = cell as! DueDateTableViewCell
             if (self.task.dueDate == nil) {
@@ -195,15 +360,15 @@ class CellEditingTableViewController: UITableViewController,noteEditorDelegate
                 dueDateCell.dueDateLabel.textColor = UIColor(red: 255/255, green: 255/255, blue: 255/255, alpha: 1.0)
                 dueDateCell.iconImageView.image = #imageLiteral(resourceName: "DefaultCalendar")
             }
-            
+
         }
-        
+
         if (cell is TypeTableViewCell) {
             let taskCell = cell as! TypeTableViewCell
             taskCell.taskLabel.text = self.task.type
             taskCell.taskImageView.image = UIImage(named: "Default" + self.task.type)
         }
-        
+
         if (cell is CourseTableViewCell) {
             let courseCell = cell as! CourseTableViewCell
             if (self.task.course != nil) {
@@ -215,7 +380,7 @@ class CellEditingTableViewController: UITableViewController,noteEditorDelegate
 
         return cell
     }
-    
+
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let cellContent = dictionary[(indexPath as NSIndexPath).section]![(indexPath as NSIndexPath).row] as ScheduleRowContent
         /*if (cellContent.identifier == "TitleCell") {
@@ -223,24 +388,24 @@ class CellEditingTableViewController: UITableViewController,noteEditorDelegate
         }*/
         return UITableViewAutomaticDimension
     }
-    
+
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
        /* if (section == 0) {
             let headerView = SectionHeaderView.construct("Assignment 1", owner: tableView)
             return headerView
         }
-        
+
         if (section == 1) {
             let headerView = SectionHeaderView.construct("CS2210", owner: tableView)
             return headerView
         }*/
-        
+
         let invisView = UITableViewHeaderFooterView(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
         invisView.contentView.backgroundColor = UIColor.clear
         return invisView
-        
+
     }
-    
+
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if (section == 0) {
             return CGFloat.leastNormalMagnitude
@@ -248,14 +413,15 @@ class CellEditingTableViewController: UITableViewController,noteEditorDelegate
         return 21.0
         //return CGFloat.leastNormalMagnitude
     }
-    
+
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        cell.backgroundColor = UIColor(colorLiteralRed: 36/255, green: 41/255, blue: 36/255, alpha: 1.0)
+        cell.backgroundColor = UIColor(red: 21/255, green: 21/255, blue: 21/255, alpha: 1.0)
         if (cell.contentView.backgroundColor != UIColor.clear) {
             cell.backgroundColor = cell.contentView.backgroundColor
         }
+        cell.contentView.backgroundColor = nil //since iOS13
     }
-    
+
     override func tableView(_ tableView: UITableView, didHighlightRowAt indexPath: IndexPath) {
         let cell = tableView.cellForRow(at: indexPath)
         if let dueDateCell = cell as? DueDateTableViewCell {
@@ -263,7 +429,7 @@ class CellEditingTableViewController: UITableViewController,noteEditorDelegate
             dueDateCell.iconImageView.image = #imageLiteral(resourceName: "DefaultCalendar")
         }
     }
-    
+
     override func tableView(_ tableView: UITableView, didUnhighlightRowAt indexPath: IndexPath) {
         let cell = tableView.cellForRow(at: indexPath)
         if let dueDateCell = cell as? DueDateTableViewCell {
@@ -278,7 +444,7 @@ class CellEditingTableViewController: UITableViewController,noteEditorDelegate
             }
         }
     }*/
-    
+
     /*var selectedCell: UITableViewCell!
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let cell = tableView.cellForRow(at: indexPath)
@@ -308,7 +474,7 @@ class CellEditingTableViewController: UITableViewController,noteEditorDelegate
             self.performSegue(withIdentifier: segueIdentifier, sender: cell)
         }
         /* */
-        
+
         if (cell?.reuseIdentifier == "CreateCell") {
             //save task
             let realm = try! Realm()
@@ -337,10 +503,10 @@ class CellEditingTableViewController: UITableViewController,noteEditorDelegate
                 self.dismiss(animated: true, completion: nil)
             }
         }
-        
+
         self.selectedCell = cell
     }*/
-    
+
     /*func generatePlaceholderTitle() -> String {
         if (self.task.course != nil) {
             let realm = try! Realm()
@@ -349,18 +515,18 @@ class CellEditingTableViewController: UITableViewController,noteEditorDelegate
         }
         return self.task.type
     }*/
-    
+
     @IBAction func textFieldEdited(_ sender: Any) {
         self.helperObject.textFieldEdited(sender: sender as! UITextView)
     }
-    
+
     /*func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         self.tableView.endEditing(false)
         return true
     }*/
-    
+
     // Method for ViewControllers interacting with this one.
-    
+
     /*func getIndexWithCellIdentifier(identifier: String) -> IndexPath? {
         for (key, scheduleRowContentArray) in self.dictionary {
             var index = 0
@@ -374,7 +540,7 @@ class CellEditingTableViewController: UITableViewController,noteEditorDelegate
         print("Could not find the specified cell. Check CellEditingVC for details.")
         return nil
     }*/
-    
+
     //These methods run when a master task has its date information modified.
     //This method ensures that if this task is the master task for a repeatingSchedule, the corresponding dateTokens are also updated.
     //Note: There are two versions: First is for dueDate/startTime, the second is for endDateAndTime.
@@ -385,7 +551,7 @@ class CellEditingTableViewController: UITableViewController,noteEditorDelegate
             let repeatingSchedulesUsingThisTaskAsMasterTask = realm.objects(RLMRepeatingSchedule.self).filter("masterTask = %@", task)
             let currentTaskRepeatingSchedule = task.repeatingSchedule //In create mode, task is always rs's master.
             if (repeatingSchedulesUsingThisTaskAsMasterTask.first != nil) { // || currentTaskRepeatingSchedule != nil
-                let repeatingSchedule = repeatingSchedulesUsingThisTaskAsMasterTask.first
+                var repeatingSchedule = repeatingSchedulesUsingThisTaskAsMasterTask.first
                 //if (repeatingSchedule == nil) { repeatingSchedule = currentTaskRepeatingSchedule }
                 let dateTokens = repeatingSchedule!.tokens
                 for (index, dateToken) in dateTokens.enumerated() {
@@ -414,7 +580,7 @@ class CellEditingTableViewController: UITableViewController,noteEditorDelegate
             }
         }
     }
-    
+
     //Second version for endDateAndTime. (Used in EndTimeViewController)
     //Variable 'oldDate' in this case is endDateAndTime.
     func updateDateTokenEndTimeIfTaskRepeats(task: RLMTask, oldEndDate: NSDate?) { //task represents self.task
@@ -437,9 +603,9 @@ class CellEditingTableViewController: UITableViewController,noteEditorDelegate
             }
         }
     }
-    
+
     // MARK: - Navigation
-    
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if (segue.destination is DueDateViewController) {
             let dueDateVC = segue.destination as! DueDateViewController
@@ -483,6 +649,12 @@ class CellEditingTableViewController: UITableViewController,noteEditorDelegate
             courseSelectionVC.taskManager = self.helperObject.taskManagerVC
             courseSelectionVC.cellEditingVC = self
         }
+        if (segue.destination is RemindersTableViewController) {
+            let remindersVC = segue.destination as! RemindersTableViewController
+            remindersVC.task = self.helperObject.task
+            remindersVC.mode = self.helperObject.mode
+            remindersVC.reminderSetting = nil
+        }
         if (segue.destination is BasicNoteViewController) {
             let basicNoteVC = segue.destination as! BasicNoteViewController
             let realm = try! Realm()
@@ -511,19 +683,25 @@ class CellEditingTableViewController: UITableViewController,noteEditorDelegate
                 // error while saving notes
             }
         }
+
     }
-    
+
 
 }
 
 extension CellEditingTableViewController {
 
-    func didChange(_ height: CGFloat, cell: TitleTableViewCell) {
+    func didChange(_ height: CGFloat, cell: TitleTableViewCell, didChange: Bool) {
 
-        if cell.titleTextView.text != "" {
-            cell.clearButton.isHidden = false
-        } else {
-            cell.clearButton.isHidden = true
+
+        if didChange{
+            cell.clearButton.isHidden = didChange
+        }else{
+            if cell.titleTextView.text != "" {
+                cell.clearButton.isHidden = false
+            } else {
+                cell.clearButton.isHidden = true
+            }
         }
 
         // Disabling animations gives us our desired behaviour
@@ -535,8 +713,55 @@ extension CellEditingTableViewController {
         // Re-enable animations
         UIView.setAnimationsEnabled(true)
 
+        //Following set of code exists to ensure homeVC is updated when this Helper is used for calendar. Remove this code when a new helper is created specifically for CalendarViewController !!!
+        /*if let tabController = self.splitViewController?.viewControllers[0] as? UITabBarController {
+            for vc in tabController.viewControllers! {
+                if let navVC = vc as? UINavigationController {
+                    for vc2 in navVC.viewControllers {
+                        if let homeVC = vc2 as? HomeworkViewController {
+                            homeVC.tableView.reloadData()
+                            break
+                        }
+                    }
+                }
+            }
+        }*/
+        //
+
         DispatchQueue.main.asyncAfter(deadline: .now()+0.1) {
             self.tableView.scrollRectToVisible(cell.frame, animated: true)
+        }
+    }
+}
+
+extension CellEditingTableViewController: UITextViewDelegate{
+    //Note: Not sure who wrote this, but it doesn't appear to be hooked up correctly, as the methods below are not being called.
+
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        if let btn = self.view.viewWithTag(101) as? UIButton{
+            if range.location >= 0{
+                btn.isHidden = false
+            }else {
+                btn.isHidden = true
+            }
+        }
+
+        return true
+    }
+
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if let btn = self.view.viewWithTag(101) as? UIButton{
+            if textView.text != "" {
+                btn.isHidden = false
+            } else {
+                btn.isHidden = true
+            }
+        }
+    }
+
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if let btn = self.view.viewWithTag(101) as? UIButton{
+            btn.isHidden = true
         }
     }
 }
@@ -544,12 +769,16 @@ extension CellEditingTableViewController {
 extension CellEditingTableViewController: SubTaskCellDelegate {
 
     func didTapSubscribeButton() {
-        let alert = UIAlertController(title: nil, message: "Subscribe to unlock subtasks!", preferredStyle: .alert)
+        let storyboard = UIStoryboard(name: "Subscription", bundle: nil)
+        let subscriptionPlansVC = storyboard.instantiateViewController(withIdentifier: "SubscriptionPlansViewController")
+        self.present(subscriptionPlansVC, animated: true, completion: nil)
+
+        /*let alert = UIAlertController(title: nil, message: "Subscribe to unlock subtasks!", preferredStyle: .alert)
         let okAction = UIAlertAction(title: "OK", style: .cancel) { (action) in
 
         }
         alert.addAction(okAction)
-        self.present(alert, animated: true, completion: nil)
+        self.present(alert, animated: true, completion: nil)*/
     }
 
     func deleteSubTask(indexPath: IndexPath) {
@@ -567,7 +796,7 @@ extension CellEditingTableViewController: SubTaskCellDelegate {
         }
 
     }
-
+    
     func deleteNote(indexPath: IndexPath) {
         
         if indexPath.row != helperObject.task.note2.count {
@@ -583,7 +812,7 @@ extension CellEditingTableViewController: SubTaskCellDelegate {
         }
         
     }
-    
+
     func deleteEmptySubTask(cell: SubTaskTableViewCell) {
         let point = self.tableView.convert(CGPoint.zero, from: cell.checkMarkButton)
         if let indexPath = self.tableView.indexPathForRow(at: point) {
@@ -592,20 +821,18 @@ extension CellEditingTableViewController: SubTaskCellDelegate {
     }
     
     func deleteNoteCell(cell: NoteTableViewCell) {
-        if let indexpath = self.tableView.indexPath(for: cell){
-            deleteNote(indexPath: indexpath)
-        }
-    }
-    
+           if let indexpath = self.tableView.indexPath(for: cell){
+               deleteNote(indexPath: indexpath)
+           }
+       }
 
     func didTapCompleteSubTask(sender: UIButton, cell: SubTaskTableViewCell) {
         let point = self.tableView.convert(CGPoint.zero, from: sender)
         if let indexPath = self.tableView.indexPathForRow(at: point) {
-            let subCount = helperObject.task.subTasks
-            if subCount.count > 0{
-                
-                let subTask = helperObject.task.subTasks[indexPath.row]
-                
+            if helperObject.task.subTasks.count-1 < indexPath.row{
+                return
+            }
+        if let subTask = helperObject.task.subTasks[indexPath.row] as? RLMSubTask {
                 if subTask.completed == true {
                     RLMSubTask.markCompleted(subTask: subTask, completed: false) { (success) in
                         sender.setImage(#imageLiteral(resourceName: "white circle"), for: .normal)
@@ -614,34 +841,18 @@ extension CellEditingTableViewController: SubTaskCellDelegate {
                     }
                 } else {
                     RLMSubTask.markCompleted(subTask: subTask, completed: true) { (success) in
-                        
+
                         if let color = self.helperObject.task.course?.color?.getUIColorObject() {
                             cell.checkMarkButton.tintColor = color
                         }
-                        
+
                         sender.setImage(#imageLiteral(resourceName: "selected_icon"), for: .normal)
                         cell.subTaskTextView.textColor = UIColor(hex: "FFFFFF").withAlphaComponent(0.4)
                     }
                 }
             }
+
         }
-    }
-
-    func didChangeHeight(_ height: CGFloat, cell: SubTaskTableViewCell) {
-
-        // Disabling animations gives us our desired behaviour
-        UIView.setAnimationsEnabled(false)
-        /* These will causes table cell heights to be recaluclated,
-         without reloading the entire cell */
-        tableView.beginUpdates()
-        tableView.endUpdates()
-        // Re-enable animations
-        UIView.setAnimationsEnabled(true)
-
-        DispatchQueue.main.asyncAfter(deadline: .now()+0.1) {
-            self.tableView.scrollRectToVisible(cell.frame, animated: true)
-        }
-
     }
     
     func didTapNoteEditor(taskTitle: String,id: String,contentSet:String, cell: NoteTableViewCell) {
@@ -699,66 +910,83 @@ extension CellEditingTableViewController: SubTaskCellDelegate {
     }
     
     @objc func reloadTable() {
-        self.tableView.reloadData()
+           self.tableView.reloadData()
+       }
+
+    func didChangeHeight(_ height: CGFloat, cell: SubTaskTableViewCell) {
+
+        // Disabling animations gives us our desired behaviour
+        UIView.setAnimationsEnabled(false)
+        /* These will causes table cell heights to be recaluclated,
+         without reloading the entire cell */
+        tableView.beginUpdates()
+        tableView.endUpdates()
+        // Re-enable animations
+        UIView.setAnimationsEnabled(true)
+
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.1) {
+            self.tableView.scrollRectToVisible(cell.frame, animated: true)
+        }
+
     }
 
     func didTapDone(subTask: String, cell: SubTaskTableViewCell) {
-        
+
         let point = self.tableView.convert(CGPoint.zero, from: cell.checkMarkButton)
-        if let indexPath = self.tableView.indexPathForRow(at: point) {
-            let realm = try! Realm()
-            realm.beginWrite()
-            
-            let task: RLMSubTask?
-            var newTask = false
-            
-            if indexPath.row != helperObject.task.subTasks.count {
-                task = helperObject.task.subTasks[indexPath.row]
-                cell.subTaskTextView.resignFirstResponder()
-                if let index = helperObject.task.subTasks.index(of: task!) {
-                    helperObject.task.subTasks[index].name = subTask
+            if let indexPath = self.tableView.indexPathForRow(at: point) {
+                let realm = try! Realm()
+                realm.beginWrite()
+
+                let task: RLMSubTask?
+                var newTask = false
+
+                if indexPath.row != helperObject.task.subTasks.count {
+                    task = helperObject.task.subTasks[indexPath.row]
+                    cell.subTaskTextView.resignFirstResponder()
+                    if let index = helperObject.task.subTasks.index(of: task!) {
+                        helperObject.task.subTasks[index].name = subTask
+                    }
+                } else {
+                    newTask = true
+                    cell.subTaskTextView.text = ""
+                    task = RLMSubTask(name: subTask, task: helperObject.task, completed: false)
+//                    task = RLMSubTask(name: subTask, task: helperObject.task.id, completed: false)
+                    helperObject.task.subTasks.append(task!)
                 }
-            } else {
-                newTask = true
-                cell.subTaskTextView.text = ""
-                task = RLMSubTask(name: subTask, task: helperObject.task, completed: false)
-                //                    task = RLMSubTask(name: subTask, task: helperObject.task.id, completed: false)
-                helperObject.task.subTasks.append(task!)
-            }
-            
-            do {
-                try realm.commitWrite()
-            } catch let error {
-                let errorVC = UIAlertController(title: "Oops..", message: "Error: " + error.localizedDescription, preferredStyle: .alert)
-                errorVC.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in }))
-                self.present(errorVC, animated: true, completion: nil)
-            }
-            
-            if newTask {
-                self.helperObject.dictionary[indexPath.section]?.insert(ScheduleRowContent(identifier: "SubTaskCell"), at: indexPath.row)
-                
-                UIView.setAnimationsEnabled(false)
-                tableView.beginUpdates()
-                
-                self.tableView.insertRows(at: [indexPath], with: .automatic)
-                
-                tableView.endUpdates()
-                // Re-enable animations
-                UIView.setAnimationsEnabled(true)
-                
-                DispatchQueue.main.asyncAfter(deadline: .now()+0.1) {
-                    self.tableView.scrollRectToVisible(cell.frame, animated: true)
+
+                do {
+                    try realm.commitWrite()
+                } catch let error {
+                    let errorVC = UIAlertController(title: "Oops..", message: "Error: " + error.localizedDescription, preferredStyle: .alert)
+                    errorVC.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in }))
+                    self.present(errorVC, animated: true, completion: nil)
                 }
-                
+
+                if newTask {
+                    self.helperObject.dictionary[indexPath.section]?.insert(ScheduleRowContent(identifier: "SubTaskCell"), at: indexPath.row)
+
+                    UIView.setAnimationsEnabled(false)
+                    tableView.beginUpdates()
+
+                    self.tableView.insertRows(at: [indexPath], with: .automatic)
+
+                    tableView.endUpdates()
+                    // Re-enable animations
+                    UIView.setAnimationsEnabled(true)
+
+                    DispatchQueue.main.asyncAfter(deadline: .now()+0.1) {
+                        self.tableView.scrollRectToVisible(cell.frame, animated: true)
+                    }
+
+                }
+
             }
-            
-        }
-        //        }
-        
-        
-        
-        //        guard let indexPath = cell.indexPath else {return}
-        
-        
+//        }
+
+
+
+//        guard let indexPath = cell.indexPath else {return}
+
+
     }
 }

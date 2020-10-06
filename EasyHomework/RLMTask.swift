@@ -11,12 +11,14 @@ import RealmSwift
 class RLMTask: Object {
 
     @objc dynamic var id = NSUUID().uuidString
-    @objc dynamic var createdDate = NSDate()
+    @objc dynamic var createdDate = NSDate() //No two tasks should have the same createdDate, even if they actually were created at same time.
     @objc dynamic var name = ""
     @objc dynamic var type = "" //Can be: Assignment, Quiz, Midterm, Final, Lecture, Lab, or Tutorial.
     @objc dynamic var scope = "" //Can be: Regular, Event (short-term), or Project (long-term). Scope defines when/how it should be shown in agenda.
     @objc dynamic var dueDate: NSDate?
     @objc dynamic var course: RLMCourse?
+    var isReminderModified = false
+    var reminders = List<RLMReminder>()
     @objc dynamic var note: RLMNote?
     @objc dynamic var completed = false
     @objc dynamic var completionDate: NSDate? //Do not set unless the task is completed from the HomeworkVC.

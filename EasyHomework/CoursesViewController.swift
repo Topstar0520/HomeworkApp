@@ -14,19 +14,19 @@ class CoursesViewController: UIViewController, UITableViewDataSource, UITableVie
     @IBOutlet var tableView: UITableView!
     var homeVC: HomeworkViewController!
     var sections = ["Current Term", ""]
-    
+
     var coursesQuery: Results<RLMCourse> {
         let realm = try! Realm()
         return realm.objects(RLMCourse.self).sorted(byKeyPath: "createdDate", ascending: true)
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tableView.estimatedRowHeight = 44
         self.tableView.rowHeight = UITableViewAutomaticDimension
         self.tableView.dataSource = self
         self.tableView.delegate = self
-        
+
         //If users will be able to access a schedule for tasks not assigned to a course, remove the following logic.
         if (self.coursesQuery.count == 0) {
             let addCourseTableViewController = self.storyboard!.instantiateViewController(withIdentifier: "AddCourseTableViewController") as! AddCourseTableViewController
@@ -35,7 +35,7 @@ class CoursesViewController: UIViewController, UITableViewDataSource, UITableVie
             self.show(addCourseTableViewController, sender: self)
         }
     }
-    
+
     @IBAction func addCourseButtonTapped(_ sender: Any) {
         let addCourseTableViewController = self.storyboard!.instantiateViewController(withIdentifier: "AddCourseTableViewController") as! AddCourseTableViewController
         addCourseTableViewController.mode = .Create
@@ -44,7 +44,7 @@ class CoursesViewController: UIViewController, UITableViewDataSource, UITableVie
         //Original behaviour below.
         //self.show(self.storyboard!.instantiateViewController(withIdentifier: "SearchViewController") as! SearchViewController, sender: sender)
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         let selectedRowIndexPath = self.tableView.indexPathForSelectedRow
@@ -63,16 +63,17 @@ class CoursesViewController: UIViewController, UITableViewDataSource, UITableVie
             else {
                 self.tableView.deselectRow(at: selectedRowIndexPath!, animated: true)
             }
+            self.tableView.reloadRows(at: [selectedRowIndexPath!], with: .none)
         }
     }
-    
+
     func numberOfSections(in tableView: UITableView) -> Int {
         if (self.coursesQuery.count > 0) {
             return self.sections.count
         }
         return 1
     }
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if (section == 0) {
             return self.coursesQuery.count
@@ -86,7 +87,7 @@ class CoursesViewController: UIViewController, UITableViewDataSource, UITableVie
         }
         return 0
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if (indexPath.section == 1) {
             let cell = tableView.dequeueReusableCell(withIdentifier: "BeginNewTermCell", for: indexPath) as! BeginNewTermTableViewCell
@@ -94,6 +95,7 @@ class CoursesViewController: UIViewController, UITableViewDataSource, UITableVie
         }
         let course = self.coursesQuery[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "CourseSavedTableViewCell", for: indexPath) as! CourseSavedTableViewCell
+        cell.accessoryView = UIImageView(image: UIImage(named: "disclosure indicator")) //since iOS13
         if (course.courseCode != nil) {
             cell.courseLabel.text = course.courseCode! + " - " + course.courseName
         } else {
@@ -105,9 +107,10 @@ class CoursesViewController: UIViewController, UITableViewDataSource, UITableVie
         } else {
             cell.circleView.color = UIColor(red: 67/255, green: 67/255, blue: 67/255, alpha: 1)
         }
+        cell.facultyImageView.image = UIImage(named: course.facultyName!)
         return cell
     }
-    
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let cell = tableView.cellForRow(at: indexPath) as? CourseSavedTableViewCell {
             let course = self.coursesQuery[indexPath.row]
@@ -126,7 +129,7 @@ class CoursesViewController: UIViewController, UITableViewDataSource, UITableVie
             courseCodeContent.name = course.courseCode
             self.show(scheduleEditingVC, sender: cell)
         }
-        
+
         if let cell = tableView.cellForRow(at: indexPath) as? BeginNewTermTableViewCell {
             self.tableView.deselectRow(at: indexPath, animated: true)
             let alert = UIAlertController(title: "Confirmation - Begin New Term", message: "B4Grad will remove all existing courses & their tasks. There is no way to undo this. Continue?", preferredStyle: UIAlertControllerStyle.alert)
@@ -136,17 +139,23 @@ class CoursesViewController: UIViewController, UITableViewDataSource, UITableVie
             alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel, handler: nil))
             self.present(alert, animated: true, completion: nil)
         }
-        
+
     }
     
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        cell.contentView.backgroundColor = nil //since iOS13
+    }
+
     func beginNewTerm() {
         let courses = self.coursesQuery
         let realm = try! Realm()
-        
+
         var colors = [RLMColor]()
         var repeatingSchedules = [RLMRepeatingSchedule]()
         var dateTokens = [RLMDateToken]()
         var tasks = [RLMTask]()
+        var instructors = [RLMInstructor]()
+        
         for course in courses {
             let coursePredicate = NSPredicate(format: "course = %@", course as CVarArg)
             //Get color object.
@@ -161,9 +170,10 @@ class CoursesViewController: UIViewController, UITableViewDataSource, UITableVie
             //Get their Tasks.
             tasks.append(contentsOf: realm.objects(RLMTask.self).filter(coursePredicate))
         }
-        
+
         //Remember: Realm lazily loads results from queries, so the order in which things are deleted, even inside the same commitWrite(), DOES MATTER !!!
         realm.beginWrite()
+        realm.delete(realm.objects(RLMInstructor.self))
         realm.delete(tasks)
         realm.delete(dateTokens)
         realm.delete(repeatingSchedules)
@@ -194,18 +204,18 @@ class CoursesViewController: UIViewController, UITableViewDataSource, UITableVie
             })
         })
     }
-    
+
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         if (indexPath.section == 0) {
             return true
         }
         return false
     }
-    
+
     func tableView(_ tableView: UITableView, titleForDeleteConfirmationButtonForRowAt indexPath: IndexPath) -> String? {
         return "Delete"
     }
-    
+
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if (indexPath.section != 0) { return }
         if editingStyle == UITableViewCellEditingStyle.delete {
@@ -216,8 +226,8 @@ class CoursesViewController: UIViewController, UITableViewDataSource, UITableVie
             }))
             alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel, handler: nil))
             self.present(alert, animated: true, completion: nil)
-            
-            
+
+
         }
     }
 
@@ -236,7 +246,7 @@ class CoursesViewController: UIViewController, UITableViewDataSource, UITableVie
         }
         //Get their Tasks.
         let tasks = realm.objects(RLMTask.self).filter(coursePredicate)
-        
+
         //Remember: Realm lazily loads results from queries, so the order in which things are deleted, even inside the same commitWrite(), DOES MATTER !!!
         realm.beginWrite()
         realm.delete(tasks)
@@ -265,11 +275,15 @@ class CoursesViewController: UIViewController, UITableViewDataSource, UITableVie
             UIView.animate(withDuration: 0.7, delay: 0.0, options: UIViewAnimationOptions.curveEaseOut, animations: { self.homeVC.tableView.alpha = 1 }, completion: nil)
         })
     }
-    
+
     @IBAction func cancelButtonTapped(_ sender: AnyObject) {
-        self.dismiss(animated: true, completion: { })
+        self.dismiss(animated: true) {
+            if DeviceType.IS_IPAD {
+                NotificationCenter.default.post(name: Notification.Name("addQuickAddButton"), object: nil)
+            }
+        }
     }
-    
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }

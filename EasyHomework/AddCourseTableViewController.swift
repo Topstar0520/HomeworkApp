@@ -17,7 +17,8 @@ class AddCourseTableViewController: UITableViewController, UITextFieldDelegate {
         //Create - for creating a new course.
     }
 
-    var array = [ScheduleRowContent(identifier: "CourseNameCell"), ScheduleRowContent(identifier: "CourseCodeCell"), ScheduleRowContent(identifier: "CreateCell")]
+    var array = [ScheduleRowContent(identifier: "CourseNameCell"), ScheduleRowContent(identifier: "CourseCodeCell"), ScheduleRowContent(identifier: "CourseColorCell"), ScheduleRowContent(identifier: "CreateCell")]
+    var sections = [[ScheduleRowContent]]()
     var coursesVC: CoursesViewController!
     var course: RLMCourse!
     var mode = CourseEditingMode.Edit
@@ -29,9 +30,11 @@ class AddCourseTableViewController: UITableViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        sections.append(contentsOf: [[array[0], array[1]], [array[2]], [array[3]]])
         if (mode == .Create) {
             self.course = RLMCourse(courseCode: nil, courseName: "", facultyName: nil, universityName: nil)
             self.array[0].optionString1 = "DefaultFaculty" //data.optionString1 stores facultyImageView.image's name.
+            selectDefaultCourseColor()
         } else if (mode == .Edit) {
             self.title = self.course.courseTitle()
             self.array[0].name = self.course.courseName
@@ -55,6 +58,33 @@ class AddCourseTableViewController: UITableViewController, UITextFieldDelegate {
         cell?.textField.becomeFirstResponder()
     }
     
+    private func selectDefaultCourseColor() {
+        var staticColors = ColorDataModel.getAllColorsArray().map { (colorModel) -> Int in
+            return colorModel.colorStaticValue
+        }//[1, 2, 3, 4, 5]
+        for currentCourse in self.coursesQuery {
+            if (staticColors.contains(currentCourse.colorStaticValue)) {
+                staticColors.removeObject(object: currentCourse.colorStaticValue)
+            }
+        }
+        //Automatically select color based on what's available.
+        if (staticColors.count > 0) {
+            self.course.colorStaticValue = staticColors.first!
+            for colorModel in ColorDataModel.getColorsArray() {
+                if(colorModel.colorStaticValue == self.course.colorStaticValue) {
+                    self.course.color = RLMColor(color: colorModel.color)
+                    break
+                }
+            }
+        } else {
+            let defaultColorModel = ColorDataModel.defaultColorModel()
+            self.course.colorStaticValue = defaultColorModel.colorStaticValue
+            self.course.color = RLMColor(color: defaultColorModel.color)
+        }
+        self.array[2].colorStaticValue = self.course.colorStaticValue
+        self.array[2].color = self.course.color?.getUIColorObject()
+        self.tableView.reloadData()
+    }
     
     @IBAction func addCourseButtonTapped(_ sender: Any) {
         
@@ -159,7 +189,7 @@ class AddCourseTableViewController: UITableViewController, UITextFieldDelegate {
         }
         if (textField.tag == 1) {
             if (self.mode == .Create) {
-                let cell = self.tableView.cellForRow(at: IndexPath(row: 2, section: 0)) as! UITableViewCell
+                //let cell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 2)) as! UITableViewCell
                 self.createCourse()
             }
             textField.resignFirstResponder()
@@ -169,13 +199,38 @@ class AddCourseTableViewController: UITableViewController, UITextFieldDelegate {
         return true
     }
     
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return self.sections.count
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if (section == 0) {
+            return 0.1 // This works fine.
+        }
+        return 21.0
+    }
+    
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        //let sectionName = self.sections[section]
+        if section == 0 {
+            return nil
+        }
+        
+        let sectionHeader = SectionHeaderView.construct("", owner: tableView)
+        return sectionHeader
+    }
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return array.count
+        let rows = self.sections[section]
+        return rows.count
+        //return array.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let data = self.array[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: self.array[indexPath.row].identifier, for: indexPath)
+        let rows = self.sections[indexPath.section]
+        let data = rows[indexPath.row]
+        //let data = self.array[indexPath.row]
+        let cell = tableView.dequeueReusableCell(withIdentifier: data.identifier, for: indexPath)
         if let courseNameCell = cell as? CourseNameTableViewCell {
             courseNameCell.textField.delegate = self
             courseNameCell.textField.tag = 0
@@ -189,18 +244,39 @@ class AddCourseTableViewController: UITableViewController, UITextFieldDelegate {
             courseCodeCell.textField.text = data.name
             courseCodeCell.textField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         }
+        if let courseColourCell = cell as? CourseColorTableViewCell {
+            courseColourCell.backgroundColor = data.color
+            //courseColourCell.bgImageView.backgroundColor = data.color
+        }
         return cell
     }
     
     var selectedCell: UITableViewCell?
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let cell = self.tableView.cellForRow(at: indexPath)
-        let data = self.array[indexPath.row]
+        let rows = self.sections[indexPath.section]
+        let data = rows[indexPath.row]
+        //let data = self.array[indexPath.row]
         if (data.identifier == "CreateCell") {
             self.selectedCell = cell
             self.tableView.deselectRow(at: indexPath, animated: true)
             self.createCourse()
         }
+        
+        if (data.identifier == "CourseColorCell") {
+            //if (UserDefaults.standard.bool(forKey: "isSubscribed") == true) {
+                self.performSegue(withIdentifier: "ShowColorPicker", sender: self) //A manual segue that belongs to AddCourseTVC.
+            self.tableView.deselectRow(at: indexPath, animated: true)
+            /*} else {
+                let storyboard = UIStoryboard(name: "Subscription", bundle: nil)
+                let subscriptionPlansVC = storyboard.instantiateViewController(withIdentifier: "SubscriptionPlansViewController")
+                self.present(subscriptionPlansVC, animated: true, completion: nil)
+            }*/
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        cell.contentView.backgroundColor = nil //since iOS13
     }
     
     func createCourse() {
@@ -227,7 +303,7 @@ class AddCourseTableViewController: UITableViewController, UITextFieldDelegate {
             }
         }
         //Automatically select color based on what's available.
-        if (staticColors.count > 0) {
+        /*if (staticColors.count > 0) {
             self.course.colorStaticValue = staticColors.first!
             if (self.course.colorStaticValue == 1) {
                 self.course.color = RLMColor(color: UIColor(red: 43/255, green: 132/255, blue: 210/255, alpha: 1))
@@ -247,7 +323,15 @@ class AddCourseTableViewController: UITableViewController, UITextFieldDelegate {
         } else {
             self.course.colorStaticValue = 0
             self.course.color = RLMColor(color: UIColor(red: 67/255, green: 67/255, blue: 67/255, alpha: 1))
+        }*/
+        
+        self.course.colorStaticValue = array[2].colorStaticValue
+        if let selectedColor = array[2].color {
+            self.course.color = RLMColor(color: selectedColor)
+        } else {
+            self.course.color = RLMColor(color: ColorDataModel.defaultColorModel().color)
         }
+        
         
         let repeatingLectureSchedule = RLMRepeatingSchedule(schedule: "Weekly",type: "Lecture", course: self.course, location: nil)
         repeatingLectureSchedule.builtIn = true
@@ -411,6 +495,10 @@ class AddCourseTableViewController: UITableViewController, UITextFieldDelegate {
         if (segue.destination is FacultyCollectionViewController) {
             let facultyIconVC = segue.destination as! FacultyCollectionViewController
             facultyIconVC.addCourseVC = self
+        } else if (segue.destination is ColorPickerTableViewController) {
+            let colorPickerVc = segue.destination as! ColorPickerTableViewController
+            colorPickerVc.colorStaticValue = array[2].colorStaticValue
+            colorPickerVc.addCourseVC = self
         }
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.

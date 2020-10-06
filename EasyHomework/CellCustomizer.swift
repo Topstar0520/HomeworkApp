@@ -101,8 +101,10 @@ class CellCustomizer: NSObject {
                     }
                 }
             }
+            if cell != nil && cell?.dateLabel != nil {
+                cell!.dateLabel.font = UIFont.systemFont(ofSize: cell!.dateLabel.font.pointSize)
+            }
             
-            cell!.dateLabel.font = UIFont.systemFont(ofSize: cell!.dateLabel.font.pointSize)
             if (cell != nil && task.timeSet == true) {
             //let now = Date()
             let taskStartHour = Calendar.current.component(.hour, from: date! as Date)
@@ -320,9 +322,10 @@ class CellCustomizer: NSObject {
     }
     
     class func unstrikeThroughLabel(_ label: UILabel?) {
-        if (label == nil) { return }
-        let attributedString = NSAttributedString(string: label!.text!, attributes: [:])
-        label!.attributedText = attributedString
+        if (label?.text != nil) {
+            let attributedString = NSAttributedString(string: label!.text!, attributes: [:])
+            label!.attributedText = attributedString
+        }
     }
     
 }

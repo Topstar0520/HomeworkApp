@@ -11,119 +11,152 @@ import RealmSwift
 
 class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDelegate, UITextFieldDelegate, HomeworkTableViewCellDelegate {
 
-    var dictionary :[Int:Array<ScheduleRowContent>] = [0 : [ScheduleRowContent(identifier: "InstructionsCell")], 1 : [ScheduleRowContent(identifier: "LocationCell")], 2 : [ScheduleRowContent(identifier: "WeekdayCell", defaultToggleArray: [false, false, false, false, false])], 3 : [ScheduleRowContent(identifier: "UseCell")], 4 : [ScheduleRowContent(identifier: "NoPastTypeCell")] ]
+    var dictionary :[Int:Array<ScheduleRowContent>] = [0 : [ScheduleRowContent(identifier: "InstructionsCell")], 1 : [ScheduleRowContent(identifier: "LocationCell")], 2: [ScheduleRowContent(identifier: "NewInstructorCell")], 3 : [ScheduleRowContent(identifier: "WeekdayCell", defaultToggleArray: [false, false, false, false, false])], 4 : [ScheduleRowContent(identifier: "UseCell")], 5 : [ScheduleRowContent(identifier: "NoPastTypeCell")]]
+    var isFromTimeTableVC = false
     var type: String!
     var course: RLMCourse!
     var repeatingSchedule: RLMRepeatingSchedule!
-    var scheduleEditorVC: ScheduleEditorViewController!
+    var scheduleEditorVC: ScheduleEditorViewController?
     var coursesVC: CoursesViewController!
     var homeVC: HomeworkViewController!
+    var weekdayCellIndex = 3
     //The following 2 variables exist only to ensure that HWcells look selected after being reloaded (since reloading a tableView cell deselects it).
     var lastSelectedRowIndexPath : IndexPath?
     var useLastSelectedRowIndexPath = false
-    
+
+    var instructors: Results<RLMInstructor> {
+        let realm = try! Realm()
+        let instructors = realm.objects(RLMInstructor.self).filter("course = %@ and type = %@", self.course, self.type).sorted(byKeyPath: "createdDate", ascending: true)
+        return instructors
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
+        TaskManagerTracker.addTaskManager(tableView: self.tableView)
+
+        self.tableView.register(UINib(nibName: "InstructorTableViewCell", bundle: nil), forCellReuseIdentifier: "InstructorCell")
         self.tableView.estimatedRowHeight = 71
-        self.tableView.rowHeight = UITableViewAutomaticDimension
-        self.tableView.delegate = self
-        self.tableView.dataSource = self
+        self.tableView.rowHeight    = UITableViewAutomaticDimension
+        self.tableView.delegate     = self
+        self.tableView.dataSource   = self
+        self.tableView.separatorColor = UIColor(red: 44/255, green: 44/255, blue: 44/255, alpha: 1.0)
+
         if (type == "Lecture") {
-            self.dictionary[0]![0].name = "Feel free to make any necessary changes to this weekly lecture schedule."
-            self.title = "Lectures"
+            //use if needed
         } else if (type == "Lab") {
-             self.dictionary[0]![0].name = "Feel free to make any necessary changes to this weekly lab schedule."
-            self.title = "Labs"
+            //use if needed
         } else if (type == "Tutorial") {
-             self.dictionary[0]![0].name = "Feel free to make any necessary changes to this weekly tutorial schedule."
-            self.title = "Tutorials"
+            //use if needed
+        } else {
+            if (self.isFromTimeTableVC && self.type.count <= 0) { //self.type.count <= 0  is equivalent to 'isNew'.
+                self.type = "Lecture"
+                self.dictionary = [0 : [ScheduleRowContent(identifier: "InstructionsCell")], 1 : [ScheduleRowContent(identifier: "TypeCell"), ScheduleRowContent(identifier: "CourseCell"), ScheduleRowContent(identifier: "LocationCell")], 2: [ScheduleRowContent(identifier: "NewInstructorCell")], 3 : [ScheduleRowContent(identifier: "WeekdayCell", defaultToggleArray: [false, false, false, false, false])], 4 : [ScheduleRowContent(identifier: "UseCell")], 5 : [ScheduleRowContent(identifier: "NoPastTypeCell")] ]
+            }
+
         }
-        
+
+        self.dictionary[0]![0].name = "Feel free to make any necessary changes to this weekly \(type.lowercased()) schedule."
+        self.title = "\(type ?? "")s"
+
         for case let scrollView as UIScrollView in self.tableView.subviews {
             scrollView.delaysContentTouches = false
         }
-        
+
         let realm = try! Realm()
         let coursePredicate = NSPredicate(format: "course = %@", self.course as CVarArg)
         let typePredicate = NSPredicate(format: "type = %@", self.type as CVarArg)
-        
+
         //Ensure that the VC can get its correct repeatingSchedule.
         var repeatingSchedule = realm.objects(RLMRepeatingSchedule.self).filter(coursePredicate).filter("builtIn = true").filter(typePredicate).first
         realm.beginWrite()
         if (repeatingSchedule == nil) { //Incase somehow it was deleted, create a new one.
             repeatingSchedule = RLMRepeatingSchedule(schedule: "Weekly", type: self.type, course: self.course, location: nil)
             repeatingSchedule!.builtIn = true
-            realm.add(repeatingSchedule!)
+            if (self.course.courseName.count > 0 && self.type.count > 0){
+                realm.add(repeatingSchedule!)
+            }
         }
         do {
             try realm.commitWrite()
         } catch let error {}
+
+        //Set up any existing Instructor Data for the interface.
+        for (index, instructor) in self.instructors.enumerated() {
+            let instructorRowContent = ScheduleRowContent(identifier: "InstructorCell")
+            instructorRowContent.instructor = instructor
+            dictionary[2]!.insert(instructorRowContent, at: index)
+        }
+
         self.repeatingSchedule = repeatingSchedule
-        
+
         //Set up VC's schedule interface for any existing data.
         //let realm = try! Realm()
         //let coursePredicate = NSPredicate(format: "course = %@", self.course as CVarArg)
         //let typePredicate = NSPredicate(format: "type = %@", self.type as CVarArg)
+        self.weekdayCellIndex = 3
+        
         let dateTokens = self.repeatingSchedule.tokens
         if (dateTokens.count > 0) {
-            self.dictionary[2]!.append(ScheduleRowContent(identifier: "WeeklyTimeCell", defaultToggleArray: [false, false, false, false, false], usesTimeArray: true))
-            self.dictionary[2]!.append(ScheduleRowContent(identifier: "WeeklyEndTimeCell", defaultToggleArray: [false, false, false, false, false], usesTimeArray: true))
-        }
-        for (counter, _) in self.dictionary[2]![0].toggleArray!.enumerated() {
-            if (counter == 0) {
-                let mondayResult = dateTokens.filter("startDayOfWeek = 'Monday'")
-                if (mondayResult.count > 0) {
-                    self.dictionary[2]![0].toggleArray![0] = true
-                    self.dictionary[2]![1].toggleArray![0] = true
-                    self.dictionary[2]![1].timeArray![0] = mondayResult[0].startTime! as Date
-                    self.dictionary[2]![2].toggleArray![0] = true
-                    self.dictionary[2]![2].timeArray![0] = mondayResult[0].endTime! as Date
-                    self.dictionary[1]![0].name = self.repeatingSchedule.location
-                }
-            } else if (counter == 1) {
-                let tuesdayResult = dateTokens.filter("startDayOfWeek = 'Tuesday'")
-                if (tuesdayResult.count > 0) {
-                    self.dictionary[2]![0].toggleArray![1] = true
-                    self.dictionary[2]![1].toggleArray![1] = true
-                    self.dictionary[2]![1].timeArray![1] = tuesdayResult[0].startTime! as Date
-                    self.dictionary[2]![2].toggleArray![1] = true
-                    self.dictionary[2]![2].timeArray![1] = tuesdayResult[0].endTime! as Date
-                    self.dictionary[1]![0].name = self.repeatingSchedule.location
-                }
-            } else if (counter == 2) {
-                let wednesdayResult = dateTokens.filter("startDayOfWeek = 'Wednesday'")
-                if (wednesdayResult.count > 0) {
-                    self.dictionary[2]![0].toggleArray![2] = true
-                    self.dictionary[2]![1].toggleArray![2] = true
-                    self.dictionary[2]![1].timeArray![2] = wednesdayResult[0].startTime! as Date
-                    self.dictionary[2]![2].toggleArray![2] = true
-                    self.dictionary[2]![2].timeArray![2] = wednesdayResult[0].endTime! as Date
-                    self.dictionary[1]![0].name = self.repeatingSchedule.location
-                }
-            } else if (counter == 3) {
-                let thursdayResult = dateTokens.filter("startDayOfWeek = 'Thursday'")
-                if (thursdayResult.count > 0) {
-                    self.dictionary[2]![0].toggleArray![3] = true
-                    self.dictionary[2]![1].toggleArray![3] = true
-                    self.dictionary[2]![1].timeArray![3] = thursdayResult[0].startTime! as Date
-                    self.dictionary[2]![2].toggleArray![3] = true
-                    self.dictionary[2]![2].timeArray![3] = thursdayResult[0].endTime! as Date
-                    self.dictionary[1]![0].name = self.repeatingSchedule.location
-                }
-            } else if (counter == 4) {
-                let fridayResult = dateTokens.filter("startDayOfWeek = 'Friday'")
-                if (fridayResult.count > 0) {
-                    self.dictionary[2]![0].toggleArray![4] = true
-                    self.dictionary[2]![1].toggleArray![4] = true
-                    self.dictionary[2]![1].timeArray![4] = fridayResult[0].startTime! as Date
-                    self.dictionary[2]![2].toggleArray![4] = true
-                    self.dictionary[2]![2].timeArray![4] = fridayResult[0].endTime! as Date
-                    self.dictionary[1]![0].name = self.repeatingSchedule.location
+            self.dictionary[3]!.append(ScheduleRowContent(identifier: "WeeklyTimeCell", defaultToggleArray: [false, false, false, false, false], usesTimeArray: true))
+            self.dictionary[3]!.append(ScheduleRowContent(identifier: "WeeklyEndTimeCell", defaultToggleArray: [false, false, false, false, false], usesTimeArray: true))
+            
+            
+            for (counter, _) in self.dictionary[3]![0].toggleArray!.enumerated() {
+                if (counter == 0) {
+                    let mondayResult = dateTokens.filter("startDayOfWeek = 'Monday'")
+                    if (mondayResult.count > 0) {
+                        self.dictionary[3]![0].toggleArray![0] = true
+                        self.dictionary[3]![1].toggleArray![0] = true
+                        self.dictionary[3]![1].timeArray![0] = mondayResult[0].startTime! as Date
+                        self.dictionary[3]![2].toggleArray![0] = true
+                        self.dictionary[3]![2].timeArray![0] = mondayResult[0].endTime! as Date
+                        self.dictionary[1]![0].name = self.repeatingSchedule.location
+                    }
+                } else if (counter == 1) {
+                    let tuesdayResult = dateTokens.filter("startDayOfWeek = 'Tuesday'")
+                    if (tuesdayResult.count > 0) {
+                        self.dictionary[3]![0].toggleArray![1] = true
+                        self.dictionary[3]![1].toggleArray![1] = true
+                        self.dictionary[3]![1].timeArray![1] = tuesdayResult[0].startTime! as Date
+                        self.dictionary[3]![2].toggleArray![1] = true
+                        self.dictionary[3]![2].timeArray![1] = tuesdayResult[0].endTime! as Date
+                        self.dictionary[1]![0].name = self.repeatingSchedule.location
+                    }
+                } else if (counter == 2) {
+                    let wednesdayResult = dateTokens.filter("startDayOfWeek = 'Wednesday'")
+                    if (wednesdayResult.count > 0) {
+                        self.dictionary[3]![0].toggleArray![2] = true
+                        self.dictionary[3]![1].toggleArray![2] = true
+                        self.dictionary[3]![1].timeArray![2] = wednesdayResult[0].startTime! as Date
+                        self.dictionary[3]![2].toggleArray![2] = true
+                        self.dictionary[3]![2].timeArray![2] = wednesdayResult[0].endTime! as Date
+                        self.dictionary[1]![0].name = self.repeatingSchedule.location
+                    }
+                } else if (counter == 3) {
+                    let thursdayResult = dateTokens.filter("startDayOfWeek = 'Thursday'")
+                    if (thursdayResult.count > 0) {
+                        self.dictionary[3]![0].toggleArray![3] = true
+                        self.dictionary[3]![1].toggleArray![3] = true
+                        self.dictionary[3]![1].timeArray![3] = thursdayResult[0].startTime! as Date
+                        self.dictionary[3]![2].toggleArray![3] = true
+                        self.dictionary[3]![2].timeArray![3] = thursdayResult[0].endTime! as Date
+                        self.dictionary[1]![0].name = self.repeatingSchedule.location
+                    }
+                } else if (counter == 4) {
+                    let fridayResult = dateTokens.filter("startDayOfWeek = 'Friday'")
+                    if (fridayResult.count > 0) {
+                        self.dictionary[3]![0].toggleArray![4] = true
+                        self.dictionary[3]![1].toggleArray![4] = true
+                        self.dictionary[3]![1].timeArray![4] = fridayResult[0].startTime! as Date
+                        self.dictionary[3]![2].toggleArray![4] = true
+                        self.dictionary[3]![2].timeArray![4] = fridayResult[0].endTime! as Date
+                        self.dictionary[1]![0].name = self.repeatingSchedule.location
+                    }
                 }
             }
         }
-        
+
         //Now we use the RLMRecurringEvents of self.type to fetch corresponding tasks (if any exist) that either occurred (dueDate) before the current date & time OR have a nil dueDate.
         let dueDateIsBeforeCurrentDateAndTime = NSPredicate(format: "dueDate <= %@", Date() as CVarArg)
         let tasksWithoutNullDueDatesUncompleted = realm.objects(RLMTask.self).filter(coursePredicate).filter(typePredicate).filter("removed = false AND dueDate != null").filter(dueDateIsBeforeCurrentDateAndTime).sorted(byKeyPath: "dueDate", ascending: false)
@@ -131,20 +164,21 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
         let tasksWithoutNullDueDatesCompleted = realm.objects(RLMTask.self).filter(coursePredicate).filter(typePredicate).filter("removed = false AND dueDate != null AND completed = true").filter(dueDateIsAfterCurrentDateAndTime).sorted(byKeyPath: "dueDate", ascending: false)
         let tasksWithNullDueDates = realm.objects(RLMTask.self).filter(coursePredicate).filter(typePredicate).filter("removed = false AND dueDate = null").sorted(byKeyPath: "dueDate", ascending: false)
         let tasks = tasksWithoutNullDueDatesCompleted.toArray() + tasksWithoutNullDueDatesUncompleted.toArray() + tasksWithNullDueDates.toArray()
-        if (tasks.count > 0) {
-            let taskScheduleRowContentArray = self.scheduleEditorVC.convertRLMTaskCollectionToScheduleRowContentArray(tasks: tasks)
-            self.dictionary[4]!.removeAll()
-            self.dictionary[4]!.insert(contentsOf: taskScheduleRowContentArray, at: 0)
+        if (tasks.count > 0) { //&& self.scheduleEditorVC != nil
+            let taskScheduleRowContentArray = self.convertRLMTaskCollectionToScheduleRowContentArray(tasks: tasks)
+            self.dictionary[5]!.removeAll()
+            self.dictionary[5]!.insert(contentsOf: taskScheduleRowContentArray, at: 0)
         }
-    
+
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
+
         let selectedRowIndexPath = self.tableView.indexPathForSelectedRow
         if ((selectedRowIndexPath) != nil) {
             if let coordinator = transitionCoordinator {
-                let animationBlock: (UIViewControllerTransitionCoordinatorContext!) -> () = { [weak self] _ in
+                let animationBlock: (UIViewControllerTransitionCoordinatorContext?) -> () = { [weak self] _ in
                     self!.tableView.deselectRow(at: selectedRowIndexPath!, animated: true)
                 }
                 let completionBlock: (UIViewControllerTransitionCoordinatorContext!) -> () = { [weak self] context in
@@ -160,7 +194,7 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
         } else {
             if (lastSelectedRowIndexPath != nil) { //This code is specifically for when this class is a UITableViewController, since those do not call deselectRow(..) automatically when tapping back in navigation bar like a UITableView inside a UIViewController does.
                 if let coordinator = transitionCoordinator {
-                    let animationBlock: (UIViewControllerTransitionCoordinatorContext!) -> () = { [weak self] _ in
+                    let animationBlock: (UIViewControllerTransitionCoordinatorContext?) -> () = { [weak self] _ in
                         self!.tableView.deselectRow(at: self!.lastSelectedRowIndexPath!, animated: true)
                     }
                     let completionBlock: (UIViewControllerTransitionCoordinatorContext!) -> () = { [weak self] context in
@@ -173,10 +207,10 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
             }
         }
     }
-    
+
     //**Solves the odd tableView scrollView offset bug that occurs when tableView.beginUpdates(..) and tableView.endUpdates(..) get called.**
     //http://stackoverflow.com/a/33397350/6051635
-    
+
     var heightAtIndexPath = NSMutableDictionary()
     override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         let height = self.heightAtIndexPath.object(forKey: indexPath)
@@ -186,47 +220,115 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
             return UITableViewAutomaticDimension
         }
     }
-    
+
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let height = cell.frame.size.height
         self.heightAtIndexPath.setObject(height, forKey: indexPath as NSCopying)
-        
+
         if (UIDevice.current.userInterfaceIdiom == .pad) {
             cell.backgroundColor = UIColor(red: 36/255, green: 41/255, blue: 36/255, alpha: 1.0)
             if (cell.contentView.backgroundColor != UIColor.clear) {
                 cell.backgroundColor = cell.contentView.backgroundColor
             }
         }
+        cell.contentView.backgroundColor = nil //since iOS13
     }
-    
+
     //**End of Bug Solution.**
-    
+
     // MARK: - Table view data source
-    
+
     override func numberOfSections(in tableView: UITableView) -> Int {
         return self.dictionary.count
     }
-    
+
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.dictionary[section]!.count
     }
-    
-    
+
+
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cellContent = dictionary[(indexPath as NSIndexPath).section]![(indexPath as NSIndexPath).row] as ScheduleRowContent
         let cell = tableView.dequeueReusableCell(withIdentifier: cellContent.identifier, for: indexPath)
-        
+
         if (cellContent.identifier == "InstructionsCell") {
             let instructionsCell = cell as! InstructionsTableViewCell
             instructionsCell.instructionsLabel.text = cellContent.name
         }
-        
+
+        if (cellContent.identifier == "TypeCell") {
+            let typeCell = cell as! TypeTableViewCell
+            typeCell.taskType       = self.type
+            let imageName           = self.type.count > 0 ? self.type : "None"
+            typeCell.taskImageView.image = UIImage(named: "Default" + imageName!)
+
+
+            let backgroundView = UIView()
+            backgroundView.backgroundColor = UIColor(red: 44/255, green: 44/255, blue: 44/255, alpha: 1.0)
+            typeCell.selectedBackgroundView = backgroundView
+
+            return typeCell
+        }
+
+        if (cellContent.identifier == "CourseCell") {
+            let courseCell                      = cell as! CourseTableViewCell
+            courseCell.courseTitle              = self.course.courseName
+            courseCell.circleView.color         = (self.course.color?.getUIColorObject() == nil) ? UIColor.lightGray : self.course.color?.getUIColorObject()
+
+            let backgroundView = UIView()
+            backgroundView.backgroundColor = UIColor(red: 44/255, green: 44/255, blue: 44/255, alpha: 1.0)
+            courseCell.selectedBackgroundView = backgroundView
+
+            return courseCell
+        }
+
         if (cellContent.identifier == "LocationCell") {
             let locationCell = cell as! LocationTableViewCell
             locationCell.textField.delegate = self
             locationCell.textField.text = cellContent.name
         }
         
+        if (cellContent.identifier == "NewInstructorCell") {
+            let newInstructorCell = cell as! NewInstructorTableViewCell
+            /*if (UserDefaults.standard.bool(forKey: "isSubscribed") == false) {
+                newInstructorCell.accessoryType = .none
+                let subscribeButton = UIButton(frame: newInstructorCell.frame)
+                subscribeButton.addTarget(self, action: #selector(self.reminderSubscribeButtonTapped), for: .touchUpInside)
+                let subscribeImageView = UIImageView(image: UIImage(named: "icons8-lock-96"))
+                subscribeImageView.contentMode = .scaleAspectFit
+                subscribeImageView.frame = newInstructorCell.frame
+                subscribeImageView.frame.origin.y -= 2
+                subscribeImageView.frame.size.width = 135
+                subscribeImageView.frame.origin.x = newInstructorCell.frame.size.width - 106
+                newInstructorCell.addSubview(subscribeImageView)
+                newInstructorCell.addSubview(subscribeButton)
+            }*/
+        }
+
+        if (cellContent.identifier == "InstructorCell") {
+            let instructorCell = cell as! InstructorTableViewCell
+            let instructor = self.dictionary[2]![indexPath.row].instructor
+            instructorCell.instructor = instructor
+            instructorCell.delegate = self
+            let selectedBackgroundView = UIView()
+            selectedBackgroundView.backgroundColor = UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.12)
+            instructorCell.selectedBackgroundView = selectedBackgroundView
+            /*if (UserDefaults.standard.bool(forKey: "isSubscribed") == false) {
+                instructorCell.accessoryType = .none
+                let subscribeButton = UIButton(frame: instructorCell.frame)
+                subscribeButton.addTarget(self, action: #selector(self.reminderSubscribeButtonTapped), for: .touchUpInside)
+                let subscribeImageView = UIImageView(image: UIImage(named: "icons8-lock-96"))
+                subscribeImageView.contentMode = .scaleAspectFit
+                subscribeImageView.frame = instructorCell.frame
+                subscribeImageView.frame.origin.y -= 2
+                subscribeImageView.frame.size.width = 135
+                subscribeImageView.frame.origin.x = instructorCell.frame.size.width - 106
+                instructorCell.addSubview(subscribeImageView)
+                instructorCell.addSubview(subscribeButton)
+            }*/
+            return instructorCell
+        }
+
         if (cellContent.identifier == "WeekdayCell") {
             let weekdayCell = cell as! WeekdayTableViewCell
             for (index, isCheckmarked) in cellContent.toggleArray!.enumerated() {
@@ -246,10 +348,10 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
                     weekdayCell.fridayCheckmark.image = #imageLiteral(resourceName: "Green Checkmark")
                 }
             }
-            
+
             return weekdayCell
         }
-        
+
         if (cellContent.identifier == "WeeklyTimeCell") {
             let weeklyTimeCell = cell as! WeeklyTimeTableViewCell
             for (index, isShowing) in cellContent.toggleArray!.enumerated() {
@@ -261,7 +363,7 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
                     weeklyTimeCell.arrayOfLabels[index].isHidden = true
                 }
             }
-            
+
             for (index, time) in cellContent.timeArray!.enumerated() {
                 if (time as Date == Date(timeIntervalSince1970: 0)) {
                     weeklyTimeCell.arrayOfButtons[index].titleLabel!.font = UIFont.systemFont(ofSize: 20)
@@ -273,10 +375,10 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
                     weeklyTimeCell.arrayOfLabels[index].text = "at"
                 }
             }
-            
+
             return weeklyTimeCell
         }
-        
+
         if (cellContent.identifier == "WeeklyEndTimeCell") {
             let weeklyEndTimeCell = cell as! WeeklyTimeTableViewCell
             for (index, isShowing) in cellContent.toggleArray!.enumerated() {
@@ -288,7 +390,7 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
                     weeklyEndTimeCell.arrayOfLabels[index].isHidden = true
                 }
             }
-            
+
             for (index, time) in cellContent.timeArray!.enumerated() {
                 if (time as Date == Date(timeIntervalSince1970: 0)) {
                     weeklyEndTimeCell.arrayOfButtons[index].titleLabel!.font = UIFont.systemFont(ofSize: 20)
@@ -300,17 +402,17 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
                     weeklyEndTimeCell.arrayOfLabels[index].text = "until"
                 }
             }
-            
+
             return weeklyEndTimeCell
         }
-        
+
         if (cellContent.identifier == "TimePickerCell") {
             let timePickerCell = cell as! TimePickerTableViewCell
             if (cellContent.date != Date(timeIntervalSince1970: 0)) {
                 timePickerCell.timePicker.setDate(cellContent.date! as Date, animated: false)
             }
         }
-        
+
         if (cellContent.identifier == "SectionCell") {
             let semesterCell = cell as! SectionTableViewCell
             if (cellContent.pickerTitleForRow == nil) {
@@ -319,7 +421,7 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
             semesterCell.rhsLabel.text = cellContent.pickerTitleForRow
             return semesterCell
         }
-        
+
         if (cellContent.identifier == "PickerTableViewCell") {
             let pickerCell = cell as! PickerTableViewCell
             pickerCell.pickerView.indexPath = indexPath
@@ -333,10 +435,10 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
             if (cellContent.pickerTitleForRow == nil) {
                 pickerCell.pickerView.selectRow(0, inComponent: 0, animated: false)
             }
-            
+
             return pickerCell
         }
-        
+
         if (cellContent.identifier == "UseCell") {
             let useCell = cell as! UseTableViewCell
             if (type == "Lecture") {
@@ -349,7 +451,7 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
 
             }
         }
-        
+
         if (cellContent.identifier == "NoPastTypeCell") {
             let noPastTypeCell = cell as! NoPastTypeTableViewCell
             noPastTypeCell.typeImageView.image = UIImage(named:  self.type + "0")
@@ -359,15 +461,15 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
                 noPastTypeCell.label.text = "No " + self.type + "s for " + self.course.courseName + " have occurred yet!"
             }
         }
-        
+
         if (cellContent.identifier == "HomeworkTableViewCell") {
             let cell = cell as! HomeworkTableViewCell
             let task = cellContent.task!
             cell.task = task
             cell.delegate = self
-            
+
             CellCustomizer.cellForRowCustomization(task: task, cell: cell, taskManager: self)
-            
+
             if self.tableView.indexPathForSelectedRow != nil {
                 if (self.tableView.indexPathForSelectedRow! == indexPath) {
                     cell.cardView.backgroundColor = UIColor(red: 180/255, green: 180/255, blue: 180/255, alpha: 1.0)
@@ -375,20 +477,26 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
                     cell.cardView.backgroundColor = UIColor.white
                 }
             }
-            
+
             if (self.lastSelectedRowIndexPath != nil && self.useLastSelectedRowIndexPath == true) {
                 if (self.lastSelectedRowIndexPath!.row == indexPath.row && ((self.lastSelectedRowIndexPath?.section) != nil)) {
                     cell.cardView.backgroundColor = UIColor(red: 180/255, green: 180/255, blue: 180/255, alpha: 1.0)
                     self.useLastSelectedRowIndexPath = false
                 }
             }
-            
+
             return cell
         }
-        
+
         return cell
     }
     
+    @objc func reminderSubscribeButtonTapped() {
+        let storyboard = UIStoryboard(name: "Subscription", bundle: nil)
+        let subscriptionPlansVC = storyboard.instantiateViewController(withIdentifier: "SubscriptionPlansViewController")
+        self.present(subscriptionPlansVC, animated: true, completion: nil)
+    }
+
     /*override func deselectRow(at indexPath: IndexPath, animated: Bool) {
         let cell = self.cellForRow(at: indexPath) as? HomeworkTableViewCell
         if (animated == true) {
@@ -396,37 +504,42 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
         }
         super.deselectRow(at: indexPath, animated: animated)
     }*/
-    
+
     override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         let cell = tableView.cellForRow(at: indexPath) as? HomeworkTableViewCell
-        cell?.cardView.backgroundColor = UIColor(red: 180/255, green: 180/255, blue: 180/255, alpha: 1.0) //This color is also set in a method above and in B4GradTableView.
+        cell?.cardView.backgroundColor =  UIColor(red: 180/255, green: 180/255, blue: 180/255, alpha: 1.0) //This color is also set in a method above and in B4GradTableView.
+
         return true
     }
-    
+
     override func tableView(_ tableView: UITableView, didHighlightRowAt indexPath: IndexPath) {
-        let cell = tableView.cellForRow(at: indexPath) as? HomeworkTableViewCell
-        cell?.cardView.backgroundColor = UIColor(red: 180/255, green: 180/255, blue: 180/255, alpha: 1.0)
+        let cell = tableView.cellForRow(at: indexPath)
+
+        if let homeCell = cell as? HomeworkTableViewCell {
+            homeCell.cardView.backgroundColor = UIColor(red: 180/255, green: 180/255, blue: 180/255, alpha: 1.0)
+        }
+
     }
-    
+
     override func tableView(_ tableView: UITableView, didUnhighlightRowAt indexPath: IndexPath) {
         let cell = tableView.cellForRow(at: indexPath) as? HomeworkTableViewCell
         cell?.cardView.backgroundColor = UIColor.white
     }
-    
+
     override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         let cell = tableView.cellForRow(at: indexPath) as? HomeworkTableViewCell
         cell?.cardView.backgroundColor = UIColor.white
     }
-    
+
     override func tableView(_ tableView: UITableView, willDeselectRowAt indexPath: IndexPath) -> IndexPath? {
         let cell = tableView.cellForRow(at: indexPath) as? HomeworkTableViewCell
         cell?.cardView.backgroundColor = UIColor.white
         return indexPath
     }
-    
+
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if (self.dictionary[(indexPath as NSIndexPath).section]![(indexPath as NSIndexPath).row].identifier == "UseCell") {
-            if (self.dictionary[2]!.count == 1) {
+            if (self.dictionary[3]!.count == 1) {
                 //Delete all Date Tokens since the user has decided to use an empty schedule.
                 let realm = try! Realm()
                 let dateTokens = self.repeatingSchedule!.tokens
@@ -438,12 +551,23 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
                 do {
                     try realm.commitWrite()
                 } catch let error {
-                
+
                 }
                 self.navigationController!.popViewController(animated: true)
+
+                if self.isFromTimeTableVC {
+                    let navController = ((self.splitViewController?.viewControllers.count)! > 1) ? self.splitViewController?.viewControllers[1] : nil
+                    if (navController != nil) {
+                        if (navController!.isKind(of: UINavigationController.self)){
+                            let nav = navController as! UINavigationController
+                            nav.viewControllers = []
+                        }
+                    }
+                }
+
                 return
             }
-            if (self.dictionary[2]!.count == 2) {
+            if (self.dictionary[3]!.count == 2) {
                 tableView.deselectRow(at: indexPath, animated: true)
                 let alertViewController = UIAlertController(title: "Oops..",
                                                             message: "We cannot use an empty schedule.",
@@ -455,9 +579,9 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
                 self.present(alertViewController, animated: true, completion: nil)
                 return
             }
-            for (buttonNumber, item) in self.dictionary[2]![0].toggleArray!.enumerated() {
+            for (buttonNumber, item) in self.dictionary[3]![0].toggleArray!.enumerated() {
                 if (item == true) {
-                    if (self.dictionary[2]![2].timeArray![buttonNumber] == Date(timeIntervalSince1970: 0)) {
+                    if (self.dictionary[3]![2].timeArray![buttonNumber] == Date(timeIntervalSince1970: 0)) {
                         tableView.deselectRow(at: indexPath, animated: true)
                         let alertViewController = UIAlertController(title: "Oops..",
                                                                     message: "We cannot accept this schedule, provide a start & end time for each day you have chosen. Thank you.",
@@ -471,9 +595,9 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
                     }
                 }
             }
-            for (buttonNumber, item) in self.dictionary[2]![1].timeArray!.enumerated() {
-                let correspondingItem = self.dictionary[2]![2].timeArray![buttonNumber]
-                if (item == correspondingItem && self.dictionary[2]![1].toggleArray![buttonNumber] == true && self.dictionary[2]![2].toggleArray![buttonNumber] == true) {
+            for (buttonNumber, item) in self.dictionary[3]![1].timeArray!.enumerated() {
+                let correspondingItem = self.dictionary[3]![2].timeArray![buttonNumber]
+                if (item == correspondingItem && self.dictionary[3]![1].toggleArray![buttonNumber] == true && self.dictionary[3]![2].toggleArray![buttonNumber] == true) {
                     tableView.deselectRow(at: indexPath, animated: true)
                     let alertViewController = UIAlertController(title: "Oops..",
                                                                 message: "Your " + self.type + "s cannot start at identical times on the same day..unless you can can be in two places at once!",
@@ -486,9 +610,9 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
                     return
                 }
             }
-            for (buttonNumber, item) in self.dictionary[2]![1].timeArray!.enumerated() {
-                let correspondingItem = self.dictionary[2]![2].timeArray![buttonNumber]
-                if (item.time == correspondingItem.time && self.dictionary[2]![1].toggleArray![buttonNumber] == true && self.dictionary[2]![2].toggleArray![buttonNumber] == true) {
+            for (buttonNumber, item) in self.dictionary[3]![1].timeArray!.enumerated() {
+                let correspondingItem = self.dictionary[3]![2].timeArray![buttonNumber]
+                if (item.time == correspondingItem.time && self.dictionary[3]![1].toggleArray![buttonNumber] == true && self.dictionary[3]![2].toggleArray![buttonNumber] == true) {
                     tableView.deselectRow(at: indexPath, animated: true)
                     let alertViewController = UIAlertController(title: "Oops..",
                                                                 message: "Your " + self.type + "s cannot start at identical times on the same day..unless you can can be in two places at once!",
@@ -501,12 +625,42 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
                     return
                 }
             }
-            
+
+
+
+
+            if (self.course.courseName.count <= 0) {
+                tableView.deselectRow(at: indexPath, animated: true)
+                let alertViewController = UIAlertController(title: "Oops..",
+                                                            message: "Please Select the Course.",
+                                                            preferredStyle: .alert)
+                let okButton = UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
+                    alertViewController.dismiss(animated: true, completion: nil)
+                })
+                alertViewController.addAction(okButton)
+                self.present(alertViewController, animated: true, completion: nil)
+                return
+            }
+
+            if (self.type.count <= 0) {
+                tableView.deselectRow(at: indexPath, animated: true)
+                let alertViewController = UIAlertController(title: "Oops..",
+                                                            message: "Please Select the Event Type.",
+                                                            preferredStyle: .alert)
+                let okButton = UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
+                    alertViewController.dismiss(animated: true, completion: nil)
+                })
+                alertViewController.addAction(okButton)
+                self.present(alertViewController, animated: true, completion: nil)
+                return
+            }
+
+
             //Check to ensure startTime isn't before endTime.
-            for (buttonNumber, item) in self.dictionary[2]![0].toggleArray!.enumerated() {
+            for (buttonNumber, item) in self.dictionary[3]![0].toggleArray!.enumerated() {
                 if (item == true) {
-                    let startTime = self.dictionary[2]![1].timeArray![buttonNumber]
-                    let endTime = self.dictionary[2]![2].timeArray![buttonNumber]
+                    let startTime = self.dictionary[3]![1].timeArray![buttonNumber]
+                    let endTime = self.dictionary[3]![2].timeArray![buttonNumber]
                     var startDayOfWeek = DayOfWeek.init(id: 0)
                     if (buttonNumber == 0) {
                         startDayOfWeek = DayOfWeek.monday
@@ -520,7 +674,7 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
                         startDayOfWeek = DayOfWeek.friday
                     }
                     //IMPORTANT: Compare Time objects, NOT DATES. So comparing timeIntervals of a Date object is inaccurate.
-                    
+
                     /*if (startTime.time >= endTime.time) {
                         tableView.deselectRow(at: indexPath, animated: true)
                         let alertViewController = UIAlertController(title: "Oops..",
@@ -533,7 +687,7 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
                         self.present(alertViewController, animated: true, completion: nil)
                         return
                     }*/
-                    
+
                     ///
                     if (startTime.time == endTime.time) {
                         tableView.deselectRow(at: indexPath, animated: true)
@@ -547,22 +701,22 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
                         self.present(alertViewController, animated: true, completion: nil)
                         return
                     }
-                    
+
                     if (startTime.time > endTime.time) {
                         //The RLMRecurringSchoolEvent ends on the following day...so let execution continue.
                         //This if statement helps state this logic clearly.
-                        
-                        
+
+
                     }
                     ///
                 }
             }
-            
+
             var dateTokensToSave = [RLMDateToken]()
-            for (buttonNumber, item) in self.dictionary[2]![0].toggleArray!.enumerated() {
+            for (buttonNumber, item) in self.dictionary[3]![0].toggleArray!.enumerated() {
                 if (item == true) {
-                    let startTime = self.dictionary[2]![1].timeArray![buttonNumber]
-                    var endTime = self.dictionary[2]![2].timeArray![buttonNumber]
+                    let startTime = self.dictionary[3]![1].timeArray![buttonNumber]
+                    var endTime = self.dictionary[3]![2].timeArray![buttonNumber]
                     var startDayOfWeek = DayOfWeek.init(id: 0)
                     //if (startTime.time > endTime.time) {
                         //The RLMRecurringSchoolEvent ends on the following day...(instead of the same day)
@@ -583,40 +737,47 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
                     let dateToken = RLMDateToken(startTime: startTime as NSDate, startDayOfWeek: startDayOfWeek!.rawValue, endTime: endTime as? NSDate)
                     dateTokensToSave.append(dateToken)
                 }
-                
+
             }
-            
+
             let realm = try! Realm()
             let coursePredicate = NSPredicate(format: "course = %@", self.course as CVarArg)
             let typePredicate = NSPredicate(format: "type = %@", self.type as CVarArg)
             //let repeatingSchedule = realm.objects(RLMRepeatingSchedule.self).filter(coursePredicate).filter(typePredicate).first!
-            let dateTokensForSchedule = self.repeatingSchedule.tokens
-            
-            
+            var dateTokensForSchedule: List<RLMDateToken>!
+            dateTokensForSchedule = self.repeatingSchedule.tokens
+
             let calendar = Calendar.current
             var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: calendar.date(byAdding: .day, value: 1, to: Date())!)
             components.hour = 0
             components.minute = 0
             components.second = 0
             let earliestTimeTomorrow = calendar.date(from: components)! //Earliest possible time for tomorrow's day.
-            let dueDateIsAfterToday = NSPredicate(format: "dueDate >= %@", earliestTimeTomorrow as CVarArg)
+//            let dueDateIsAfterToday = NSPredicate(format: "dueDate >= %@", earliestTimeTomorrow as CVarArg)
+            let dueDateIsAfterToday = NSPredicate(format: "repeatingSchedule != nil")
             var tasksToDelete = realm.objects(RLMTask.self).filter(coursePredicate).filter(typePredicate).filter("completed = false AND removed = false").filter(dueDateIsAfterToday).toArray()
-            
+
+            let allTasks = realm.objects(RLMTask.self).toArray()
+
             //let hasDefaultNameRegexPattern = "((Assignment)|(Quiz)|(Midterm)|(Final)|(Lecture)|(Lab)|(Tutorial)) [0123456789]*"
             //let regex = try! NSRegularExpression(pattern: hasDefaultNameRegexPattern, options: [])
             for task in tasksToDelete {
+                print(task)
                 //let matches = regex.matches(in: task.name, options: [], range: NSRange(location: 0, length: task.name.characters.count))
                 //if (matches >= 1) {
                 //    tasksToDelete.drop(while: hasDefaultNameRegexPattern)
                 //}
-                print(task.id + " " + task.name + " is a " + task.type + " for the course " + task.course!.courseName + ".")
+//                print(task.id + " " + task.name + " is a " + task.type + " for the course " + task.course!.courseName + ".")
             }
-            
-            
+
+            realm.beginWrite()
+            realm.delete(tasksToDelete)
+            tasksToDelete = []
+
             let tuple = self.createInitialTasksForSavedDateTokensIfNeeded(dateTokens: &dateTokensToSave, tasksToDelete: &tasksToDelete, calendar: calendar)
             let tasksToSave = tuple.0
             //let lastTaskCreatedDueDate = tuple.2
-            realm.beginWrite()
+//            realm.beginWrite()
             //Delete all tasks due after the current day that are associated with the current recurringSchoolEvents that do not have a custom title or other custom modification like notes attached to it.
             realm.delete(tasksToDelete)
             //Delete all of the old DateTokens.
@@ -632,14 +793,47 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
             do {
                 try realm.commitWrite()
             } catch let error {
-                
+                print(error)
             }
+
+            let allEvents = realm.objects(RLMRepeatingSchedule.self).toArray()
+
             //Update HWVC's UITableView just before popping this VC.
-            self.scheduleEditorVC.homeVC.tableView.reloadSections([0], with: .automatic)
+            if (self.scheduleEditorVC != nil){
+                self.scheduleEditorVC?.homeVC.tableView.reloadSections([0], with: .automatic)
+            }else{
+                NotificationCenter.default.post(name: NSNotification.Name.init("event_updated"), object: nil)
+            }
+
             self.navigationController!.popViewController(animated: true)
+
+            if self.isFromTimeTableVC {
+                let navController = ((self.splitViewController?.viewControllers.count)! > 1) ? self.splitViewController?.viewControllers[1] : nil
+                if (navController != nil) {
+                    if (navController!.isKind(of: UINavigationController.self)){
+                        let nav = navController as! UINavigationController
+                        nav.viewControllers = []
+                    }
+                }
+            }
             return
         }
-        
+
+        if (self.dictionary[(indexPath as NSIndexPath).section]![(indexPath as NSIndexPath).row].identifier == "TypeCell") {
+            let storyboard  = UIStoryboard.init(name: "Main", bundle: Bundle.main)
+            let vc  = storyboard.instantiateViewController(withIdentifier: "TaskTypeTableViewController") as! TaskTypeTableViewController
+            vc.weeklyEditingVC = self
+            vc.isFromTimeTableVC = self.isFromTimeTableVC
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
+
+        if (self.dictionary[(indexPath as NSIndexPath).section]![(indexPath as NSIndexPath).row].identifier == "CourseCell") {
+            let storyboard  = UIStoryboard.init(name: "Main", bundle: Bundle.main)
+            let vc  = storyboard.instantiateViewController(withIdentifier: "CourseSelectionTableViewController") as! CourseSelectionTableViewController
+            vc.weeklyEditingVC = self
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
+
         if (self.dictionary[(indexPath as NSIndexPath).section]![(indexPath as NSIndexPath).row].identifier == "SectionCell") {
             tableView.deselectRow(at: indexPath, animated: true)
             tableView.endEditing(false)
@@ -668,7 +862,7 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
             }
             return
         }
-        
+
         let cell = tableView.cellForRow(at: indexPath)
         if (cell is HomeworkTableViewCell) {
             let hwCell = cell as! HomeworkTableViewCell
@@ -676,11 +870,62 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
             self.lastSelectedRowIndexPath = indexPath
             //print(self.tableView.indexPathsForSelectedRows!.description)
         }
-        
+
+        // User tapped on a new instructor cell
+
+        if (cell?.reuseIdentifier == "NewInstructorCell")
+        {
+            tableView.deselectRow(at: indexPath, animated: true)
+            /*if (UserDefaults.standard.bool(forKey: "isSubscribed") == false) {
+                let storyboard = UIStoryboard(name: "Subscription", bundle: nil)
+                let subscriptionPlansVC = storyboard.instantiateViewController(withIdentifier: "SubscriptionPlansViewController")
+                self.present(subscriptionPlansVC, animated: true, completion: nil)
+                return
+            }*/
+            if (self.course.courseName.count <= 0) { //Not the same as self.course == nil since this class uses a placeholder course temporarily to simplify implementation.
+                
+                //Do not allow creation of Instuctor without Course Selection.
+                let alertViewController = UIAlertController(title: "Oops..",
+                                                            message: "Please Select a Course before Creating a New Instuctor.",
+                                                            preferredStyle: .alert)
+                let okButton = UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
+                    alertViewController.dismiss(animated: true, completion: nil)
+                })
+                alertViewController.addAction(okButton)
+                self.present(alertViewController, animated: true, completion: nil)
+                return
+            }
+            let newInstructorVC = InstructorEditingModeVC()
+            newInstructorVC.editingMode = .creating
+            newInstructorVC.course = self.course
+            newInstructorVC.type = self.type
+            newInstructorVC.weeklyEditingVC = self
+            navigationController?.pushViewController(newInstructorVC, animated: true)
+        }
+
+        // User tapped on an existing Instructor cell
+
+        if (cell?.reuseIdentifier == "InstructorCell")
+        {
+            tableView.deselectRow(at: indexPath, animated: true)
+            /*if (UserDefaults.standard.bool(forKey: "isSubscribed") == false) {
+                let storyboard = UIStoryboard(name: "Subscription", bundle: nil)
+                let subscriptionPlansVC = storyboard.instantiateViewController(withIdentifier: "SubscriptionPlansViewController")
+                self.present(subscriptionPlansVC, animated: true, completion: nil)
+                return
+            }*/
+            let instructorVC = InstructorVC()
+            instructorVC.instructor = self.dictionary[2]![indexPath.row].instructor
+            instructorVC.course = course
+            instructorVC.type = self.type
+            instructorVC.weeklyEditingVC = self
+            navigationController?.pushViewController(instructorVC, animated: true)
+        }
+
         if (self.dictionary[(indexPath as NSIndexPath).section]![(indexPath as NSIndexPath).row].identifier == "HomeworkTableViewCell") {
             let scheduleRowContent = self.dictionary[indexPath.section]![indexPath.row]
             let task = scheduleRowContent.task!
-            
+
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             let cellEditingVC = storyboard.instantiateViewController(withIdentifier: "CellEditingVC") as! CellEditingTableViewController
             cellEditingVC.helperObject = WeeklyCellEditingHelperObject(cellEditingTVC: cellEditingVC, task: task, taskManagerVC: self, homeVC: self.homeVC)
@@ -692,9 +937,9 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
             self.show(cellEditingVC, sender: nil)
             return
         }
-        
+
     }
-    
+
     /* This is a complex algorithm that executes upon Date Tokens being saved. It returns a tuple containing (1) an array of tasks to save and (2) an RLMRepeatingSchedule. */
     func createInitialTasksForSavedDateTokensIfNeeded(dateTokens: inout [RLMDateToken], tasksToDelete: inout [RLMTask], calendar: Calendar) -> ([RLMTask], RLMRepeatingSchedule) {
         let realm = try! Realm()
@@ -705,19 +950,19 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
             //var createdAtDateComponents = calendar.dateComponents([.year, .month, .weekOfYear, .weekday, .hour, .minute], from: createdAtOfRLMDateToken as Date)
 
             //var lastTaskCreatedDueDate = dateToken.lastTaskCreatedDueDate
-            
+
             //Get the date of the soonest targetDayOfWeek following the createdAt date of the RLMDateToken, since that should be the date and time of the first task for this RLMRepeatingSchedule.
             let targetDayOfWeek = DayOfWeek(rawValue: dateToken.startDayOfWeek)!.rawValue
             let newDate = self.findNext(targetDayOfWeek, afterDate: createdAtOfRLMDateToken as Date)! //will get date of next targetDayOfWeek including TODAY. (So if today is already targetDayOfWeek, it will today's date)
-            
+
             let cal = Calendar(identifier: .gregorian) //Always use a new calendar object instead of reusing an existing one.
             var createdAtDateComponents = cal.dateComponents([.year, .month, .day, .hour, .minute, .second], from: newDate)
-            
+
             createdAtDateComponents.hour = (dateToken.startTime! as Date).time.hour
             createdAtDateComponents.minute = (dateToken.startTime! as Date).time.minute
             createdAtDateComponents.second = 0
             var followingTargetDay = cal.date(from: createdAtDateComponents)
-            
+
             //Since followingTargetDay could be today, we check if the event already happened earlier today. If it did then we must increment newDate to be the next possible date (AKA one week from today).
             let isPast = followingTargetDay!.isPast()
             let isToday = Calendar.current.isDateInToday(followingTargetDay!)
@@ -725,12 +970,12 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
                 followingTargetDay = calendar.date(byAdding: .day, value: 7, to: followingTargetDay!, wrappingComponents: false)!
                 createdAtDateComponents = cal.dateComponents([.year, .month, .day, .hour, .minute, .second], from: followingTargetDay!)
             }
-            
+
             let formatter = DateFormatter()
             formatter.dateStyle = .full
             formatter.timeStyle = .full
             print(formatter.string(from: followingTargetDay!))
-            
+
             var endDateAndTime : Date!
             if (dateToken.endTime! != nil) {
                 createdAtDateComponents.hour = (dateToken.endTime! as Date).time.hour
@@ -742,25 +987,26 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
                 }
                 print(formatter.string(from: endDateAndTime!))
             }
-            
+
             if (dateToken.lastTaskCreatedDueDate == nil) {
                 dateToken.lastTaskCreatedDueDate = followingTargetDay! as NSDate
-                
+
             } else if (followingTargetDay!.timeIntervalSinceReferenceDate > dateToken.lastTaskCreatedDueDate!.timeIntervalSinceReferenceDate) {
                 dateToken.lastTaskCreatedDueDate = followingTargetDay! as NSDate
             }
-            
+
             //if the followingTargetDay date is now or in the future, create the task.
-            
+
             //let isWithinSameDayOfCurrentDate = Calendar.current.isDateInToday(followingTargetDay!)
-            
-            
-            
+
+
+
                 //let tasksOfSameTypeAndSameCourse = realm.objects(RLMTask.self).filter("type = %@ AND course = %@ AND createdDate <= %@", recurringSchoolEvent.type, recurringSchoolEvent.course!, recurringSchoolEvent.createdDate).sorted(byKeyPath: "createdDate", ascending: false)
                 //All RLMRecurringEvents get recreated (deleted & created new again) when the user exits WeeklyEditingVC. WeeklyEditingVC also handles deleting tasks due in the future for these RLMRecurringEvents EXCEPT for ones due the same day! (To ensure if the user already modified it with a custom title, etc, it doesn't get deleted.) Therefore, a bug can occur that causes any newly recreated RLMRecurringEvent to create an already existing task since it doesn't realize an old one exists for the current day. This bug occurs when an RLMRecurringEvent is recreated on the day of the week it is supposed to create a task. Below code fixes this bug, although alternatively this algorithm could be moved to WeeklyEditingVC, remove the bit of code below, and then ensure that the WeeklyEditingVC actually deletes even those tasks that are due today. Or we could just move this algo to WeeklyEditingVC, keep the bit of code below, and not modify the deletion algo (preferred).
                 if (realm.objects(RLMTask.self).filter("type = %@ AND course = %@ AND dueDate = %@ AND endDateAndTime = %@ AND removed = false", self.repeatingSchedule.type, self.repeatingSchedule.course!, followingTargetDay!, endDateAndTime!).sorted(byKeyPath: "createdDate", ascending: false).first != nil) {
+
                     if let duplicateTask = tasksToDelete.first(where: { $0.dueDate?.timeIntervalSinceReferenceDate == followingTargetDay!.timeIntervalSinceReferenceDate && $0.endDateAndTime?.timeIntervalSinceReferenceDate == endDateAndTime!.timeIntervalSinceReferenceDate }) {
-                        tasksToDelete.removeObject(object: duplicateTask)
+//                        tasksToDelete.removeObject(object: duplicateTask)
                     }
                     //Don't create new duplicate task incase this RLMRepeatingSchedule was simply a recreated version of an old one.
                 } else {
@@ -773,7 +1019,7 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
                     tasksToBeSaved.append(task)
                     /*if (dateToken.lastTaskCreatedDueDate == nil) {
                         dateToken.lastTaskCreatedDueDate = followingTargetDay! as NSDate
-                        
+
                     } else if (followingTargetDay!.timeIntervalSinceReferenceDate > dateToken.lastTaskCreatedDueDate!.timeIntervalSinceReferenceDate) {
                         dateToken.lastTaskCreatedDueDate = followingTargetDay! as NSDate
                     }*/
@@ -782,15 +1028,16 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
         }
         if (tasksToBeSaved.count > 0) {
             let tasksOfSameTypeAndSameCourse = realm.objects(RLMTask.self).filter("type = %@ AND course = %@ AND createdDate <= %@ AND removed = false", tasksToBeSaved.first!.type, tasksToBeSaved.first!.course!, Date()).sorted(byKeyPath: "createdDate", ascending: false)
+
             for (index, task) in tasksToBeSaved.sorted(by: { $0.dueDate!.timeIntervalSinceReferenceDate < $1.dueDate!.timeIntervalSinceReferenceDate }).enumerated() {
                 task.name = task.name + String(tasksOfSameTypeAndSameCourse.count + index + 1)
                 task.createdDate = task.createdDate.addingTimeInterval(Double(index)) //So the placeholder names are correct.
             }
         }
-        
+
         return (tasksToBeSaved, self.repeatingSchedule)
     }
-        
+
     func findNext(_ day: String, afterDate date: Date) -> Date? {
         var calendar = Calendar.current
         calendar.locale = Locale(identifier: "en_US_POSIX")
@@ -808,7 +1055,7 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
                                             matchingPolicy:.nextTime)
         return nextDay!
     }
-        
+
     func getDayOfWeek(_ today:String) -> Int? {
         let formatter  = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
@@ -817,32 +1064,37 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
         let weekDay = myCalendar.component(.weekday, from: todayDate)
         return weekDay
     }
-    
+
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerView = UIView()
         headerView.backgroundColor = UIColor.clear
-        
+
         if (section == 1) {
             let headerView = SectionHeaderView.construct("General", owner: tableView)
             return headerView
         }
-        
+
         if (section == 2) {
+            let headerView = SectionHeaderView.construct("Instructors", owner: tableView)
+            return headerView
+        }
+
+        if (section == 3) {
             let headerView = SectionHeaderView.construct("Weekly Schedule", owner: tableView)
             return headerView
         }
-        
-        if (section == 4) {
+
+        if (section == 5) {
             let headerView = SectionHeaderView.construct("Past " + self.type + "s", owner: tableView)
             return headerView
         }
-        
+
         let invisView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
         invisView.backgroundColor = UIColor.clear
         return invisView
-        
+
     }
-    
+
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if (section == 0) {
             return CGFloat.leastNormalMagnitude
@@ -850,7 +1102,7 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
             return 21.0
         }
     }
-    
+
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         let point = self.tableView.convert(CGPoint.zero, from: textField)
         let indexPath = self.tableView.indexPathForRow(at: point)
@@ -862,7 +1114,7 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
         textField.resignFirstResponder()
         return true
     }
-    
+
     func textFieldDidEndEditing(_ textField: UITextField) {
         let point = self.tableView.convert(CGPoint.zero, from: textField)
         let indexPath = self.tableView.indexPathForRow(at: point)
@@ -872,7 +1124,7 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
             self.dictionary[((indexPath! as NSIndexPath).section)]![(indexPath! as NSIndexPath).row].name = nil
         }
         self.dictionary[((indexPath! as NSIndexPath).section)]![(indexPath! as NSIndexPath).row].name = textField.text
-        
+
         let identifier = self.dictionary[((indexPath! as NSIndexPath).section)]![(indexPath! as NSIndexPath).row].identifier
         if (identifier == "LocationCell") {
             textField.resignFirstResponder()
@@ -882,24 +1134,24 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
             do {
                 try realm.commitWrite()
             } catch let error {
-                
+
             }
         }
     }
-    
+
     //WeekdayTableViewCell Events
-    
+
     @IBAction func mondayTapped(_ sender: AnyObject) {
         let button = sender as! UIButton
         let cell = button.superview?.superview as! WeekdayTableViewCell
-        let section = 2
+        let section = weekdayCellIndex //3
         self.dictionary[section]![0].toggleArray![0] = !self.dictionary[section]![0].toggleArray![0]
         if (self.dictionary[section]![0].toggleArray![0] == true) {
             cell.mondayCheckmark.image = UIImage(named: "Green Checkmark")
         } else {
             cell.mondayCheckmark.image = UIImage(named: "Red X")
         }
-        
+
         if (self.dictionary[section]!.indices.contains(1) == false) { //If no WeeklyTimeCell exists.
             tableView.beginUpdates()
             let newWeeklyTimeRow = ScheduleRowContent(identifier: "WeeklyTimeCell", defaultToggleArray: [true, false, false, false, false], usesTimeArray: true)
@@ -928,7 +1180,7 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
                 weeklyEndTimeCell.arrayOfButtons[0].setTitle("Time", for: .normal)
                 weeklyEndTimeCell.mondayAtLabel.text = "End"
             }
-            
+
             //Close WeeklyEndTimeCell when no row 2 toggles are set to true.
             var indexPaths = [IndexPath]()
             tableView.beginUpdates()
@@ -945,20 +1197,20 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
             }
             tableView.endUpdates()
         }
-        
+
     }
-    
+
     @IBAction func tuesdayTapped(_ sender: AnyObject) {
         let button = sender as! UIButton
         let cell = button.superview?.superview as! WeekdayTableViewCell
-        let section = 2
+        let section = weekdayCellIndex //3
         self.dictionary[section]![0].toggleArray![1] = !self.dictionary[section]![0].toggleArray![1]
         if (self.dictionary[section]![0].toggleArray![1] == true) {
             cell.tuesdayCheckmark.image = UIImage(named: "Green Checkmark")
         } else {
             cell.tuesdayCheckmark.image = UIImage(named: "Red X")
         }
-        
+
         if (self.dictionary[section]!.indices.contains(1) == false) { //If no WeeklyTimeCell exists.
             tableView.beginUpdates()
             let newWeeklyTimeRow = ScheduleRowContent(identifier: "WeeklyTimeCell", defaultToggleArray: [false, true, false, false, false], usesTimeArray: true)
@@ -1004,18 +1256,18 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
             tableView.endUpdates()
         }
     }
-    
+
     @IBAction func wednesdayTapped(_ sender: AnyObject) {
         let button = sender as! UIButton
         let cell = button.superview?.superview as! WeekdayTableViewCell
-        let section = 2
+        let section = weekdayCellIndex //3
         self.dictionary[section]![0].toggleArray![2] = !self.dictionary[section]![0].toggleArray![2]
         if (self.dictionary[section]![0].toggleArray![2] == true) {
             cell.wednesdayCheckmark.image = UIImage(named: "Green Checkmark")
         } else {
             cell.wednesdayCheckmark.image = UIImage(named: "Red X")
         }
-        
+
         if (self.dictionary[section]!.indices.contains(1) == false) { //If no WeeklyTimeCell exists.
             tableView.beginUpdates()
             let newWeeklyTimeRow = ScheduleRowContent(identifier: "WeeklyTimeCell", defaultToggleArray: [false, false, true, false, false], usesTimeArray: true)
@@ -1061,18 +1313,18 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
             tableView.endUpdates()
         }
     }
-    
+
     @IBAction func thursdayTapped(_ sender: AnyObject) {
         let button = sender as! UIButton
         let cell = button.superview?.superview as! WeekdayTableViewCell
-        let section = 2
+        let section = weekdayCellIndex //3
         self.dictionary[section]![0].toggleArray![3] = !self.dictionary[section]![0].toggleArray![3]
         if (self.dictionary[section]![0].toggleArray![3] == true) {
             cell.thursdayCheckmark.image = UIImage(named: "Green Checkmark")
         } else {
             cell.thursdayCheckmark.image = UIImage(named: "Red X")
         }
-        
+
         if (self.dictionary[section]!.indices.contains(1) == false) { //If no WeeklyTimeCell exists.
             tableView.beginUpdates()
             let newWeeklyTimeRow = ScheduleRowContent(identifier: "WeeklyTimeCell", defaultToggleArray: [false, false, false, true, false], usesTimeArray: true)
@@ -1118,18 +1370,18 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
             tableView.endUpdates()
         }
     }
-    
+
     @IBAction func fridayTapped(_ sender: AnyObject) {
         let button = sender as! UIButton
         let cell = button.superview?.superview as! WeekdayTableViewCell
-        let section = 2
+        let section = weekdayCellIndex //3
         self.dictionary[section]![0].toggleArray![4] = !self.dictionary[section]![0].toggleArray![4]
         if (self.dictionary[section]![0].toggleArray![4] == true) {
             cell.fridayCheckmark.image = UIImage(named: "Green Checkmark")
         } else {
             cell.fridayCheckmark.image = UIImage(named: "Red X")
         }
-        
+
         if (self.dictionary[section]!.indices.contains(1) == false) { //If no WeeklyTimeCell exists.
             tableView.beginUpdates()
             let newWeeklyTimeRow = ScheduleRowContent(identifier: "WeeklyTimeCell", defaultToggleArray: [false, false, false, false, true], usesTimeArray: true)
@@ -1175,9 +1427,9 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
             tableView.endUpdates()
         }
     }
-    
+
     func removeWeeklyEndTimeCell() -> Bool {
-        let section = 2
+        let section = weekdayCellIndex //3
         if (self.dictionary[section]!.count >= 3) {
             for item in self.dictionary[section]![2].toggleArray! {
                 if (item == true) {
@@ -1201,9 +1453,9 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
         }
         return keepShowingWeeklyTimeCell*/
     }
-    
+
     func removeWeeklyTimeCell() -> Bool {
-        let section = 2
+        let section = weekdayCellIndex //3
         if (self.dictionary[section]!.count >= 2) {
             for item in self.dictionary[section]![1].toggleArray! {
                 if (item == true) {
@@ -1215,22 +1467,34 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
         }
         return true
     }
-    
+
     //WeeklyTableViewCell Events
-    
+
     var indexOfLastTimeButtonTapped : Int?
-    
+
     @IBAction func mondayTimeTapped(_ sender: AnyObject) {
-        let section = 2
+        let section = weekdayCellIndex //3
         let timePickerVC = self.storyboard?.instantiateViewController(withIdentifier: "TimePickerVC") as! TimePickerViewController
         timePickerVC.title = "Start Time"
+        timePickerVC.selectedDay        = "Mon"
         timePickerVC.weeklyEditingTVC = self
         let navigationController = UINavigationController(rootViewController: timePickerVC)
         navigationController.navigationBar.barStyle = .black
         navigationController.navigationBar.isTranslucent = true
         navigationController.modalPresentationStyle = .formSheet
         navigationController.navigationBar.tintColor = UIColor.white
-        self.showDetailViewController(navigationController, sender: sender)
+        //self.showDetailViewController(navigationController, sender: sender)
+        //self.navigationController?.pushViewController(timePickerVC, animated: true)
+
+        if (self.splitViewController != nil) { //splitViewController is nil when weeklyEditingTVC is shown in a compact environment.
+            self.showDetailViewController(timePickerVC, sender: sender)
+        } else {
+            self.navigationController?.pushViewController(timePickerVC, animated: true)
+        }
+        //self.showDetailViewController(timePickerVC, sender: sender)
+
+        //self.splitViewController?.showDetailViewController(navigationController, sender: sender)
+
         /*if (self.dictionary[section]!.indices.contains(2) == false) {
             tableView.beginUpdates()
             let timePickerCellData = ScheduleRowContent(identifier: "TimePickerCell")
@@ -1253,18 +1517,24 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
         }*/
         indexOfLastTimeButtonTapped = 0
     }
-    
+
     @IBAction func tuesdayTimeTapped(_ sender: AnyObject) {
-        let section = 2
+        let section = weekdayCellIndex //3
         let timePickerVC = self.storyboard?.instantiateViewController(withIdentifier: "TimePickerVC") as! TimePickerViewController
         timePickerVC.title = "Start Time"
+        timePickerVC.selectedDay        = "Tue"
         timePickerVC.weeklyEditingTVC = self
         let navigationController = UINavigationController(rootViewController: timePickerVC)
         navigationController.navigationBar.barStyle = .black
         navigationController.navigationBar.isTranslucent = true
         navigationController.modalPresentationStyle = .formSheet
         navigationController.navigationBar.tintColor = UIColor.white
-        self.showDetailViewController(navigationController, sender: sender)
+        //self.showDetailViewController(navigationController, sender: sender)
+        if (self.splitViewController != nil) { //splitViewController is nil when weeklyEditingTVC is shown in a compact environment.
+            self.showDetailViewController(timePickerVC, sender: sender)
+        } else {
+            self.navigationController?.pushViewController(timePickerVC, animated: true)
+        }
         /*if (self.dictionary[section]!.indices.contains(2) == false) {
             tableView.beginUpdates()
             let timePickerCellData = ScheduleRowContent(identifier: "TimePickerCell")
@@ -1287,18 +1557,24 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
         }*/
         indexOfLastTimeButtonTapped = 1
     }
-    
+
     @IBAction func wednesdayTimeTapped(_ sender: AnyObject) {
-        let section = 2
-        let timePickerVC = self.storyboard?.instantiateViewController(withIdentifier: "TimePickerVC") as! TimePickerViewController
-        timePickerVC.title = "Start Time"
+        let section = weekdayCellIndex //3
+        let timePickerVC                = self.storyboard?.instantiateViewController(withIdentifier: "TimePickerVC") as! TimePickerViewController
+        timePickerVC.title              = "Start Time"
+        timePickerVC.selectedDay        = "Wed"
         timePickerVC.weeklyEditingTVC = self
         let navigationController = UINavigationController(rootViewController: timePickerVC)
         navigationController.navigationBar.barStyle = .black
         navigationController.navigationBar.isTranslucent = true
         navigationController.modalPresentationStyle = .formSheet
         navigationController.navigationBar.tintColor = UIColor.white
-        self.showDetailViewController(navigationController, sender: sender)
+        //self.showDetailViewController(navigationController, sender: sender)
+        if (self.splitViewController != nil) { //splitViewController is nil when weeklyEditingTVC is shown in a compact environment.
+            self.showDetailViewController(timePickerVC, sender: sender)
+        } else {
+            self.navigationController?.pushViewController(timePickerVC, animated: true)
+        }
         /*if (self.dictionary[section]!.indices.contains(2) == false) {
             tableView.beginUpdates()
             let timePickerCellData = ScheduleRowContent(identifier: "TimePickerCell")
@@ -1321,18 +1597,24 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
         }*/
         indexOfLastTimeButtonTapped = 2
     }
-    
+
     @IBAction func thursdayTimeTapped(_ sender: AnyObject) {
-        let section = 2
+        let section = weekdayCellIndex //3
         let timePickerVC = self.storyboard?.instantiateViewController(withIdentifier: "TimePickerVC") as! TimePickerViewController
         timePickerVC.title = "Start Time"
+        timePickerVC.selectedDay        = "Thu"
         timePickerVC.weeklyEditingTVC = self
         let navigationController = UINavigationController(rootViewController: timePickerVC)
         navigationController.navigationBar.barStyle = .black
         navigationController.navigationBar.isTranslucent = true
         navigationController.modalPresentationStyle = .formSheet
         navigationController.navigationBar.tintColor = UIColor.white
-        self.showDetailViewController(navigationController, sender: sender)
+        //self.showDetailViewController(navigationController, sender: sender)
+        if (self.splitViewController != nil) { //splitViewController is nil when weeklyEditingTVC is shown in a compact environment.
+            self.showDetailViewController(timePickerVC, sender: sender)
+        } else {
+            self.navigationController?.pushViewController(timePickerVC, animated: true)
+        }
         /*if (self.dictionary[section]!.indices.contains(2) == false) {
             tableView.beginUpdates()
             let timePickerCellData = ScheduleRowContent(identifier: "TimePickerCell")
@@ -1355,18 +1637,24 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
         }*/
         indexOfLastTimeButtonTapped = 3
     }
-    
+
     @IBAction func fridayTimeTapped(_ sender: AnyObject) {
-        let section = 2
+        let section = weekdayCellIndex //3
         let timePickerVC = self.storyboard?.instantiateViewController(withIdentifier: "TimePickerVC") as! TimePickerViewController
         timePickerVC.title = "Start Time"
+        timePickerVC.selectedDay        = "Fri"
         timePickerVC.weeklyEditingTVC = self
         let navigationController = UINavigationController(rootViewController: timePickerVC)
         navigationController.navigationBar.barStyle = .black
         navigationController.navigationBar.isTranslucent = true
         navigationController.modalPresentationStyle = .formSheet
         navigationController.navigationBar.tintColor = UIColor.white
-        self.showDetailViewController(navigationController, sender: sender)
+        //self.showDetailViewController(navigationController, sender: sender)
+        if (self.splitViewController != nil) { //splitViewController is nil when weeklyEditingTVC is shown in a compact environment.
+            self.showDetailViewController(timePickerVC, sender: sender)
+        } else {
+            self.navigationController?.pushViewController(timePickerVC, animated: true)
+        }
         /*if (self.dictionary[section]!.indices.contains(2) == false) {
             tableView.beginUpdates()
             let timePickerCellData = ScheduleRowContent(identifier: "TimePickerCell")
@@ -1389,76 +1677,106 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
         }*/
         indexOfLastTimeButtonTapped = 4
     }
-    
+
     @IBAction func mondayEndTimeTapped(_ sender: Any) {
         let timePickerVC = self.storyboard?.instantiateViewController(withIdentifier: "TimePickerVC") as! TimePickerViewController
         timePickerVC.title = "End Time"
+        timePickerVC.selectedDay        = "Mon"
         timePickerVC.weeklyEditingTVC = self
         let navigationController = UINavigationController(rootViewController: timePickerVC)
         navigationController.navigationBar.barStyle = .black
         navigationController.navigationBar.isTranslucent = true
         navigationController.modalPresentationStyle = .formSheet
         navigationController.navigationBar.tintColor = UIColor.white
-        self.showDetailViewController(navigationController, sender: sender)
+        //self.showDetailViewController(navigationController, sender: sender)
+        if (self.splitViewController != nil) { //splitViewController is nil when weeklyEditingTVC is shown in a compact environment.
+            self.showDetailViewController(timePickerVC, sender: sender)
+        } else {
+            self.navigationController?.pushViewController(timePickerVC, animated: true)
+        }
         indexOfLastTimeButtonTapped = 0
     }
-    
+
     @IBAction func tuesdayEndTimeTapped(_ sender: Any) {
         let timePickerVC = self.storyboard?.instantiateViewController(withIdentifier: "TimePickerVC") as! TimePickerViewController
         timePickerVC.title = "End Time"
+        timePickerVC.selectedDay        = "Tue"
         timePickerVC.weeklyEditingTVC = self
         let navigationController = UINavigationController(rootViewController: timePickerVC)
         navigationController.navigationBar.barStyle = .black
         navigationController.navigationBar.isTranslucent = true
         navigationController.modalPresentationStyle = .formSheet
         navigationController.navigationBar.tintColor = UIColor.white
-        self.showDetailViewController(navigationController, sender: sender)
+        //self.showDetailViewController(navigationController, sender: sender)
+        if (self.splitViewController != nil) { //splitViewController is nil when weeklyEditingTVC is shown in a compact environment.
+            self.showDetailViewController(timePickerVC, sender: sender)
+        } else {
+            self.navigationController?.pushViewController(timePickerVC, animated: true)
+        }
         indexOfLastTimeButtonTapped = 1
     }
-    
+
     @IBAction func wednesdayEndTimeTapped(_ sender: Any) {
         let timePickerVC = self.storyboard?.instantiateViewController(withIdentifier: "TimePickerVC") as! TimePickerViewController
         timePickerVC.title = "End Time"
+        timePickerVC.selectedDay        = "Wed"
         timePickerVC.weeklyEditingTVC = self
         let navigationController = UINavigationController(rootViewController: timePickerVC)
         navigationController.navigationBar.barStyle = .black
         navigationController.navigationBar.isTranslucent = true
         navigationController.modalPresentationStyle = .formSheet
         navigationController.navigationBar.tintColor = UIColor.white
-        self.showDetailViewController(navigationController, sender: sender)
+        //self.showDetailViewController(navigationController, sender: sender)
+        if (self.splitViewController != nil) { //splitViewController is nil when weeklyEditingTVC is shown in a compact environment.
+            self.showDetailViewController(timePickerVC, sender: sender)
+        } else {
+            self.navigationController?.pushViewController(timePickerVC, animated: true)
+        }
         indexOfLastTimeButtonTapped = 2
     }
-    
+
     @IBAction func thursdayEndTimeTapped(_ sender: Any) {
         let timePickerVC = self.storyboard?.instantiateViewController(withIdentifier: "TimePickerVC") as! TimePickerViewController
         timePickerVC.title = "End Time"
+        timePickerVC.selectedDay        = "Thu"
         timePickerVC.weeklyEditingTVC = self
         let navigationController = UINavigationController(rootViewController: timePickerVC)
         navigationController.navigationBar.barStyle = .black
         navigationController.navigationBar.isTranslucent = true
         navigationController.modalPresentationStyle = .formSheet
         navigationController.navigationBar.tintColor = UIColor.white
-        self.showDetailViewController(navigationController, sender: sender)
+        //self.showDetailViewController(navigationController, sender: sender)
+        if (self.splitViewController != nil) { //splitViewController is nil when weeklyEditingTVC is shown in a compact environment.
+            self.showDetailViewController(timePickerVC, sender: sender)
+        } else {
+            self.navigationController?.pushViewController(timePickerVC, animated: true)
+        }
         indexOfLastTimeButtonTapped = 3
 
     }
-    
+
     @IBAction func fridayEndTimeTapped(_ sender: Any) {
         let timePickerVC = self.storyboard?.instantiateViewController(withIdentifier: "TimePickerVC") as! TimePickerViewController
         timePickerVC.title = "End Time"
+        timePickerVC.selectedDay        = "Fri"
         timePickerVC.weeklyEditingTVC = self
         let navigationController = UINavigationController(rootViewController: timePickerVC)
         navigationController.navigationBar.barStyle = .black
         navigationController.navigationBar.isTranslucent = true
         navigationController.modalPresentationStyle = .formSheet
         navigationController.navigationBar.tintColor = UIColor.white
-        self.showDetailViewController(navigationController, sender: sender)
+        //self.showDetailViewController(navigationController, sender: sender)
+        if (self.splitViewController != nil) { //splitViewController is nil when weeklyEditingTVC is shown in a compact environment.
+            self.showDetailViewController(timePickerVC, sender: sender)
+        } else {
+            self.navigationController?.pushViewController(timePickerVC, animated: true)
+        }
         indexOfLastTimeButtonTapped = 4
     }
-    
-    
+
+
     @IBAction func timePickerValueChanged(_ sender: AnyObject) {
-        let section = 2
+        let section = weekdayCellIndex //3
         //Everytime value is changed for datePickerCell, adjust the mondayTimeButton.title (& save data to data model).
         let timePicker = sender as! CustomDatePickerView
         tableView.beginUpdates()
@@ -1469,27 +1787,27 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
         tableView.reloadRows(at: [IndexPath(row: 1, section: section)], with: .none)
         tableView.endUpdates()
     }
-    
+
     //UIPickerViewDelegate
-    
+
     func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
         let customPickerView = pickerView as! CustomPickerView
         let cellContent = self.dictionary[customPickerView.indexPath.section]![customPickerView.indexPath.row]
         let titleForRow = cellContent.pickerDataSource?.dataArray[row]
-        let attributedTitleForRow = NSAttributedString(string: titleForRow!, attributes: [NSAttributedStringKey.foregroundColor : UIColor.init(red: 255, green: 255, blue: 255, alpha: 1.0)])
+        let attributedTitleForRow = NSAttributedString(string: titleForRow!, attributes: [NSAttributedStringKey.foregroundColor : UIColor(displayP3Red: 255, green: 255, blue: 255, alpha: 1.0) ])
         return attributedTitleForRow
     }
-    
+
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         //Get title from pickerViewer row.
         let customPickerView = pickerView as! CustomPickerView
         let cellContent = self.dictionary[customPickerView.indexPath.section]![customPickerView.indexPath.row]
         let titleForRow = cellContent.pickerDataSource?.dataArray[row]
-        
+
         //Update information in pickerViewCell.
         let pickerViewCellContent = self.dictionary[customPickerView.indexPath.section]![customPickerView.indexPath.row]
         pickerViewCellContent.pickerTitleForRow = pickerViewCellContent.pickerDataSource?.dataArray[row]
-        
+
         //Update tableView accordingly.
         self.tableView.beginUpdates()
         let cellContentNeedingModification = self.dictionary[customPickerView.indexPath.section]![customPickerView.indexPath.row - 1]
@@ -1497,9 +1815,9 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
         self.tableView.reloadRows(at: [IndexPath(row: customPickerView.indexPath.row - 1, section: customPickerView.indexPath.section)], with: .none)
         self.tableView.endUpdates()
     }
-    
+
     // MARK: - HomeworkTableViewCellDelegate
-    
+
     func taskDeleted(_ task: RLMTask) {
         let indexPathForRow = self.homeVC.indexOfTask(task: task)
         let scheduleEditorIndexPath = self.indexOfTask(task: task)
@@ -1538,12 +1856,12 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
             }
             return
         }
-        
+
         var cellWasSelected = false
         if (self.homeVC.tableView.cellForRow(at: indexPathForRow!)!.isSelected == true) {
             cellWasSelected = true
         }
-        
+
         let realm = try! Realm()
         realm.beginWrite()
         //realm.delete(task)
@@ -1557,18 +1875,18 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
             return
         }
         self.dictionary[scheduleEditorIndexPath!.section]?.remove(at: scheduleEditorIndexPath!.row)
-        
+
         // use the UITableView to animate the removal of this row
         self.homeVC.tableView.beginUpdates()
         self.homeVC.tableView.deleteRows(at: [indexPathForRow!], with: .left)
         self.homeVC.tableView.endUpdates()
-        
+
         self.tableView.beginUpdates()
         self.tableView.deleteRows(at: [scheduleEditorIndexPath!], with: .left)
         self.tableView.endUpdates()
-        
+
         self.homeVC.playDeleteSound()
-        
+
         //Remove Completed Today Section if needed.
         self.homeVC.tableView.beginUpdates()
         if (self.homeVC.completedTodayTasks.count == 0) {
@@ -1580,7 +1898,7 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
         }
         self.homeVC.tableView.endUpdates()
         //
-        
+
         //Remove Extended Section if needed.
         self.homeVC.tableView.beginUpdates()
         if (self.homeVC.extendedTasks.count == 0) {
@@ -1592,11 +1910,11 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
         }
         self.homeVC.tableView.endUpdates()
         //
-        
+
         if (self.homeVC.splitViewController!.isCollapsed == false && cellWasSelected == true) {
             self.homeVC.splitViewController!.viewControllers[1] = self.storyboard!.instantiateViewController(withIdentifier: "BlankTabBarController")
         }
-        
+
         //Close SplitViewController secondary VC if it is a CellEditingTVC representing the deleted task.
         if (self.homeVC.splitViewController!.viewControllers.count <= 1) {
             return
@@ -1613,13 +1931,13 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
                 }
             }
         }
-        
+
     }
-    
+
     func taskCompleted(_ task: RLMTask) {
         let indexPath = self.homeVC.indexOfTask(task: task)
         //insert code to customize HWCell in ScheduleEditor Here.
-        
+
         if (task.completed != true) {
             let cell = self.tableView.cellForRow(at: self.indexOfTask(task: task)!) as? HomeworkTableViewCell
             cell?.leadingCompletionConstraint.constant = 32
@@ -1651,14 +1969,16 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
         if (indexPath == nil) {
             if (task.completed != true) {
                 self.homeVC.playCompletedSound()
+                self.homeVC.taptic.feedback()
             } else {
                 self.homeVC.playNotCompletedSound()
+                self.homeVC.taptic.feedback()
             }
             return
         }
         let section = indexPath!.section
         let index = indexPath!.row
-        
+
         if (task.completed != true) {
             let indexPathForRow = IndexPath(row: index, section: section)
             let cell = self.homeVC.tableView.cellForRow(at: indexPathForRow) as? HomeworkTableViewCell
@@ -1667,7 +1987,7 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
                 UIView.animate(withDuration: 0.07, delay: 0, usingSpringWithDamping: 1.0, initialSpringVelocity: 1.0, options: UIViewAnimationOptions.curveEaseOut, animations: { cell?.transform = CGAffineTransform(scaleX: 0.95, y: 0.95) }, completion: {
                     finished in
                     UIView.animate(withDuration: 0.07, delay: 0, usingSpringWithDamping: 1.0, initialSpringVelocity: 1.0, options: UIViewAnimationOptions.curveEaseOut, animations: { cell?.transform = CGAffineTransform(scaleX: 1.0, y: 1.0) }, completion: { finished in
-                        
+
                     })
                 })
             })
@@ -1680,14 +2000,15 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
             cell?.courseLabel.textColor = self.homeVC.FADED_BLACK_COLOR
             cell?.dueDateLabel.textColor = self.homeVC.FADED_BLACK_COLOR
             cell?.dateLabel.textColor = self.homeVC.FADED_BLACK_COLOR
-            cell?.completionImageView.image = #imageLiteral(resourceName: "Green Checkmark")
+            cell?.completionImageView.image =  #imageLiteral(resourceName: "Green Checkmark")
             //Fixes minor display bug on completion in iOS9 and earlier.
             cell?.cardView.sizeToFit()
             //
             cell?.completionImageView.layer.shadowRadius = 0.5
             cell?.completionImageView.layer.shadowOpacity = 1.0
             self.homeVC.playCompletedSound()
-            
+            self.homeVC.taptic.feedback()
+
         } else {
             let indexPathForRow = IndexPath(row: index, section: section)
             let cell = self.homeVC.tableView.cellForRow(at: indexPathForRow) as? HomeworkTableViewCell
@@ -1696,7 +2017,7 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
                 UIView.animate(withDuration: 0.07, delay: 0, usingSpringWithDamping: 1.0, initialSpringVelocity: 1.0, options: UIViewAnimationOptions.curveEaseOut, animations: { cell?.transform = CGAffineTransform(scaleX: 0.95, y: 0.95) }, completion: {
                     finished in
                     UIView.animate(withDuration: 0.07, delay: 0, usingSpringWithDamping: 1.0, initialSpringVelocity: 1.0, options: UIViewAnimationOptions.curveEaseOut, animations: { cell?.transform = CGAffineTransform(scaleX: 1.0, y: 1.0) }, completion: { finished in
-                        
+
                     })
                 })
             })
@@ -1714,9 +2035,10 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
             cell?.completionImageView.layer.shadowOpacity = 0.25
             //cell.cardView.alpha = 1.0
             self.homeVC.playNotCompletedSound()
+            self.homeVC.taptic.feedback()
         }
     }
-    
+
     func moveTask(_ cell: HomeworkTableViewCell, _ task: RLMTask) {
         var indexPath = self.homeVC.indexOfTask(task: task)
         if (indexPath == nil) {
@@ -1753,7 +2075,7 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
                 self.homeVC.tableView.insertRows(at: [indexPathInHomeVC], with: .fade)
             }
             self.homeVC.tableView.endUpdates()
-            
+
             UIView.animate(withDuration: 0.27, delay: 0.0, options: [], animations: {
                 if (task.completed == true) {
                     cell.titleLabel.textColor = self.homeVC.FADED_BLACK_COLOR
@@ -1767,7 +2089,7 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
         }
         //Crash is from inconsistency in HomeVC Data Model. i.e. A task completed that wasn't originally on HomeVC now should be because it was Completed Today. The opposite also occurs: A completed task that is uncompleted and wasn't originally on HomeVC should now be deleted from HomeVC. For both of these circumstances, the task could also be 'Extended', meaning it SHOULD have a dateOfExtension set if the due date is over two weeks away. It is fine for tasks to become extended from completion/uncompletion, as uncompleting/completing a task does mean it is/was extended. (so do not modify saving or HomeVC)
         //^^ Fix HomeVC handling of completion/uncompletion in this method.
-        
+
         //Add Completed Today Section if needed.
         self.homeVC.tableView.beginUpdates()
         if (task.completed == false && self.homeVC.completedTodayTasks.count == 0) {
@@ -1785,8 +2107,8 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
         }
         self.homeVC.tableView.endUpdates()
         //
-        
-        
+
+
         //Add Extended Section if needed.
         self.homeVC.tableView.beginUpdates()
         if (task.dueDate?.overScopeThreshold(task: task) == true && self.homeVC.extendedTasks.count == 0) { //&& task.completed == true
@@ -1800,7 +2122,7 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
         }
         self.homeVC.tableView.endUpdates()
         //
-        
+
         let realm = try! Realm()
         realm.beginWrite()
         task.completed = !task.completed
@@ -1822,12 +2144,12 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
             self.present(errorVC, animated: true, completion: nil)
             return
         }
-        
+
         var newIndexPath = self.homeVC.indexOfTask(task: task)!
         /*if (self.completedTodayTasks.count == 0) {
          newIndexPath.section += 1
          }*/
-        
+
         UIView.animate(withDuration: 0.27, delay: 0.0, options: [], animations: {
             self.homeVC.tableView.beginUpdates()
             if (indexPath != nil) {
@@ -1841,7 +2163,7 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
             }
             self.homeVC.tableView.endUpdates()
         }, completion: nil)
-        
+
         //Remove Completed Today Section if needed.
         self.homeVC.tableView.beginUpdates()
         if (self.homeVC.completedTodayTasks.count == 0) {
@@ -1853,7 +2175,7 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
         }
         self.homeVC.tableView.endUpdates()
         //
-        
+
         //Remove Extended Section if needed.
         self.homeVC.tableView.beginUpdates()
         if (self.homeVC.extendedTasks.count == 0) {
@@ -1866,7 +2188,7 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
         self.homeVC.tableView.endUpdates()
         //
     }
-    
+
     func indexOfTask(task: RLMTask) -> IndexPath? {
         for (section, rows) in self.dictionary {
             var rowCounter = 0
@@ -1879,7 +2201,16 @@ class WeeklyEditingTableViewController: UITableViewController, UIPickerViewDeleg
         }
         return nil
     }
-    
+
     //
+    
+    func convertRLMTaskCollectionToScheduleRowContentArray(tasks: [RLMTask]) -> [ScheduleRowContent] {
+        var scheduleRowContentArray = [ScheduleRowContent]()
+        for task in tasks {
+            let taskScheduleRowContent = ScheduleRowContent(identifier: "HomeworkTableViewCell", task: task)
+            scheduleRowContentArray.append(taskScheduleRowContent)
+        }
+        return scheduleRowContentArray
+    }
 
 }

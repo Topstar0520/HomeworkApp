@@ -21,12 +21,18 @@ class ScheduleRowContent: NSObject { //Represents a cell.
     var optionString2: String?
     var optionBool1 = false
     
+    var color: UIColor? = ColorDataModel.defaultColorModel().color
+    var colorStaticValue: Int = ColorDataModel.defaultColorModel().colorStaticValue
+    
     //For PickerCells.
     var pickerDataSource : PickerDataSource?
     
     //For Weekly Schedules.
     var toggleArray : [Bool]? //for cells that contain a series of Boolean values.
     var timeArray : [Date]? //for cells that contain a series of NSDate values.
+    
+    //For instructor data.
+    var instructor: RLMInstructor?
     
     init(identifier : String) {
         self.identifier = identifier

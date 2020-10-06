@@ -73,9 +73,11 @@ class HighlightSyntaxBuilder: MarkupSyntaxBuilder {
                 let str = NSMutableAttributedString(string: "::")
                 str.append(string.attributedSubstring(from: word))
                 str.append(NSAttributedString(string: "::"))
+                str.insert(NSAttributedString(string: " "), at: 0)
+                str.append(NSAttributedString(string: " "))
                 return (word, str)
             }else {
-                return (NSMakeRange(range.location, 0), NSAttributedString(string: "::::"))
+                return (NSMakeRange(range.location, 0), NSAttributedString(string: " :::: "))
             }
         }else {
             let str = NSMutableAttributedString(attributedString: string.attributedSubstring(from: range))

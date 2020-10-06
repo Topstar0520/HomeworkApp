@@ -12,6 +12,7 @@ class CourseSavedTableViewCell: UITableViewCell {
     
     @IBOutlet weak var courseLabel: UILabel!
     @IBOutlet weak var circleView: CircleView!
+    @IBOutlet weak var facultyImageView: UIImageView!
     
     override func awakeFromNib() {
         super.awakeFromNib()

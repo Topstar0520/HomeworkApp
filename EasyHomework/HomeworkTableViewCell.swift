@@ -32,6 +32,8 @@ class HomeworkTableViewCell: UITableViewCell {
     @IBOutlet var dueDateLabel: UILabel!
     @IBOutlet var cardView: CardView!
     @IBOutlet var repeatsImageView: UIImageView!
+    @IBOutlet var cardViewBottomConstraint: NSLayoutConstraint!
+    @IBOutlet var cardViewTopConstraint: NSLayoutConstraint!
     
     var recognizer: UIPanGestureRecognizer!
     var originalCenter = CGPoint()
@@ -66,12 +68,17 @@ class HomeworkTableViewCell: UITableViewCell {
         self.completionImageView.layer.shouldRasterize = true
         self.completionImageView.layer.rasterizationScale = UIScreen.main.scale
         
-        self.deletionImageView.layer.masksToBounds = false
+        /*self.deletionImageView.layer.masksToBounds = false
         self.deletionImageView.layer.shadowColor = UIColor.black.cgColor
         self.deletionImageView.layer.shadowOffset = CGSize(width: 0.0, height: 0.0)
         self.deletionImageView.layer.shadowOpacity = 0.25
         self.deletionImageView.layer.shouldRasterize = true
-        self.deletionImageView.layer.rasterizationScale = UIScreen.main.scale
+        self.deletionImageView.layer.rasterizationScale = UIScreen.main.scale*/
+        
+        if #available(iOS 13.0, *) {
+            cardViewTopConstraint.constant = -9
+            cardViewBottomConstraint.constant = -9
+        }
         
         self.layoutIfNeeded()
     }

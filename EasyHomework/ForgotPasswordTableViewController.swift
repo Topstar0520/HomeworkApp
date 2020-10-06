@@ -33,7 +33,7 @@ class ForgotPasswordTableViewController: UITableViewController, UITextFieldDeleg
         
         self.emailTextField.delegate = self
         
-        self.emailTextField.attributedPlaceholder = NSAttributedString(string: "Ex) jbob2@uwo.ca", attributes: [ NSAttributedStringKey.foregroundColor : UIColor.init(red: 255, green: 255, blue: 255, alpha: 0.2) ])
+        self.emailTextField.attributedPlaceholder = NSAttributedString(string: "Ex) jbob2@uwo.ca", attributes: [ NSAttributedStringKey.foregroundColor : UIColor(displayP3Red: 255, green: 255, blue: 255, alpha: 0.3) ])
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -81,6 +81,7 @@ class ForgotPasswordTableViewController: UITableViewController, UITextFieldDeleg
         if (cell.contentView.backgroundColor != UIColor.clear) {
             cell.backgroundColor = cell.contentView.backgroundColor
         }
+        cell.contentView.backgroundColor = nil //since iOS13
     }
 
     func resetPassword() {

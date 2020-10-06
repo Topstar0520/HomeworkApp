@@ -25,10 +25,10 @@ class AccessoryView: UIView {
     }
     
     @objc func setSelectedButton(_ button: UIButton,_ isSelected :Bool = true) {
-        button.isSelected = isSelected
+        button.isSelected = !button.isSelected
         if isSelected {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                self.setSelectedButton(button, false)
+                //self.setSelectedButton(button, false)
             }
         }
     }

@@ -11,10 +11,11 @@ import UIKit
 class SectionHeaderView: UITableViewHeaderFooterView {
     
     @IBOutlet var titleLabel: UILabel!
+    @IBOutlet weak var btnInfo: UIButton!
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        
+        btnInfo.isHidden = true
     }
     
     override func layoutSubviews() {

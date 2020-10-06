@@ -9,11 +9,24 @@
 import UIKit
 
 class BlankViewController: UIViewController {
+    
+    var emptyHomescreenView : EmptyHomescreenView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        /*self.emptyHomescreenView = EmptyHomescreenView.construct(self, title: "", description: "") as EmptyHomescreenView
+        self.emptyHomescreenView.translatesAutoresizingMaskIntoConstraints = true
+        self.emptyHomescreenView.arrowImageView.image = nil
+        self.emptyHomescreenView.mainImageView.image = UIImage(named: "Gradcap_love")
+        self.emptyHomescreenView.mainImageView.center.y = self.emptyHomescreenView.center.y
+        self.view.addSubview(emptyHomescreenView)*/
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        /*self.emptyHomescreenView.frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height - self.navigationController!.navigationBar.frame.size.height - self.tabBarController!.tabBar.frame.size.height - UIApplication.shared.statusBarFrame.size.height)
+        self.emptyHomescreenView.center.y = self.view.center.y*/
     }
     
 

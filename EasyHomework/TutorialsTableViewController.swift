@@ -109,6 +109,7 @@ class TutorialsTableViewController: UITableViewController {
                 cell.backgroundColor = cell.contentView.backgroundColor
             }
         }
+        cell.contentView.backgroundColor = nil //since iOS13
     }
 
     // MARK: - Navigation

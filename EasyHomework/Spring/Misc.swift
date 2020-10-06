@@ -124,6 +124,10 @@ public func stringFromDate(date: NSDate, format: String) -> String {
 public func dateFromString(date: String, format: String) -> Date {
     let dateFormatter = DateFormatter()
     dateFormatter.dateFormat = format
+    dateFormatter.locale = Locale.current
+    dateFormatter.timeZone = TimeZone.current
+    dateFormatter.amSymbol = "AM"
+    dateFormatter.pmSymbol = "PM"
     if let date = dateFormatter.date(from: date) {
         return date
     } else {

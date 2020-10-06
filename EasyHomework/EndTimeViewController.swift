@@ -104,6 +104,9 @@ class EndTimeViewController: UIViewController {
         if (self.cellEditingVC?.helperObject is WeeklyCellEditingHelperObject) {
             self.timePickerValueChanged_Using_WeeklyHelper()
         }
+        if (self.cellEditingVC?.helperObject is CalendarCellEditingHelperObject) {
+            self.timePickerValueChanged_Using_CalendarHelper()
+        }
     }
     
     @IBAction func noEndTimeButtonTouchUpInside(_ sender: Any) {
@@ -115,6 +118,9 @@ class EndTimeViewController: UIViewController {
         }
         if (self.cellEditingVC?.helperObject is WeeklyCellEditingHelperObject) {
             self.noTimeButtonTouchUp_Using_WeeklyHelper()
+        }
+        if (self.cellEditingVC?.helperObject is CalendarCellEditingHelperObject) {
+            self.noTimeButtonTouchUp_Using_CalendarHelper()
         }
     }
     
@@ -333,6 +339,12 @@ class EndTimeViewController: UIViewController {
         }
         self.homeVC?.tableView.endUpdates()
         //
+        
+        for tableView in TaskManagerTracker.taskManagers() { //Handle any other existing TaskManagers.
+            if !(tableView?.parentViewController == self.homeVC || tableView?.parentViewController == self.taskManager) {
+                tableView?.reloadData()
+            }
+        }
     }
     
     func timePickerValueChanged_Using_WeeklyHelper() {
@@ -449,6 +461,116 @@ class EndTimeViewController: UIViewController {
         }
         self.homeVC?.tableView.endUpdates()
         //
+        
+        for tableView in TaskManagerTracker.taskManagers() { //Handle any other existing TaskManagers.
+            if !(tableView?.parentViewController == self.homeVC || tableView?.parentViewController == self.taskManager) {
+                tableView?.reloadData()
+            }
+        }
+    }
+    
+    func timePickerValueChanged_Using_CalendarHelper() {
+        let oldEndDate = self.task.endDateAndTime
+        self.title = "Ends " + (self.datePickerView.date as NSDate).toReadableTimeString()
+        
+        if (self.datePickerView.date.overScopeThreshold(task: self.task)) {
+            //self.updateInformationalLabelText()
+            //self.informationalLabel.isHidden = false
+            //self.informationalButton.isHidden = false
+            //(self.cellEditingVC?.homeVC != nil)'s purpose is to check if the Agenda (Home) is where cellEditingVC came from. If SchedulesViewController is where cellEditingVC came from, then DO NOT execute what is in this if statement.
+            if (self.cellEditingVC?.helperObject.taskManagerVC == nil) { print("ERROR IN datePickerValueChanged(..) & noDueDateButtonTouchUp of DueDateVC") }
+            if (self.cellEditingVC?.helperObject.mode == .Edit && self.cellEditingVC?.helperObject.taskManagerVC is HomeworkViewController) {
+                //Now let's set the task dateOfExtension to != nil.
+                let realm = try! Realm()
+                realm.beginWrite()
+                self.task.dateOfExtension = Date() as NSDate
+                do {
+                    try realm.commitWrite()
+                } catch let error {
+                    let errorVC = UIAlertController(title: "Oops..", message: "Error: " + error.localizedDescription, preferredStyle: .alert)
+                    errorVC.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in }))
+                    self.present(errorVC, animated: true, completion: nil)
+                }
+            }
+        } else {
+            //self.informationalLabel.isHidden = true
+            //self.informationalButton.isHidden = true
+        }
+        
+        if (self.cellEditingVC?.helperObject.mode == .Create) { //if this is a new task and doesn't have a cell
+            //then modify the task and return.
+            self.task.endDateAndTime = (self.datePickerView.date).withoutExtraneousSeconds() as NSDate
+            self.cellEditingVC?.updateDateTokenEndTimeIfTaskRepeats(task: self.task, oldEndDate: oldEndDate)
+            return
+        }
+        
+        let calendarTaskManagerVC = self.taskManager as! CalendarTaskManagerViewController
+        let origIndexPathOfHWCell = calendarTaskManagerVC.indexOfTask(task: self.task)
+        let cell = calendarTaskManagerVC.tableView.cellForRow(at: origIndexPathOfHWCell!) as? HomeworkTableViewCell
+        
+        //Add Extended Section if needed.
+        calendarTaskManagerVC.tableView.beginUpdates()
+        if (self.datePickerView.date.overScopeThreshold(task: self.task) == true && calendarTaskManagerVC.extendedTasks.count == 0) { //&& calendarTaskManagerVC.extendedTasks.count == 0
+            if calendarTaskManagerVC.sections.first(where: { $0 == "Extended" }) == nil && calendarTaskManagerVC.sections.first(where: { $0 == "Completed Today" }) == nil {
+                calendarTaskManagerVC.sections.insert("Extended", at: 1)
+                calendarTaskManagerVC.tableView.insertSections([1], with: .automatic)
+            } else if calendarTaskManagerVC.sections.first(where: { $0 == "Extended" }) == nil && calendarTaskManagerVC.sections.first(where: { $0 == "Completed Today" }) != nil {
+                calendarTaskManagerVC.sections.insert("Extended", at: 2)
+                calendarTaskManagerVC.tableView.insertSections([2], with: .automatic)
+            }
+        }
+        calendarTaskManagerVC.tableView.endUpdates()
+        //
+        
+        let realm = try! Realm()
+        realm.beginWrite()
+        self.task.endDateAndTime = (self.datePickerView.date).withoutExtraneousSeconds() as NSDate?
+        self.cellEditingVC?.updateDateTokenEndTimeIfTaskRepeats(task: self.task, oldEndDate: oldEndDate)
+        do {
+            try realm.commitWrite()
+        } catch let error {
+            let errorVC = UIAlertController(title: "Oops..", message: "Error: " + error.localizedDescription, preferredStyle: .alert)
+            errorVC.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in }))
+            self.present(errorVC, animated: true, completion: nil)
+        }
+        
+        calendarTaskManagerVC.tableView.beginUpdates()
+        CellCustomizer.customizeHWCellAppearanceBasedOnDate(date: self.task.dueDate as! Date, task: self.task, cell: cell, taskManager: self.taskManager)
+        calendarTaskManagerVC.tableView.endUpdates()
+        
+        let indexPathOfHWCell = calendarTaskManagerVC.indexOfTask(task: self.task)
+        if (origIndexPathOfHWCell != nil && indexPathOfHWCell != nil) {
+            calendarTaskManagerVC.tableView.moveRow(at: origIndexPathOfHWCell!, to: indexPathOfHWCell!)
+        }
+        calendarTaskManagerVC.heightAtIndexPath.removeValue(forKey: indexPathOfHWCell!)
+        
+        //If the task is no longer extended.
+        if (self.task.dateOfExtension != nil && self.datePickerView.date.overScopeThreshold(task: self.task) == false) {
+            let realm = try! Realm()
+            realm.beginWrite()
+            self.task.dateOfExtension = nil
+            do {
+                try realm.commitWrite()
+            } catch let error {
+                let errorVC = UIAlertController(title: "Oops..", message: "Error: " + error.localizedDescription, preferredStyle: .alert)
+                errorVC.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in }))
+                self.present(errorVC, animated: true, completion: nil)
+            }
+        }
+        
+        //Remove Extended Section if needed.
+        calendarTaskManagerVC.tableView.beginUpdates()
+        if (calendarTaskManagerVC.extendedTasks.count == 0) {
+            if let extendedTasksSection = calendarTaskManagerVC.sections.first(where: { $0 == "Extended" }) {
+                let indexOfSection = calendarTaskManagerVC.sections.index(of: extendedTasksSection)!
+                calendarTaskManagerVC.sections.removeObject(object: extendedTasksSection)
+                calendarTaskManagerVC.tableView.deleteSections([indexOfSection], with: .fade)
+            }
+        }
+        calendarTaskManagerVC.tableView.endUpdates()
+        //
+        
+        self.homeVC!.tableView.reloadData()
     }
     
     func noTimeButtonTouchUp_Using_HomeworkHelper() {
@@ -638,6 +760,12 @@ class EndTimeViewController: UIViewController {
             }
         }
         self.homeVC?.tableView.endUpdates()
+        
+        for tableView in TaskManagerTracker.taskManagers() { //Handle any other existing TaskManagers.
+            if !(tableView?.parentViewController == self.homeVC || tableView?.parentViewController == self.taskManager) {
+                tableView?.reloadData()
+            }
+        }
     }
     
     func noTimeButtonTouchUp_Using_WeeklyHelper() {
@@ -748,6 +876,94 @@ class EndTimeViewController: UIViewController {
             }
         }
         self.homeVC?.tableView.endUpdates()
+        
+        for tableView in TaskManagerTracker.taskManagers() { //Handle any other existing TaskManagers.
+            if !(tableView?.parentViewController == self.homeVC || tableView?.parentViewController == self.taskManager) {
+                tableView?.reloadData()
+            }
+        }
+    }
+    
+    func noTimeButtonTouchUp_Using_CalendarHelper() {
+        let oldEndDate = self.task.endDateAndTime
+        self.title = "Ends Anytime"
+        
+        //self.informationalLabel.isHidden = true
+        //self.informationalButton.isHidden = true
+        //update dueDateCell in CellEditingVC
+        
+        if (self.cellEditingVC?.helperObject.mode == .Create) { //if this is a new task and doesn't have a cell
+            //then modify the task and return.
+            self.task.endDateAndTime = nil
+            self.cellEditingVC?.updateDateTokenEndTimeIfTaskRepeats(task: self.task, oldEndDate: oldEndDate)
+            return
+        }
+        
+        let calendarTaskManagerVC = self.taskManager as! CalendarTaskManagerViewController
+        let origIndexPathOfHWCell = calendarTaskManagerVC.indexOfTask(task: self.task)
+        let cell = calendarTaskManagerVC.tableView.cellForRow(at: origIndexPathOfHWCell!) as? HomeworkTableViewCell
+        
+        //Add Extended Section if needed.
+        calendarTaskManagerVC.tableView.beginUpdates()
+        if (self.datePickerView.date.overScopeThreshold(task: self.task) == true && calendarTaskManagerVC.extendedTasks.count == 0) { //&& calendarTaskManagerVC.extendedTasks.count == 0
+            if calendarTaskManagerVC.sections.first(where: { $0 == "Extended" }) == nil && calendarTaskManagerVC.sections.first(where: { $0 == "Completed Today" }) == nil {
+                calendarTaskManagerVC.sections.insert("Extended", at: 1)
+                calendarTaskManagerVC.tableView.insertSections([1], with: .automatic)
+            } else if calendarTaskManagerVC.sections.first(where: { $0 == "Extended" }) == nil && calendarTaskManagerVC.sections.first(where: { $0 == "Completed Today" }) != nil {
+                calendarTaskManagerVC.sections.insert("Extended", at: 2)
+                calendarTaskManagerVC.tableView.insertSections([2], with: .automatic)
+            }
+        }
+        calendarTaskManagerVC.tableView.endUpdates()
+        //
+        
+        let realm = try! Realm()
+        realm.beginWrite()
+        self.task.endDateAndTime = nil
+        self.cellEditingVC?.updateDateTokenEndTimeIfTaskRepeats(task: self.task, oldEndDate: oldEndDate)
+        do {
+            try realm.commitWrite()
+        } catch let error {
+            let errorVC = UIAlertController(title: "Oops..", message: "Error: " + error.localizedDescription, preferredStyle: .alert)
+            errorVC.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in }))
+            self.present(errorVC, animated: true, completion: nil)
+        }
+        
+        calendarTaskManagerVC.tableView.beginUpdates()
+        CellCustomizer.customizeHWCellAppearanceBasedOnDate(date: self.task.dueDate as! Date, task: self.task, cell: cell, taskManager: self.taskManager)
+        calendarTaskManagerVC.tableView.endUpdates()
+        
+        let indexPathOfHWCell = calendarTaskManagerVC.indexOfTask(task: self.task)
+        calendarTaskManagerVC.tableView.moveRow(at: origIndexPathOfHWCell!, to: indexPathOfHWCell!)
+        calendarTaskManagerVC.heightAtIndexPath.removeValue(forKey: indexPathOfHWCell!)
+        
+        //If the task is no longer extended.
+        if (self.task.dateOfExtension != nil && self.datePickerView.date.overScopeThreshold(task: self.task) == false) {
+            let realm = try! Realm()
+            realm.beginWrite()
+            self.task.dateOfExtension = nil
+            do {
+                try realm.commitWrite()
+            } catch let error {
+                let errorVC = UIAlertController(title: "Oops..", message: "Error: " + error.localizedDescription, preferredStyle: .alert)
+                errorVC.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in }))
+                self.present(errorVC, animated: true, completion: nil)
+            }
+        }
+        
+        //Remove Extended Section if needed.
+        calendarTaskManagerVC.tableView.beginUpdates()
+        if (calendarTaskManagerVC.extendedTasks.count == 0) {
+            if let extendedTasksSection = calendarTaskManagerVC.sections.first(where: { $0 == "Extended" }) {
+                let indexOfSection = calendarTaskManagerVC.sections.index(of: extendedTasksSection)!
+                calendarTaskManagerVC.sections.removeObject(object: extendedTasksSection)
+                calendarTaskManagerVC.tableView.deleteSections([indexOfSection], with: .fade)
+            }
+        }
+        calendarTaskManagerVC.tableView.endUpdates()
+        //
+        
+        self.homeVC!.tableView.reloadData()
     }
     
     @IBAction func doneBtnTouchUpInside(_ sender: Any) {

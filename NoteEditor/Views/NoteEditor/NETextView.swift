@@ -39,6 +39,7 @@ class NETextView: UITextView {
                 return true
             }
         }
+         
         return super.canPerformAction(action, withSender: sender)
     }
     
@@ -61,7 +62,7 @@ class NETextView: UITextView {
         if !self.isEditable {
             self.selectedTextRange = nil
         }
-    }
+    } 
 
 }
 

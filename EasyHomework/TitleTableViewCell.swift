@@ -20,7 +20,8 @@ class TitleTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         titleTextView.tintColor = UIColor(hex: "7A7A7A")
-        titleTextView.placeholderTextColor = UIColor.init(red: 255, green: 255, blue: 255, alpha: 0.2)
+        titleTextView.placeholderTextColor = UIColor(displayP3Red: 255, green: 255, blue: 255, alpha: 0.3)
+//        titleTextView.placeholder = "Assignment"
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

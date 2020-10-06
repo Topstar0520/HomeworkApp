@@ -22,10 +22,11 @@ class BoldSyntaxBuilder: MarkupSyntaxBuilder {
             regex().enumerateMatches(in: string.string , options: [], range: range, using: { (match, flags, stop) in
             
         if let startTagRange = match?.range(at: 1), let _ = match?.range(at: 2), let endTagRange = match?.range(at: 3) {
-                //string.addAttributes([NSAttributedStringKey.foregroundColor: ThemeCenter.theme.syntaxColor], range: startTagRange)
+                string.addAttributes([NSAttributedStringKey.foregroundColor: ThemeCenter.theme.syntaxColor], range: startTagRange)
+                string.addAttributes([NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 17)], range: NSMakeRange(startTagRange.location, NSMaxRange(endTagRange) - startTagRange.location))
                 //if textRange.length > 0 {
                 //ThemeCenter.theme.syntaxColor
-            string.addAttributes([NSAttributedString.Key.font : ThemeCenter.theme.bodyBoldFont, NSAttributedString.Key.foregroundColor: UIColor.white], range: NSMakeRange(startTagRange.location, NSMaxRange(endTagRange) - startTagRange.location))
+            //string.addAttributes([NSAttributedString.Key.font : ThemeCenter.theme.bodyBoldFont, NSAttributedString.Key.foregroundColor: UIColor.white], range: NSMakeRange(startTagRange.location, NSMaxRange(endTagRange) - startTagRange.location))
                 //}
                 //string.addAttributes([NSAttributedStringKey.foregroundColor: ThemeCenter.theme.syntaxColor], range: endTagRange)
             }
@@ -39,7 +40,8 @@ class BoldSyntaxBuilder: MarkupSyntaxBuilder {
         var isCharactersDeleted = false
         print(string)
         print(range)
-        (string.string as NSString).enumerateSubstrings(in: range, options: .byLines) { (_, _,enclosingRange, _) in
+        (string.string as NSString).enumerateSubstrings(in: range, options: .byLines) {
+            (_, _,enclosingRange, _) in
             let lineString = NSMutableAttributedString(attributedString: string.attributedSubstring(from: enclosingRange))
             var removeRanges = [NSRange]()
             print(lineString.string)
@@ -76,9 +78,11 @@ class BoldSyntaxBuilder: MarkupSyntaxBuilder {
                 let str = NSMutableAttributedString(string: "*")
                 str.append(string.attributedSubstring(from: word))
                 str.append(NSAttributedString(string: "*"))
+                str.insert(NSAttributedString(string: " "), at: 0)
+                str.append(NSAttributedString(string: " "))
                 return (word, str)
             }else {
-                let attrs = NSAttributedString(string: "**")
+                let attrs = NSAttributedString(string: " ** ")
                 return (NSMakeRange(range.location, 0), attrs)
             }
         }else {

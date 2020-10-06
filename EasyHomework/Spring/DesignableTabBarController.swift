@@ -91,7 +91,7 @@ import UIKit
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         for item in self.tabBar.items as [UITabBarItem]! {
             if let image = item.image {
                 item.image = image.imageWithColor(tintColor: self.normalTint).withRenderingMode(UIImageRenderingMode.alwaysOriginal)

@@ -144,6 +144,7 @@ class WriteReviewTableViewController: UITableViewController, RatingTableViewCell
         if (cell.contentView.backgroundColor != UIColor.clear) {
             cell.backgroundColor = cell.contentView.backgroundColor
         }
+        cell.contentView.backgroundColor = nil //since iOS13
     }
     
     var tagCollectionViewHeight : CGFloat?

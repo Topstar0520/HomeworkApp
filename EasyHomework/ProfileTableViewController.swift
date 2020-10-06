@@ -8,25 +8,64 @@
 
 import UIKit
 import Parse
+import MessageUI
+import RealmSwift
 
-class ProfileTableViewController: UITableViewController, UITextFieldDelegate {
+class ProfileTableViewController: UITableViewController, UITextFieldDelegate, MFMailComposeViewControllerDelegate {
     
     //var cells = ["ProfileImageTableViewCell", "EmailTableViewCell", "PasswordTableViewCell"]
     @IBOutlet var emailTextField: UITextField!
     @IBOutlet var passwordTableViewCell: PasswordTableViewCell!
-    @IBOutlet weak var backgroundTableViewCell: BackgroundTableViewCell!
+    @IBOutlet var backgroundTableViewCell: BackgroundTableViewCell!
     @IBOutlet var doneBarButtonItem: UIBarButtonItem!
     @IBOutlet var usernameLabel: UILabel!
-
+    @IBOutlet var remindersTableViewCell: UITableViewCell!
+    @IBOutlet var subscriptionStatusTableViewCell: UITableViewCell!
+    @IBOutlet var subscriptionStatusLabel: UILabel!
+    @IBOutlet weak var subscriptionStatusImageView: UIImageView!
+    @IBOutlet weak var gradlockerTableViewCell: GradLockerTableViewCell!
+    
+    
+    @IBOutlet var lockBtnOnBackgroundTableViewCell: UIButton!
+    @IBOutlet var lockBtnOnRemindersTableViewCell: UIButton!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.tableView.delegate = self
         //self.tableView.estimatedRowHeight = 140
         //self.tableView.rowHeight = UITableViewAutomaticDimension
         self.emailTextField.delegate = self
-        self.emailTextField.attributedPlaceholder = NSAttributedString(string: "Ex) jbob2@uwo.ca", attributes: [ NSAttributedStringKey.foregroundColor : UIColor.init(red: 255, green: 255, blue: 255, alpha: 0.2) ])
+        self.emailTextField.attributedPlaceholder = NSAttributedString(string: "Ex) jbob2@uwo.ca", attributes: [ NSAttributedStringKey.foregroundColor : UIColor(displayP3Red: 255, green: 255, blue: 255, alpha: 0.3) ])
         self.emailTextField.text = PFUser.current()!.email
         self.usernameLabel.text = PFUser.current()?.object(forKey: "displayName") as? String
+        
+        if (UserDefaults.standard.bool(forKey: "isSubscribed") == true) {
+            lockBtnOnBackgroundTableViewCell.isHidden = true
+            lockBtnOnRemindersTableViewCell.isHidden = true
+            subscriptionStatusLabel.text = "You are currently using B4Grad Premium!"
+            subscriptionStatusImageView.image = UIImage(named: "B4Grad App Icon Alternate - With Gold Star")
+            backgroundTableViewCell.accessoryView = UIImageView(image: UIImage(named: "disclosure indicator"))
+            remindersTableViewCell.accessoryView = UIImageView(image: UIImage(named: "disclosure indicator"))
+            gradlockerTableViewCell.accessoryView = UIImageView(image: UIImage(named: "disclosure indicator"))
+            subscriptionStatusTableViewCell.isUserInteractionEnabled = false
+        } else {
+            //backgroundTableViewCell.accessoryType = .none
+            //remindersTableViewCell.accessoryType = .none
+            lockBtnOnBackgroundTableViewCell.isHidden = true
+            lockBtnOnRemindersTableViewCell.isHidden = true
+            subscriptionStatusLabel.text = "You are currently using a Free Trial. Subscribe Now!"
+            backgroundTableViewCell.accessoryView = UIImageView(image: UIImage(named: "disclosure indicator"))
+            remindersTableViewCell.accessoryView = UIImageView(image: UIImage(named: "disclosure indicator"))
+            gradlockerTableViewCell.accessoryView = UIImageView(image: UIImage(named: "disclosure indicator"))
+            
+            subscriptionStatusTableViewCell.accessoryType = .disclosureIndicator
+            subscriptionStatusTableViewCell.accessoryView = UIImageView(image: UIImage(named: "disclosure indicator"))
+            
+        }
+        
+        passwordTableViewCell.accessoryView = UIImageView(image: UIImage(named: "disclosure indicator"))
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -138,15 +177,120 @@ class ProfileTableViewController: UITableViewController, UITextFieldDelegate {
     }
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        cell.backgroundColor = UIColor(red: 36/255, green: 41/255, blue: 36/255, alpha: 1.0)
+        /*cell.backgroundColor = UIColor(red: 36/255, green: 41/255, blue: 36/255, alpha: 1.0)
         if (cell.contentView.backgroundColor != UIColor.clear) {
             cell.backgroundColor = cell.contentView.backgroundColor
-        }
+        }*/
+        cell.contentView.backgroundColor = nil //since iOS13
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let cell = tableView.cellForRow(at: indexPath as IndexPath)
+        if self.subscriptionStatusTableViewCell.isSelected {
+            if (UserDefaults.standard.bool(forKey: "isSubscribed") == true) {
+                cell?.setSelected(false, animated: true)
+            } else {
+                let storyboard = UIStoryboard(name: "Subscription", bundle: nil)
+                let subscriptionPlansVC = storyboard.instantiateViewController(withIdentifier: "SubscriptionPlansViewController")
+                self.present(subscriptionPlansVC, animated: true, completion: nil)
+                cell?.setSelected(false, animated: true)
+            }
+        }
+        
+        if let backgroundCell = cell as? BackgroundTableViewCell {
+            //if (UserDefaults.standard.bool(forKey: "isSubscribed") == true) {
+                let storyboard = UIStoryboard(name: "Profile", bundle: nil)
+                let backgroundVC = storyboard.instantiateViewController(withIdentifier: "CustomBackgroundViewController")
+                self.navigationController!.pushViewController(backgroundVC, animated: true)
+            /*} else {
+                let storyboard = UIStoryboard(name: "Subscription", bundle: nil)
+                let subscriptionPlansVC = storyboard.instantiateViewController(withIdentifier: "SubscriptionPlansViewController")
+                self.present(subscriptionPlansVC, animated: true, completion: nil)
+                cell?.setSelected(false, animated: true)
+            }*/
+        }
+        
+        if let shopCell = cell as? GradLockerTableViewCell {
+            let storyboard = UIStoryboard(name: "Profile", bundle: nil)
+            //let backgroundVC = storyboard.instantiateViewController(withIdentifier: "CustomBackgroundViewController")
+            //self.navigationController!.pushViewController(backgroundVC, animated: true)
+            UIApplication.shared.open(URL(string: "https://mygradlocker.com")!, options: [:], completionHandler: nil)
+            
+            //let webVC = storyboard.instantiateViewController(withIdentifier: "WKWebViewController")
+            //self.navigationController!.pushViewController(webVC, animated: true)
+            
+            cell?.setSelected(false, animated: true)
+        }
+        
+        if let remindersCell = cell as? ReminderSettingsTableViewCell {
+            //if (UserDefaults.standard.bool(forKey: "isSubscribed") == true) {
+                let storyboard = UIStoryboard(name: "Profile", bundle: nil)
+                let remindersVC = storyboard.instantiateViewController(withIdentifier: "RemindersSettingsTableViewController")
+                self.navigationController!.pushViewController(remindersVC, animated: true)
+            /*} else {
+                let storyboard = UIStoryboard(name: "Subscription", bundle: nil)
+                let subscriptionPlansVC = storyboard.instantiateViewController(withIdentifier: "SubscriptionPlansViewController")
+                self.present(subscriptionPlansVC, animated: true, completion: nil)
+                cell?.setSelected(false, animated: true)
+            }*/
+        }
+        
+        if (cell?.reuseIdentifier == "ReviewTableViewCell") {
+            let now = Date()
+            let thirtyDaysBeforeNow = Calendar.current.date(byAdding: .day, value: -30, to: now)!
+            let realm = try! Realm()
+            let tasksCount = realm.objects(RLMTask.self).filter("scope = 'Regular' AND createdDate >= %@", thirtyDaysBeforeNow).count
+            if (tasksCount < 3 || UserDefaults.standard.bool(forKey: "isSubscribed") == true) {
+                if let url = URL(string: "itms-apps://itunes.apple.com/app/" + "id1352751059") {
+                    if #available(iOS 10, *) {
+                        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+
+                    } else {
+                        UIApplication.shared.openURL(url)
+                    }
+                }
+            }
+            cell?.setSelected(false, animated: true)
+            /*if #available(iOS 10.3, *) {
+                SKStoreReviewController.requestReview()
+            }*/
+        }
+        
+        if (cell?.reuseIdentifier == "ShareTableViewCell") {
+            let text = "Hey all, want to stop procrastinating on homework? Try B4Grad on the app store at www.B4Grad.com"
+            let textShare = [ text ]
+            let activityViewController = UIActivityViewController(activityItems: textShare , applicationActivities: nil)
+            activityViewController.popoverPresentationController?.sourceView = self.view
+            self.present(activityViewController, animated: true, completion: nil)
+            cell?.setSelected(false, animated: true)
+        }
+        
+        if (cell?.reuseIdentifier == "FeedbackTableViewCell") {
+            if MFMailComposeViewController.canSendMail() {
+                let mail = MFMailComposeViewController()
+                mail.mailComposeDelegate = self
+                mail.setToRecipients(["contact@b4grad.com"])
+                mail.setSubject("Could you help me with this..")
+                //mail.setMessageBody("<p>You're so awesome!</p>", isHTML: true)
+
+                present(mail, animated: true) //does not work in simulator
+            } else {
+                // show failure alert
+            }
+            cell?.setSelected(false, animated: true)
+        }
+        
+    }
+    
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        controller.dismiss(animated: true)
+    }
+    
+    
     
     // MARK: - Table view data source
 
@@ -157,9 +301,9 @@ class ProfileTableViewController: UITableViewController, UITextFieldDelegate {
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return cells.count
     }
-
-    
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+     
+     
+     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if (cells[indexPath.row] == "ProfileImageTableViewCell") {
             let cell = tableView.dequeueReusableCellWithIdentifier("ProfileImageTableViewCell", forIndexPath: indexPath) as! ProfileImageTableViewCell
             

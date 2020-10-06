@@ -113,6 +113,7 @@ class LabsTableViewController: UITableViewController, UITextFieldDelegate {
                 cell.backgroundColor = cell.contentView.backgroundColor
             }
         }
+        cell.contentView.backgroundColor = nil //since iOS13
     }
 
     

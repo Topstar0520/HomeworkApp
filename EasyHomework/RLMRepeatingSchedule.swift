@@ -15,7 +15,7 @@ class RLMRepeatingSchedule: Object {
     @objc dynamic var builtIn = false
     
     @objc dynamic var schedule = "" //i.e.) "Weekly", "Monthly", "Custom", etc.
-    let tokens = List<RLMDateToken>() //if the list is empty, do nothing.
+    var tokens = List<RLMDateToken>() //if the list is empty, do nothing.
     
     @objc dynamic var type = "" //i.e. Lecture, Lab, Tutorial, etc.
     @objc dynamic var course: RLMCourse?
