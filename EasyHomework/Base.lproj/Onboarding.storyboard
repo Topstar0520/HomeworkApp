@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16086"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Carousel View Controller-->
+        <scene sceneID="b66-GJ-bMW">
+            <objects>
+                <viewController storyboardIdentifier="CarouselViewController" modalPresentationStyle="formSheet" id="m79-a2-9GA" customClass="CarouselViewController" customModule="B4Grad" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="M9S-D0-iD3">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <containerView clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BYD-OV-77g">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="508"/>
+                                <connections>
+                                    <segue destination="3CR-um-6x0" kind="embed" identifier="Embedded" id="h58-Kn-WRd"/>
+                                </connections>
+                            </containerView>
+                            <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="4" translatesAutoresizingMaskIntoConstraints="NO" id="gl4-Qc-nrd">
+                                <rect key="frame" x="160" y="508" width="55" height="37"/>
+                            </pageControl>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="VT5-oR-WEe">
+                                <rect key="frame" x="8" y="536" width="359" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="KP3-ot-B1D"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="y9a-cy-VG1">
+                                <rect key="frame" x="30" y="592" width="315" height="50"/>
+                                <color key="backgroundColor" red="0.079184679666351829" green="0.64523963730569944" blue="0.15297160201746635" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="315" id="HyH-y1-Yxq"/>
+                                    <constraint firstAttribute="height" constant="50" id="xvf-rG-LIT"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="28"/>
+                                <state key="normal" title="Begin">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <color key="titleShadowColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                </state>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="BYD-OV-77g" firstAttribute="leading" secondItem="WoD-TP-yWm" secondAttribute="leading" id="2OB-40-cQ2"/>
+                            <constraint firstItem="gl4-Qc-nrd" firstAttribute="top" secondItem="BYD-OV-77g" secondAttribute="bottom" id="2RI-9v-QDF"/>
+                            <constraint firstItem="y9a-cy-VG1" firstAttribute="centerX" secondItem="M9S-D0-iD3" secondAttribute="centerX" id="3Mb-Aa-aef"/>
+                            <constraint firstItem="y9a-cy-VG1" firstAttribute="top" secondItem="VT5-oR-WEe" secondAttribute="bottom" constant="6" id="GMJ-ma-8v8"/>
+                            <constraint firstItem="VT5-oR-WEe" firstAttribute="top" secondItem="gl4-Qc-nrd" secondAttribute="bottom" constant="-9" id="HyZ-O1-Vlg"/>
+                            <constraint firstItem="BYD-OV-77g" firstAttribute="trailing" secondItem="WoD-TP-yWm" secondAttribute="trailing" id="VTR-Vd-P75"/>
+                            <constraint firstItem="VT5-oR-WEe" firstAttribute="leading" secondItem="WoD-TP-yWm" secondAttribute="leading" constant="8" id="bjG-aY-wFi"/>
+                            <constraint firstItem="WoD-TP-yWm" firstAttribute="bottom" secondItem="y9a-cy-VG1" secondAttribute="bottom" constant="25" id="f3F-wq-izj"/>
+                            <constraint firstItem="BYD-OV-77g" firstAttribute="top" secondItem="M9S-D0-iD3" secondAttribute="top" id="g3C-zM-tUf"/>
+                            <constraint firstItem="gl4-Qc-nrd" firstAttribute="centerX" secondItem="M9S-D0-iD3" secondAttribute="centerX" id="hVP-0f-e24"/>
+                            <constraint firstItem="WoD-TP-yWm" firstAttribute="trailing" secondItem="VT5-oR-WEe" secondAttribute="trailing" constant="8" id="rnu-8E-bIu"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="WoD-TP-yWm"/>
+                    </view>
+                    <connections>
+                        <outlet property="pageControl" destination="gl4-Qc-nrd" id="Ajb-Kz-OP1"/>
+                        <outlet property="textLabel" destination="VT5-oR-WEe" id="rfV-Qy-Q0I"/>
+                        <outlet property="vwContainer" destination="BYD-OV-77g" id="yXb-a0-JTz"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="I5e-1k-1Fd" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-9079.2000000000007" y="85.907046476761622"/>
+        </scene>
+        <!--Carousel Page View Controller-->
+        <scene sceneID="5l8-II-ReC">
+            <objects>
+                <pageViewController autoresizesArchivedViewToFullSize="NO" transitionStyle="pageCurl" navigationOrientation="horizontal" spineLocation="none" id="3CR-um-6x0" customClass="CarouselPageViewController" customModule="B4Grad" customModuleProvider="target" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="rfb-kb-JpA" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-9079" y="786"/>
+        </scene>
+    </scenes>
+</document>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="blue" indentationWidth="10" reuseIdentifier="ReminderCell" rowHeight="44" id="KGk-i7-Jjw" customClass="ReminderCell" customModule="B4Grad" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="385" height="43"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="385" height="42.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="DefaultAssignment" translatesAutoresizingMaskIntoConstraints="NO" id="sNo-IG-T2G">
+                        <rect key="frame" x="22" y="6.5" width="30" height="30"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="30" id="RX6-A9-BFj"/>
+                            <constraint firstAttribute="height" constant="30" id="nth-Qv-28Z"/>
+                        </constraints>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Assignment" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wKc-yM-n2X">
+                        <rect key="frame" x="61" y="14" width="90.5" height="15"/>
+                        <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Green Checkmark" translatesAutoresizingMaskIntoConstraints="NO" id="OT4-TE-aEX">
+                        <rect key="frame" x="342" y="6.5" width="30" height="30"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="30" id="NTg-67-oI1"/>
+                            <constraint firstAttribute="width" constant="30" id="zx3-hr-E4a"/>
+                        </constraints>
+                    </imageView>
+                </subviews>
+                <color key="backgroundColor" red="0.08235294118" green="0.08235294118" blue="0.08235294118" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                <constraints>
+                    <constraint firstItem="wKc-yM-n2X" firstAttribute="leading" secondItem="sNo-IG-T2G" secondAttribute="trailing" constant="9" id="32U-Vr-0zv"/>
+                    <constraint firstItem="OT4-TE-aEX" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="Qy5-2t-lko"/>
+                    <constraint firstAttribute="trailing" secondItem="OT4-TE-aEX" secondAttribute="trailing" constant="13" id="UX7-jJ-bem"/>
+                    <constraint firstItem="sNo-IG-T2G" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="6" id="Z1Q-UQ-3Nd"/>
+                    <constraint firstItem="wKc-yM-n2X" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="3" id="lG3-Y4-QJB"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="wKc-yM-n2X" secondAttribute="bottom" constant="3" id="oWQ-vd-UFK"/>
+                    <constraint firstItem="sNo-IG-T2G" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="ukh-V2-2qs"/>
+                </constraints>
+            </tableViewCellContentView>
+            <color key="backgroundColor" red="0.08235294118" green="0.08235294118" blue="0.08235294118" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="imgCheck" destination="OT4-TE-aEX" id="zb7-0N-wKW"/>
+                <outlet property="imgIcon" destination="sNo-IG-T2G" id="1nx-Qd-dbd"/>
+                <outlet property="lblName" destination="wKc-yM-n2X" id="YEr-tY-nXc"/>
+            </connections>
+            <point key="canvasLocation" x="184.80000000000001" y="146.17691154422789"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="DefaultAssignment" width="300" height="300"/>
+        <image name="Green Checkmark" width="120" height="120"/>
+    </resources>
+</document>

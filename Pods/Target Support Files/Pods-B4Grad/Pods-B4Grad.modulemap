@@ -1,0 +1,6 @@
+framework module Pods_B4Grad {
+  umbrella header "Pods-B4Grad-umbrella.h"
+
+  export *
+  module * { export * }
+}

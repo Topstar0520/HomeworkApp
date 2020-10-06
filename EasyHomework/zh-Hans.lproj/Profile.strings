@@ -1,0 +1,213 @@
+
+/* Class = "UIViewController"; title = "Free Stuff"; ObjectID = "10E-OF-dgE"; */
+"10E-OF-dgE.title" = "Free Stuff";
+
+/* Class = "UILabel"; text = "Email"; ObjectID = "1hT-gO-joa"; */
+"1hT-gO-joa.text" = "Email";
+
+/* Class = "UILabel"; text = "Welcome Back!"; ObjectID = "2gt-Pa-EOV"; */
+"2gt-Pa-EOV.text" = "Welcome Back!";
+
+/* Class = "UILabel"; text = "Background"; ObjectID = "3lr-Gg-ged"; */
+"3lr-Gg-ged.text" = "Background";
+
+/* Class = "UITableViewController"; title = "Password"; ObjectID = "4fR-e8-gRa"; */
+"4fR-e8-gRa.title" = "Password";
+
+/* Class = "UITextView"; text = "Thank you for taking the time to read the B4Grad Privacy Policy. Our desire has always been to be as transparent as possible for you, our loyal users.  Effective Date: October 1st, 2017 \nInformation gathering and usage\n When registering for B4Grad we may ask for information such as your name and email address. For B4Grad Premium we also store relevant payment information such as your email and mobile phone number. Your information is only used internally and won't be shared with others.\n B4Grad collects the email addresses of those who communicate with us via email, and information submitted through voluntary activities such as site registrations or participation in surveys. B4Grad also collects aggregated, anonymous user data regarding app usage. The user data we collect is never personally identifiable and is used to improve B4Grad and the quality of our service.\n Your data\n B4Grad uses third party vendors and hosting partners to provide the necessary hardware, Thank you for taking the time to read the B4Grad Terms of Use. Our desire has always been to be as transparent as possible for you, our loyal users. software, networking, storage, and related technology required to run B4Grad. Although B4Grad owns the code, databases, and all rights to the B4Grad application, you retain all rights to your data. We do not share your personal data with a 3rd party, and we do not sell data to 3rd parties.\n Cookies\n We use cookies to store visitors preferences, customize Web page content based on visitors browser type or other information that the visitor sends. \nAd servers\n We may present advertisements in B4Grad to help sustain our business. These advertisements may be presented to users based on their school or the courses they are enrolled in. We will never use personally identifiable information to curate advertisements for you. Our goal is to make advertisements relevant and unobtrusive while respecting your privacy.\n Security\n All data and information transmitted with Service is secured by SSL protocol.\n Changes\n If our information practices change at some time in the future we will post the policy changes to our Web site to notify you of these changes and we will use for these new purposes only data collected from the time of the policy change forward. If you are concerned about how your information is used, you should check back at our Web site periodically.\n"; ObjectID = "5EG-Ks-JPi"; */
+"5EG-Ks-JPi.text" = "Thank you for taking the time to read the B4Grad Privacy Policy. Our desire has always been to be as transparent as possible for you, our loyal users.  Effective Date: October 1st, 2017 \nInformation gathering and usage\n When registering for B4Grad we may ask for information such as your name and email address. For B4Grad Premium we also store relevant payment information such as your email and mobile phone number. Your information is only used internally and won't be shared with others.\n B4Grad collects the email addresses of those who communicate with us via email, and information submitted through voluntary activities such as site registrations or participation in surveys. B4Grad also collects aggregated, anonymous user data regarding app usage. The user data we collect is never personally identifiable and is used to improve B4Grad and the quality of our service.\n Your data\n B4Grad uses third party vendors and hosting partners to provide the necessary hardware, Thank you for taking the time to read the B4Grad Terms of Use. Our desire has always been to be as transparent as possible for you, our loyal users. software, networking, storage, and related technology required to run B4Grad. Although B4Grad owns the code, databases, and all rights to the B4Grad application, you retain all rights to your data. We do not share your personal data with a 3rd party, and we do not sell data to 3rd parties.\n Cookies\n We use cookies to store visitors preferences, customize Web page content based on visitors browser type or other information that the visitor sends. \nAd servers\n We may present advertisements in B4Grad to help sustain our business. These advertisements may be presented to users based on their school or the courses they are enrolled in. We will never use personally identifiable information to curate advertisements for you. Our goal is to make advertisements relevant and unobtrusive while respecting your privacy.\n Security\n All data and information transmitted with Service is secured by SSL protocol.\n Changes\n If our information practices change at some time in the future we will post the policy changes to our Web site to notify you of these changes and we will use for these new purposes only data collected from the time of the policy change forward. If you are concerned about how your information is used, you should check back at our Web site periodically.\n";
+
+/* Class = "UILabel"; text = "Email"; ObjectID = "64I-54-fwj"; */
+"64I-54-fwj.text" = "Email";
+
+/* Class = "UILabel"; text = "Try Premium for Free!"; ObjectID = "7WK-r3-X6w"; */
+"7WK-r3-X6w.text" = "Try Premium for Free!";
+
+/* Class = "UILabel"; text = "Already Have an Account?"; ObjectID = "7ay-bw-3n3"; */
+"7ay-bw-3n3.text" = "Already Have an Account?";
+
+/* Class = "UILabel"; text = "Share B4Grad with Your Friends, & Earn Exclusive Content for Free!"; ObjectID = "7kB-wT-Mok"; */
+"7kB-wT-Mok.text" = "Share B4Grad with Your Friends, & Earn Exclusive Content for Free!";
+
+/* Class = "UILabel"; text = "Provide the email address for your account below. We will send you instructions for getting your account back."; ObjectID = "9OK-UH-vPo"; */
+"9OK-UH-vPo.text" = "Provide the email address for your account below. We will send you instructions for getting your account back.";
+
+/* Class = "UITableViewSection"; headerTitle = "Legal"; ObjectID = "Bp8-2T-ybI"; */
+"Bp8-2T-ybI.headerTitle" = "Legal";
+
+/* Class = "UITableViewController"; title = "Forgot Your Password?"; ObjectID = "BrL-0i-uDw"; */
+"BrL-0i-uDw.title" = "Forgot Your Password?";
+
+/* Class = "UIBarButtonItem"; title = "Login"; ObjectID = "Btu-ls-RKm"; */
+"Btu-ls-RKm.title" = "Login";
+
+/* Class = "UITextField"; placeholder = "Keep private"; ObjectID = "BwJ-82-Cqg"; */
+"BwJ-82-Cqg.placeholder" = "Keep private";
+
+/* Class = "UILabel"; text = "Privacy Policy"; ObjectID = "DBm-VA-pZ9"; */
+"DBm-VA-pZ9.text" = "Privacy Policy";
+
+/* Class = "UILabel"; text = "Password"; ObjectID = "DWE-GB-QSO"; */
+"DWE-GB-QSO.text" = "Password";
+
+/* Class = "UILabel"; text = "New Password"; ObjectID = "EeM-GX-j69"; */
+"EeM-GX-j69.text" = "New Password";
+
+/* Class = "UITextField"; placeholder = "Ex) jbob2@uwo.ca"; ObjectID = "F1z-Ix-Mk1"; */
+"F1z-Ix-Mk1.placeholder" = "Ex) jbob2@uwo.ca";
+
+/* Class = "UILabel"; text = "Add an Email and Password to your account so that you can return to it on other devices. "; ObjectID = "H6H-Od-la7"; */
+"H6H-Od-la7.text" = "Add an Email and Password to your account so that you can return to it on other devices. ";
+
+/* Class = "UITextField"; placeholder = "Ex) jbob2@uwo.ca"; ObjectID = "HOx-tc-8ni"; */
+"HOx-tc-8ni.placeholder" = "Ex) jbob2@uwo.ca";
+
+/* Class = "UILabel"; text = "Send Feedback"; ObjectID = "Ip4-W7-x91"; */
+"Ip4-W7-x91.text" = "Send Feedback";
+
+/* Class = "UILabel"; text = "Premium"; ObjectID = "JHl-sh-V28"; */
+"JHl-sh-V28.text" = "Premium";
+
+/* Class = "UIViewController"; title = "Privacy Policy"; ObjectID = "M1P-25-FCh"; */
+"M1P-25-FCh.title" = "Privacy Policy";
+
+/* Class = "UILabel"; text = "Sign Up"; ObjectID = "MaF-FE-wSo"; */
+"MaF-FE-wSo.text" = "Sign Up";
+
+/* Class = "UILabel"; text = "Privacy Policy"; ObjectID = "NWC-c9-McT"; */
+"NWC-c9-McT.text" = "Privacy Policy";
+
+/* Class = "UILabel"; text = "If a friend installs B4Grad for the first time using the Link or QR Code above, you will recieve a Referral point."; ObjectID = "Ncj-Z1-3Ns"; */
+"Ncj-Z1-3Ns.text" = "If a friend installs B4Grad for the first time using the Link or QR Code above, you will recieve a Referral point.";
+
+/* Class = "UIBarButtonItem"; title = "Log Out"; ObjectID = "QTF-n4-Q4r"; */
+"QTF-n4-Q4r.title" = "Log Out";
+
+/* Class = "UIButton"; normalTitle = "Copy Link"; ObjectID = "R3W-Nq-Y8E"; */
+"R3W-Nq-Y8E.normalTitle" = "Copy Link";
+
+/* Class = "UILabel"; text = "Terms of Use"; ObjectID = "St4-Sk-gwi"; */
+"St4-Sk-gwi.text" = "Terms of Use";
+
+/* Class = "UITableViewController"; title = "Login"; ObjectID = "TGZ-JS-7ma"; */
+"TGZ-JS-7ma.title" = "Login";
+
+/* Class = "UILabel"; text = "ACCOUNT"; ObjectID = "UFW-5m-Xr1"; */
+"UFW-5m-Xr1.text" = "ACCOUNT";
+
+/* Class = "UILabel"; text = "Password"; ObjectID = "UQQ-Jb-1e1"; */
+"UQQ-Jb-1e1.text" = "Password";
+
+/* Class = "UILabel"; text = "Share this Link or the QR Code above to Earn Referral Points."; ObjectID = "Uqy-lv-ayA"; */
+"Uqy-lv-ayA.text" = "Share this Link or the QR Code above to Earn Referral Points.";
+
+/* Class = "UILabel"; text = "Assignment"; ObjectID = "VDj-sF-0PG"; */
+"VDj-sF-0PG.text" = "Assignment";
+
+/* Class = "UILabel"; text = "Share"; ObjectID = "VRf-yx-OcC"; */
+"VRf-yx-OcC.text" = "Share";
+
+/* Class = "UILabel"; text = "Never Procrastinate Again with our Newsletter!"; ObjectID = "XBu-rx-BSy"; */
+"XBu-rx-BSy.text" = "Never Procrastinate Again with our Newsletter!";
+
+/* Class = "UIBarButtonItem"; title = "Done"; ObjectID = "XXf-AD-XGJ"; */
+"XXf-AD-XGJ.title" = "Done";
+
+/* Class = "UIBarButtonItem"; title = "Cancel"; ObjectID = "Z5g-OF-pzE"; */
+"Z5g-OF-pzE.title" = "Cancel";
+
+/* Class = "UITableViewSection"; headerTitle = "More"; ObjectID = "chF-HN-KoI"; */
+"chF-HN-KoI.headerTitle" = "More";
+
+/* Class = "UILabel"; text = "Link Copied"; ObjectID = "fDt-v4-SPo"; */
+"fDt-v4-SPo.text" = "Link Copied";
+
+/* Class = "UILabel"; text = "Anonymous"; ObjectID = "fXQ-aR-h0M"; */
+"fXQ-aR-h0M.text" = "Anonymous";
+
+/* Class = "UITextField"; placeholder = "Keep private"; ObjectID = "fl8-Xz-p6i"; */
+"fl8-Xz-p6i.placeholder" = "Keep private";
+
+/* Class = "UILabel"; text = "Terms of Use"; ObjectID = "fn9-qe-aAa"; */
+"fn9-qe-aAa.text" = "Terms of Use";
+
+/* Class = "UITableViewController"; title = "Reminders"; ObjectID = "h61-pS-xaJ"; */
+"h61-pS-xaJ.title" = "Reminders";
+
+/* Class = "UILabel"; text = "Reminders"; ObjectID = "hmc-9x-Aaf"; */
+"hmc-9x-Aaf.text" = "Reminders";
+
+/* Class = "UILabel"; text = "Password"; ObjectID = "k5o-wT-SzU"; */
+"k5o-wT-SzU.text" = "Password";
+
+/* Class = "UILabel"; text = "New: Get Your First Referral Point by leaving a Rating! (Use the button below.)"; ObjectID = "kEc-2Q-GgE"; */
+"kEc-2Q-GgE.text" = "New: Get Your First Referral Point by leaving a Rating! (Use the button below.)";
+
+/* Class = "UIViewController"; title = "Terms of Use"; ObjectID = "kxG-v6-wKB"; */
+"kxG-v6-wKB.title" = "Terms of Use";
+
+/* Class = "UITextField"; placeholder = "Ex) jbob2@uwo.ca"; ObjectID = "lFY-Ee-Br9"; */
+"lFY-Ee-Br9.placeholder" = "Ex) jbob2@uwo.ca";
+
+/* Class = "UILabel"; text = "Or Forget the work and Get Premium now!"; ObjectID = "lFj-2I-whe"; */
+"lFj-2I-whe.text" = "Or Forget the work and Get Premium now!";
+
+/* Class = "UILabel"; text = "Send Me Instructions"; ObjectID = "lPt-ps-asq"; */
+"lPt-ps-asq.text" = "Send Me Instructions";
+
+/* Class = "UINavigationItem"; title = "Sign Up"; ObjectID = "lm9-Sk-8W2"; */
+"lm9-Sk-8W2.title" = "Sign Up";
+
+/* Class = "UINavigationItem"; title = "Account"; ObjectID = "lsW-91-en7"; */
+"lsW-91-en7.title" = "Account";
+
+/* Class = "UITextField"; placeholder = "Ex) jbob2@uwo.ca"; ObjectID = "o48-MN-wL6"; */
+"o48-MN-wL6.placeholder" = "Ex) jbob2@uwo.ca";
+
+/* Class = "UITextView"; text = "Thank you for taking the time to read the B4Grad Terms of Use. Our desire has always been to be as transparent as possible for you, our loyal users. \nB4Grad App End User License Agreement\nEffective Date: Saturday April 4, 2020\n\nThis End User License Agreement (“Agreement”) is between you and B4Grad and governs use of this app made available through the Apple App Store. By installing the B4Grad App, you agree to be bound by this Agreement and understand that there is no tolerance for objectionable content. If you do not agree with the terms and conditions of this Agreement, you are not entitled to use the B4Grad App.\n\nIn order to ensure B4Grad provides the best experience possible for everyone, we strongly enforce a no tolerance policy for objectionable content. If you see inappropriate content, please use the \"Report as offensive\" feature found under each post.\n\n1. Parties \n\nThis Agreement is between you and B4Grad only, and not Apple, Inc. (“Apple”). Notwithstanding the foregoing, you acknowledge that Apple and its subsidiaries are third party beneficiaries of this Agreement and Apple has the right to enforce this Agreement against you. B4Grad, not Apple, is solely responsible for the B4Grad App and its content.\n\n2. Privacy \n\nB4Grad may collect and use information about your usage of the B4Grad App, including certain types of information from and about your device. B4Grad may use this information, as long as it is in a form that does not personally identify you, to measure the use and performance of the B4Grad App.\n\n3. Limited License \n\nB4Grad grants you a limited, non-exclusive, non-transferable, revocable license to use theB4Grad App for your personal, non-commercial purposes. You may only use the B4GradB4Grad App on Apple devices that you own or control and as permitted by the App Store Terms of Service.\n\n4. Age Restrictions \n\nBy using the B4Grad App, you represent and warrant that (a) you are 17 years of age or older and you agree to be bound by this Agreement; (b) if you are under 17 years of age, you have obtained verifiable consent from a parent or legal guardian; and (c) your use of the B4Grad App does not violate any applicable law or regulation. Your access to the B4Grad App may be terminated without warning if B4Grad believes, in its sole discretion, that you are under the age of 17 years and have not obtained verifiable consent from a parent or legal guardian. If you are a parent or legal guardian and you provide your consent to your child's use of the B4Grad App, you agree to be bound by this Agreement in respect to your child's use of the B4Grad App.\n\n5. Objectionable Content Policy \n\nContent may not be submitted to B4Grad, who will moderate all content and ultimately decide whether or not to post a submission to the extent such content includes, is in conjunction with, or alongside any, Objectionable Content. Objectionable Content includes, but is not limited to: (i) sexually explicit materials; (ii) obscene, defamatory, libelous, slanderous, violent and/or unlawful content or profanity; (iii) content that infringes upon the rights of any third party, including copyright, trademark, privacy, publicity or other personal or proprietary right, or that is deceptive or fraudulent; (iv) content that promotes the use or sale of illegal or regulated substances, tobacco products, ammunition and/or firearms; and (v) gambling, including without limitation, any online casino, sports books, bingo or poker.\n\n6. Warranty \n\nB4Grad disclaims all warranties about the B4Grad App to the fullest extent permitted by law. To the extent any warranty exists under law that cannot be disclaimed, B4Grad, not Apple, shall be solely responsible for such warranty.\n\n7. Maintenance and Support \n\nB4Grad does provide minimal maintenance or support for it but not to the extent that any maintenance or support is required by applicable law, B4Grad, not Apple, shall be obligated to furnish any such maintenance or support.\n\n8. Product Claims \n\nB4Grad, not Apple, is responsible for addressing any claims by you relating to the B4Grad App or use of it, including, but not limited to: (i) any product liability claim; (ii) any claim that the B4Grad App fails to conform to any applicable legal or regulatory requirement; and (iii) any claim arising under consumer protection or similar legislation. Nothing in this Agreement shall be deemed an admission that you may have such claims.\n\n9. Third Party Intellectual Property Claims \n\nB4Grad shall not be obligated to indemnify or defend you with respect to any third party claim arising out or relating to the B4Grad App. To the extent B4Grad is required to provide indemnification by applicable law, B4Grad, not Apple, shall be solely responsible for the investigation, defense, settlement and discharge of any claim that the B4Grad App or your use of it infringes any third party intellectual property right.\nAgree Decline\n\n10. Change of Terms of Service\n\nFrom time to time, B4Grad may modify existing terms and/or update these terms with additional terms that apply to the Service. For example, B4Grad may modify existing terms to reflect any mandatory changes to the law. You should check the terms regularly to keep informed. B4Grad will also post notice of modification to these Terms on this page or via the email address you registered with us. Note, changes will not apply retroactively and will become effective thirty (30) days after they are posted on our website. Changes addressing new functions for the Service or changes made for legal reasons may be effective immediately. You should discontinue your use of our Service if you do not agree with updated/modified Terms.\n\n11. Privacy Protection\n\nB4Grads privacy policies explain how we treat your personal data and protect your privacy when using our Service. By using our Service, you automatically agree to our privacy policies and B4Grad can use such data in accordance with its privacy policies.\n\n12. Your Content in Our Service\n\nOur service allows you to upload, download and store content, including but not limited to, information, text, graphics, videos, audios, or other material (\"Content\"). You retain ownership of any intellectual property rights that you hold in that Content. When you upload, store, send or receive Content to or through our Service, you give B4Grad and its service partners a worldwide license to host, store, upload and download this Content and only for the purpose of providing Service strictly to you and your use of the Content. We reserve our right at all times, but are not obligated, to remove or refuse to distribute any Content through the Service including your Content.\n\n13. Software in Our Service\n\nWhen the Service requires or includes downloadable software, this software may update automatically on your device once a new version or features become available to you. Some platforms may let you adjust your automatic update settings.\n\nYou may not copy, modify, distribute, sell, or lease any part of our Service or included software, nor may you reverse engineer or attempt to extract the source code of the software.\n\n14. Modifying and Terminating Our Service\n\nB4Grad may add or remove functionalities or features in the normal course of improving, changing, and/or updating the Service. We may also suspend or stop our Service with at least thirty (30) days notice prior to the complete shutdown of our Service.\n\nYou can choose to stop using our Service at will. We may also stop providing Service to you, or add or create new limitations to our Service at any time as detailed in the Terms.\n\n15. API\n\nYou may access your Service data via the Application Program Interface (\"API\") if it is made available. By using API, you are automatically bound by the Terms.\n\n16. Using Our Service\n\nYou must follow any policies made available to your within the Service. You may only use our Service as permitted by law. B4Grad may investigate and/or suspend or terminate our Service to you at any time if we find your use of our Service violates the Terms and/or any policies.\n\nUsing our Service does not grant you ownership of any intellectual property rights in our Service or the content you may have access to. You may not use any copyrighted content in our Service unless you obtain permission from the content owner and/or are otherwise permitted by law. The Terms do not grant you the right to use any branding or logos used in our Service. Our Service may display some logos, trademarks, or branding materials that is not the property of B4Grad. These types of content are the sole responsibility of the entity that makes it available.\n\nYou must not abuse and/or misuse our Service, including but not limited to, doing the following things: 1. Using the Service for any unlawful purposes or activities; 2. Uploading any content to the Service in violation of any applicable law, including but not limited to, intellectual property laws and publicity laws; 3. Sending unsolicited promotions or advertisements; 4. Accessing or tampering with the Services server systems; 5. Interfering with or disrupting the access of any user, host, or network; 6. Abusing or submitting excessively frequent requests to the Service via the API.B4Grad, in its sole discretion, will determine abuse and/or misuse of our Service.\n\n17. Premium Service and Payments\n\nYou may choose our free Service or paid Service (\"Premium\") depending on your need. We do not guarantee when, if ever, Premium features will be available in the free Service. You can upgrade from free Service to Premium at any time by following instructions on our upgrade page (\"Upgrade\").\n\nWhen a free trial of Premium is offered, you will have access to all Premium features. After the free trial period, if you choose not to upgrade to Premium, features available to you will be limited to free Service. You will be charged with the amount shown on Upgrade before you can access Premium. All prices shown on Upgrade are inclusive of any applicable sales taxes, levies, value-added taxes, or duties imposed by taxing authorities, and you are responsible for payment of all such taxes, levies, or duties.\n\nBY PURCHASING PREMIUM YOU EXPRESSLY UNDERSTAND AND AGREE TO OUR REFUND POLICY:WITHIN THIRTY (30) DAYS OF YOUR PREMIUM PAYMENT DATE AS SHOWN ON YOUR PAYMENT BILL, YOU CAN REQUEST A FULL REFUND BY CONTACTING US. NO REFUND OF ANY KIND WILL BE PERMITTED AFTER THIRTY (30) DAYS OF YOUR PREMIUM PAYMENT DATE.\n\nFOR ANY CUSTOMER WHO PURCHASED PREMIUM IN APPLE INC.s APP STORE (\"APP STORE\"), PLEASE CONTACT APPLE INC.s SUPPORT TEAM: http://reportaproblem.apple.com/. APP STORE DOES NOT ALLOW DEVELOPERS TO ISSUE REFUND FOR APP STORE PURCHASES MADE BY CUSTOMERS.\n\n18. Limited Liability for Our Service\n\nTO THE MAXIMUM EXTENT PERMITTED BY LAW, THE SERVICE IS AVAILABLE AS IS. YOU EXPRESSLY UNDERSTAND AND AGREE THAT:\n\nWHEN PERMITTED BY LAW, B4GRAD AND ITS SERVICE PARTNERS, LICENSORS, EMPLOYEES, AGENTS WILL NOT BE RESPONSIBLE FOR ANY LOST PROFITS, REVENUES, OR DATA, FINANCIAL LOSSES OR INDIRECT, SPECIAL, CONSEQUENTIAL, EXEMPLARY, OR PUNITIVE DAMAGES UNDER ANY CIRCUMSTANCES.YOUR USE AND/OR PURCHASE OF SERVICE ARE ALL AT YOUR SOLE RISK. THE SERVICE IS PROVIDED ON AN AS IS BASIS.\n\nB4GRAD DOES NOT WARRANT THAT: 1. THE SERVICE WILL MEET ALL OF YOUR REQUIREMENTS AT ALL TIMES; 2. THE SERVICE WILL BE ERROR-FREE AND ALL ERRORS IN THE SERVICE WILL BE CORRECTED; 3. THE SERVICE WILL BE UNINTERRUPTED.ALL CONTENT DOWNLOADED, UPLOADED AND/OR OTHERWISE OBTAINED THROUGH THE USE OF THE SERVICE IS DONE AT YOUR OWN DISCRETION AND RISK AND YOU ARE SOLELY RESPONSIBLE FOR ANY DAMAGE TO YOUR COMPUTER EQUIPMENT OR DEVICES, INCLUDING BUT NOT LIMITED TO, LAPTOP COMPUTERS, DESKTOP COMPUTER, TABLETS, SMARTPHONES AND SMARTWATCHES, OR ANY DATA LOSS RESULTING FROM DOWNLOAD OR USE OF ANY SUCH ABOVE MENTIONED MATERIAL.\n\n19. Information gathering and usage\n\nWhen registering for B4Grad we may ask for information such as your name and email address. For B4Grad Premium we also store relevant payment-related information such as your email and mobile phone number. Your information is only used internally and won't be shared with others, with the exception of your display name and user avatar. There may be other publicly available information that can be used to identify you in our online service. This may include information such as reviews you have written, or comments readable by other users in B4Grad."; ObjectID = "oSW-i9-U9c"; */
+"oSW-i9-U9c.text" = "Thank you for taking the time to read the B4Grad Terms of Use. Our desire has always been to be as transparent as possible for you, our loyal users. \nB4Grad App End User License Agreement\nEffective Date: Saturday April 4, 2020\n\nThis End User License Agreement (“Agreement”) is between you and B4Grad and governs use of this app made available through the Apple App Store. By installing the B4Grad App, you agree to be bound by this Agreement and understand that there is no tolerance for objectionable content. If you do not agree with the terms and conditions of this Agreement, you are not entitled to use the B4Grad App.\n\nIn order to ensure B4Grad provides the best experience possible for everyone, we strongly enforce a no tolerance policy for objectionable content. If you see inappropriate content, please use the \"Report as offensive\" feature found under each post.\n\n1. Parties \n\nThis Agreement is between you and B4Grad only, and not Apple, Inc. (“Apple”). Notwithstanding the foregoing, you acknowledge that Apple and its subsidiaries are third party beneficiaries of this Agreement and Apple has the right to enforce this Agreement against you. B4Grad, not Apple, is solely responsible for the B4Grad App and its content.\n\n2. Privacy \n\nB4Grad may collect and use information about your usage of the B4Grad App, including certain types of information from and about your device. B4Grad may use this information, as long as it is in a form that does not personally identify you, to measure the use and performance of the B4Grad App.\n\n3. Limited License \n\nB4Grad grants you a limited, non-exclusive, non-transferable, revocable license to use theB4Grad App for your personal, non-commercial purposes. You may only use the B4GradB4Grad App on Apple devices that you own or control and as permitted by the App Store Terms of Service.\n\n4. Age Restrictions \n\nBy using the B4Grad App, you represent and warrant that (a) you are 17 years of age or older and you agree to be bound by this Agreement; (b) if you are under 17 years of age, you have obtained verifiable consent from a parent or legal guardian; and (c) your use of the B4Grad App does not violate any applicable law or regulation. Your access to the B4Grad App may be terminated without warning if B4Grad believes, in its sole discretion, that you are under the age of 17 years and have not obtained verifiable consent from a parent or legal guardian. If you are a parent or legal guardian and you provide your consent to your child's use of the B4Grad App, you agree to be bound by this Agreement in respect to your child's use of the B4Grad App.\n\n5. Objectionable Content Policy \n\nContent may not be submitted to B4Grad, who will moderate all content and ultimately decide whether or not to post a submission to the extent such content includes, is in conjunction with, or alongside any, Objectionable Content. Objectionable Content includes, but is not limited to: (i) sexually explicit materials; (ii) obscene, defamatory, libelous, slanderous, violent and/or unlawful content or profanity; (iii) content that infringes upon the rights of any third party, including copyright, trademark, privacy, publicity or other personal or proprietary right, or that is deceptive or fraudulent; (iv) content that promotes the use or sale of illegal or regulated substances, tobacco products, ammunition and/or firearms; and (v) gambling, including without limitation, any online casino, sports books, bingo or poker.\n\n6. Warranty \n\nB4Grad disclaims all warranties about the B4Grad App to the fullest extent permitted by law. To the extent any warranty exists under law that cannot be disclaimed, B4Grad, not Apple, shall be solely responsible for such warranty.\n\n7. Maintenance and Support \n\nB4Grad does provide minimal maintenance or support for it but not to the extent that any maintenance or support is required by applicable law, B4Grad, not Apple, shall be obligated to furnish any such maintenance or support.\n\n8. Product Claims \n\nB4Grad, not Apple, is responsible for addressing any claims by you relating to the B4Grad App or use of it, including, but not limited to: (i) any product liability claim; (ii) any claim that the B4Grad App fails to conform to any applicable legal or regulatory requirement; and (iii) any claim arising under consumer protection or similar legislation. Nothing in this Agreement shall be deemed an admission that you may have such claims.\n\n9. Third Party Intellectual Property Claims \n\nB4Grad shall not be obligated to indemnify or defend you with respect to any third party claim arising out or relating to the B4Grad App. To the extent B4Grad is required to provide indemnification by applicable law, B4Grad, not Apple, shall be solely responsible for the investigation, defense, settlement and discharge of any claim that the B4Grad App or your use of it infringes any third party intellectual property right.\nAgree Decline\n\n10. Change of Terms of Service\n\nFrom time to time, B4Grad may modify existing terms and/or update these terms with additional terms that apply to the Service. For example, B4Grad may modify existing terms to reflect any mandatory changes to the law. You should check the terms regularly to keep informed. B4Grad will also post notice of modification to these Terms on this page or via the email address you registered with us. Note, changes will not apply retroactively and will become effective thirty (30) days after they are posted on our website. Changes addressing new functions for the Service or changes made for legal reasons may be effective immediately. You should discontinue your use of our Service if you do not agree with updated/modified Terms.\n\n11. Privacy Protection\n\nB4Grads privacy policies explain how we treat your personal data and protect your privacy when using our Service. By using our Service, you automatically agree to our privacy policies and B4Grad can use such data in accordance with its privacy policies.\n\n12. Your Content in Our Service\n\nOur service allows you to upload, download and store content, including but not limited to, information, text, graphics, videos, audios, or other material (\"Content\"). You retain ownership of any intellectual property rights that you hold in that Content. When you upload, store, send or receive Content to or through our Service, you give B4Grad and its service partners a worldwide license to host, store, upload and download this Content and only for the purpose of providing Service strictly to you and your use of the Content. We reserve our right at all times, but are not obligated, to remove or refuse to distribute any Content through the Service including your Content.\n\n13. Software in Our Service\n\nWhen the Service requires or includes downloadable software, this software may update automatically on your device once a new version or features become available to you. Some platforms may let you adjust your automatic update settings.\n\nYou may not copy, modify, distribute, sell, or lease any part of our Service or included software, nor may you reverse engineer or attempt to extract the source code of the software.\n\n14. Modifying and Terminating Our Service\n\nB4Grad may add or remove functionalities or features in the normal course of improving, changing, and/or updating the Service. We may also suspend or stop our Service with at least thirty (30) days notice prior to the complete shutdown of our Service.\n\nYou can choose to stop using our Service at will. We may also stop providing Service to you, or add or create new limitations to our Service at any time as detailed in the Terms.\n\n15. API\n\nYou may access your Service data via the Application Program Interface (\"API\") if it is made available. By using API, you are automatically bound by the Terms.\n\n16. Using Our Service\n\nYou must follow any policies made available to your within the Service. You may only use our Service as permitted by law. B4Grad may investigate and/or suspend or terminate our Service to you at any time if we find your use of our Service violates the Terms and/or any policies.\n\nUsing our Service does not grant you ownership of any intellectual property rights in our Service or the content you may have access to. You may not use any copyrighted content in our Service unless you obtain permission from the content owner and/or are otherwise permitted by law. The Terms do not grant you the right to use any branding or logos used in our Service. Our Service may display some logos, trademarks, or branding materials that is not the property of B4Grad. These types of content are the sole responsibility of the entity that makes it available.\n\nYou must not abuse and/or misuse our Service, including but not limited to, doing the following things: 1. Using the Service for any unlawful purposes or activities; 2. Uploading any content to the Service in violation of any applicable law, including but not limited to, intellectual property laws and publicity laws; 3. Sending unsolicited promotions or advertisements; 4. Accessing or tampering with the Services server systems; 5. Interfering with or disrupting the access of any user, host, or network; 6. Abusing or submitting excessively frequent requests to the Service via the API.B4Grad, in its sole discretion, will determine abuse and/or misuse of our Service.\n\n17. Premium Service and Payments\n\nYou may choose our free Service or paid Service (\"Premium\") depending on your need. We do not guarantee when, if ever, Premium features will be available in the free Service. You can upgrade from free Service to Premium at any time by following instructions on our upgrade page (\"Upgrade\").\n\nWhen a free trial of Premium is offered, you will have access to all Premium features. After the free trial period, if you choose not to upgrade to Premium, features available to you will be limited to free Service. You will be charged with the amount shown on Upgrade before you can access Premium. All prices shown on Upgrade are inclusive of any applicable sales taxes, levies, value-added taxes, or duties imposed by taxing authorities, and you are responsible for payment of all such taxes, levies, or duties.\n\nBY PURCHASING PREMIUM YOU EXPRESSLY UNDERSTAND AND AGREE TO OUR REFUND POLICY:WITHIN THIRTY (30) DAYS OF YOUR PREMIUM PAYMENT DATE AS SHOWN ON YOUR PAYMENT BILL, YOU CAN REQUEST A FULL REFUND BY CONTACTING US. NO REFUND OF ANY KIND WILL BE PERMITTED AFTER THIRTY (30) DAYS OF YOUR PREMIUM PAYMENT DATE.\n\nFOR ANY CUSTOMER WHO PURCHASED PREMIUM IN APPLE INC.s APP STORE (\"APP STORE\"), PLEASE CONTACT APPLE INC.s SUPPORT TEAM: http://reportaproblem.apple.com/. APP STORE DOES NOT ALLOW DEVELOPERS TO ISSUE REFUND FOR APP STORE PURCHASES MADE BY CUSTOMERS.\n\n18. Limited Liability for Our Service\n\nTO THE MAXIMUM EXTENT PERMITTED BY LAW, THE SERVICE IS AVAILABLE AS IS. YOU EXPRESSLY UNDERSTAND AND AGREE THAT:\n\nWHEN PERMITTED BY LAW, B4GRAD AND ITS SERVICE PARTNERS, LICENSORS, EMPLOYEES, AGENTS WILL NOT BE RESPONSIBLE FOR ANY LOST PROFITS, REVENUES, OR DATA, FINANCIAL LOSSES OR INDIRECT, SPECIAL, CONSEQUENTIAL, EXEMPLARY, OR PUNITIVE DAMAGES UNDER ANY CIRCUMSTANCES.YOUR USE AND/OR PURCHASE OF SERVICE ARE ALL AT YOUR SOLE RISK. THE SERVICE IS PROVIDED ON AN AS IS BASIS.\n\nB4GRAD DOES NOT WARRANT THAT: 1. THE SERVICE WILL MEET ALL OF YOUR REQUIREMENTS AT ALL TIMES; 2. THE SERVICE WILL BE ERROR-FREE AND ALL ERRORS IN THE SERVICE WILL BE CORRECTED; 3. THE SERVICE WILL BE UNINTERRUPTED.ALL CONTENT DOWNLOADED, UPLOADED AND/OR OTHERWISE OBTAINED THROUGH THE USE OF THE SERVICE IS DONE AT YOUR OWN DISCRETION AND RISK AND YOU ARE SOLELY RESPONSIBLE FOR ANY DAMAGE TO YOUR COMPUTER EQUIPMENT OR DEVICES, INCLUDING BUT NOT LIMITED TO, LAPTOP COMPUTERS, DESKTOP COMPUTER, TABLETS, SMARTPHONES AND SMARTWATCHES, OR ANY DATA LOSS RESULTING FROM DOWNLOAD OR USE OF ANY SUCH ABOVE MENTIONED MATERIAL.\n\n19. Information gathering and usage\n\nWhen registering for B4Grad we may ask for information such as your name and email address. For B4Grad Premium we also store relevant payment-related information such as your email and mobile phone number. Your information is only used internally and won't be shared with others, with the exception of your display name and user avatar. There may be other publicly available information that can be used to identify you in our online service. This may include information such as reviews you have written, or comments readable by other users in B4Grad.";
+
+/* Class = "UILabel"; text = "You are currently using B4Grad Free."; ObjectID = "ocw-rZ-Dyf"; */
+"ocw-rZ-Dyf.text" = "You are currently using B4Grad Free.";
+
+/* Class = "UIButton"; normalTitle = "Rate Now"; ObjectID = "pZB-aG-GCU"; */
+"pZB-aG-GCU.normalTitle" = "Rate Now";
+
+/* Class = "UILabel"; text = "Email"; ObjectID = "tiW-es-DGi"; */
+"tiW-es-DGi.text" = "Email";
+
+/* Class = "UILabel"; text = "You Currently have 0 Points."; ObjectID = "tmA-YN-AeO"; */
+"tmA-YN-AeO.text" = "You Currently have 0 Points.";
+
+/* Class = "UIViewController"; title = "Background"; ObjectID = "uFT-f0-RI5"; */
+"uFT-f0-RI5.title" = "Background";
+
+/* Class = "UILabel"; text = "New Drops Every Few Months!"; ObjectID = "wNh-Dc-Pm1"; */
+"wNh-Dc-Pm1.text" = "New Drops Every Few Months!";
+
+/* Class = "UILabel"; text = "Email"; ObjectID = "woB-JL-y4y"; */
+"woB-JL-y4y.text" = "Email";
+
+/* Class = "UILabel"; text = "Rate on App Store"; ObjectID = "xDh-Gi-r6R"; */
+"xDh-Gi-r6R.text" = "Rate on App Store";
+
+/* Class = "UITableViewSection"; headerTitle = "Shop"; ObjectID = "y26-gK-cms"; */
+"y26-gK-cms.headerTitle" = "Shop";
+
+/* Class = "UITableViewSection"; headerTitle = "Productivity"; ObjectID = "yRE-1O-71q"; */
+"yRE-1O-71q.headerTitle" = "Productivity";
+
+/* Class = "UITextField"; placeholder = "Type a New Password."; ObjectID = "yx9-8V-nhY"; */
+"yx9-8V-nhY.placeholder" = "Type a New Password.";
+
+/* Class = "UILabel"; text = "Login"; ObjectID = "zLj-J3-Qdx"; */
+"zLj-J3-Qdx.text" = "Login";
+
+/* Class = "UILabel"; text = "Forgot Your Password?"; ObjectID = "zW2-DX-kWa"; */
+"zW2-DX-kWa.text" = "Forgot Your Password?";
+
+/* Class = "UILabel"; text = "Shop GradLocker Now"; ObjectID = "zgH-RA-v0W"; */
+"zgH-RA-v0W.text" = "Shop GradLocker Now";
+
+/* Class = "UINavigationItem"; title = "Free Stuff"; ObjectID = "zmb-gd-qVV"; */
+"zmb-gd-qVV.title" = "Free Stuff";

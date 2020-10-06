@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "RTFFileFormatter.format(attrs:):FileFormatter.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "mutableAttrs.string">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "MakeTextBoldAction.execute(in:with:textview:):MakeTextBoldAction.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "textview.selectedTextRange?.start">
+            </PersistentString>
+            <PersistentString
+               value = "attrs.string">
+            </PersistentString>
+            <PersistentString
+               value = "bMakeBoldSelect">
+            </PersistentString>
+            <PersistentString
+               value = "attrs.string.length">
+            </PersistentString>
+            <PersistentString
+               value = "textview.selectedTextRange">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "NoteEditorViewController.textView(_:shouldChangeTextIn:replacementText:):NoteEditorViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "shouldChangeTextIn">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "BoldSyntaxBuilder.truncateMarkupSyntax(in:with:):BoldSyntaxBuilder.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "enclosingRange">
+            </PersistentString>
+            <PersistentString
+               value = "string.string">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "CellEditingTableViewController.viewDidAppear(_:):CellEditingTableViewController.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.helperObject.dictionary">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "closure #1 in BoldSyntaxBuilder.truncateMarkupSyntax(in:with:):BoldSyntaxBuilder.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "range">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>
