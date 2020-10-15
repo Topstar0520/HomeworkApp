@@ -1,0 +1,189 @@
+
+/* Class = "UILabel"; text = "Assignment"; ObjectID = "1SE-gd-UUr"; */
+"1SE-gd-UUr.text" = "Assignment";
+
+/* Class = "UILabel"; text = "Assignment 1"; ObjectID = "1Yr-P5-0lh"; */
+"1Yr-P5-0lh.text" = "Assignment 1";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "7Ov-lI-Vvf"; */
+"7Ov-lI-Vvf.normalTitle" = "Button";
+
+/* Class = "UILabel"; text = "FRI"; ObjectID = "7ru-fD-pbC"; */
+"7ru-fD-pbC.text" = "FRI";
+
+/* Class = "UILabel"; text = "This Assignment will be hidden from your Agenda until [Date]."; ObjectID = "A8z-9A-MGV"; */
+"A8z-9A-MGV.text" = "This Assignment will be hidden from your Agenda until [Date].";
+
+/* Class = "UIButton"; normalTitle = "😀"; ObjectID = "BEu-ms-ees"; */
+"BEu-ms-ees.normalTitle" = "😀";
+
+/* Class = "UIButton"; selectedTitle = "😀"; ObjectID = "BEu-ms-ees"; */
+"BEu-ms-ees.selectedTitle" = "😀";
+
+/* Class = "UIButton"; normalTitle = "Confirm"; ObjectID = "Cgb-HH-JzN"; */
+"Cgb-HH-JzN.normalTitle" = "Confirm";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "Chr-db-DDJ"; */
+"Chr-db-DDJ.normalTitle" = "Button";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "EDV-hv-wMV"; */
+"EDV-hv-wMV.normalTitle" = "Button";
+
+/* Class = "UILabel"; text = "Start Time"; ObjectID = "FmM-CB-PkV"; */
+"FmM-CB-PkV.text" = "Start Time";
+
+/* Class = "UILabel"; text = "Schedule"; ObjectID = "GY0-oT-0JG"; */
+"GY0-oT-0JG.text" = "Schedule";
+
+/* Class = "UILabel"; text = "MON"; ObjectID = "Gy6-43-gv1"; */
+"Gy6-43-gv1.text" = "MON";
+
+/* Class = "UIButton"; normalTitle = "This Assignment has no specified time?"; ObjectID = "IY6-4N-Qh9"; */
+"IY6-4N-Qh9.normalTitle" = "This Assignment has no specified time?";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "JfR-fA-Ubm"; */
+"JfR-fA-Ubm.normalTitle" = "Button";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "Km0-9Z-RGF"; */
+"Km0-9Z-RGF.text" = "Label";
+
+/* Class = "UIButton"; normalTitle = "Cancel Reminder"; ObjectID = "Lk9-Sv-ol0"; */
+"Lk9-Sv-ol0.normalTitle" = "Cancel Reminder";
+
+/* Class = "UILabel"; text = "Course"; ObjectID = "Mac-dG-hQR"; */
+"Mac-dG-hQR.text" = "Course";
+
+/* Class = "UIButton"; normalTitle = "😀"; ObjectID = "Mtn-j9-AIh"; */
+"Mtn-j9-AIh.normalTitle" = "😀";
+
+/* Class = "UIButton"; selectedTitle = "😀"; ObjectID = "Mtn-j9-AIh"; */
+"Mtn-j9-AIh.selectedTitle" = "😀";
+
+/* Class = "UILabel"; text = "Write Review..."; ObjectID = "PL2-QP-P1b"; */
+"PL2-QP-P1b.text" = "Write Review...";
+
+/* Class = "UILabel"; text = "Due in 3 days."; ObjectID = "QD7-Wg-dBc"; */
+"QD7-Wg-dBc.text" = "Due in 3 days.";
+
+/* Class = "UILabel"; text = "SUN"; ObjectID = "QPs-GT-qIA"; */
+"QPs-GT-qIA.text" = "SUN";
+
+/* Class = "UIButton"; normalTitle = "Confirm"; ObjectID = "Qg2-cb-GOt"; */
+"Qg2-cb-GOt.normalTitle" = "Confirm";
+
+/* Class = "UILabel"; text = "Attach Note"; ObjectID = "RjS-a9-Jzo"; */
+"RjS-a9-Jzo.text" = "Attach Note";
+
+/* Class = "UINavigationItem"; title = "Home"; ObjectID = "RkS-B9-By4"; */
+"RkS-B9-By4.title" = "Home";
+
+/* Class = "UILabel"; text = "This Assignment will be hidden from your Agenda until [Date]."; ObjectID = "TZL-FG-tNq"; */
+"TZL-FG-tNq.text" = "This Assignment will be hidden from your Agenda until [Date].";
+
+/* Class = "UILabel"; text = "Weekly"; ObjectID = "VjK-nF-bmJ"; */
+"VjK-nF-bmJ.text" = "Weekly";
+
+/* Class = "UILabel"; text = "This Assignment will be hidden from your Agenda until [Date]."; ObjectID = "WQw-WL-1ib"; */
+"WQw-WL-1ib.text" = "This Assignment will be hidden from your Agenda until [Date].";
+
+/* Class = "UILabel"; text = "November 3, 2016"; ObjectID = "WkF-C0-3MZ"; */
+"WkF-C0-3MZ.text" = "November 3, 2016";
+
+/* Class = "UILabel"; text = "CS2210"; ObjectID = "XA4-cy-WHF"; */
+"XA4-cy-WHF.text" = "CS2210";
+
+/* Class = "UILabel"; text = "Due in 3 days."; ObjectID = "Z8Q-5a-ZTM"; */
+"Z8Q-5a-ZTM.text" = "Due in 3 days.";
+
+/* Class = "UIButton"; normalTitle = "😀"; ObjectID = "aUN-Rc-PUq"; */
+"aUN-Rc-PUq.normalTitle" = "😀";
+
+/* Class = "UIButton"; selectedTitle = "😀"; ObjectID = "aUN-Rc-PUq"; */
+"aUN-Rc-PUq.selectedTitle" = "😀";
+
+/* Class = "UILabel"; text = "Reminders"; ObjectID = "bzf-dl-srH"; */
+"bzf-dl-srH.text" = "Reminders";
+
+/* Class = "UILabel"; text = "Due Date"; ObjectID = "cPE-qC-ZmQ"; */
+"cPE-qC-ZmQ.text" = "Due Date";
+
+/* Class = "UILabel"; text = "November 3, 2016"; ObjectID = "dJb-r5-6Bf"; */
+"dJb-r5-6Bf.text" = "November 3, 2016";
+
+/* Class = "UILabel"; text = "Assignment 1"; ObjectID = "dO8-u2-4fG"; */
+"dO8-u2-4fG.text" = "Assignment 1";
+
+/* Class = "UILabel"; text = "Modify Course Schedule"; ObjectID = "dT4-hG-25e"; */
+"dT4-hG-25e.text" = "Modify Course Schedule";
+
+/* Class = "UILabel"; text = "CS2210"; ObjectID = "fwy-rx-ucc"; */
+"fwy-rx-ucc.text" = "CS2210";
+
+/* Class = "UINavigationItem"; title = "Home"; ObjectID = "g3e-hU-GVm"; */
+"g3e-hU-GVm.title" = "Home";
+
+/* Class = "UILabel"; text = "SAT"; ObjectID = "gsR-nJ-lRb"; */
+"gsR-nJ-lRb.text" = "SAT";
+
+/* Class = "UIButton"; normalTitle = "😀"; ObjectID = "haQ-2K-tUg"; */
+"haQ-2K-tUg.normalTitle" = "😀";
+
+/* Class = "UIButton"; selectedTitle = "😀"; ObjectID = "haQ-2K-tUg"; */
+"haQ-2K-tUg.selectedTitle" = "😀";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "idl-4b-PbR"; */
+"idl-4b-PbR.normalTitle" = "Button";
+
+/* Class = "UILabel"; text = "Repeats"; ObjectID = "jLu-4l-mZ6"; */
+"jLu-4l-mZ6.text" = "Repeats";
+
+/* Class = "UILabel"; text = "TUE"; ObjectID = "k46-zn-mru"; */
+"k46-zn-mru.text" = "TUE";
+
+/* Class = "UIButton"; normalTitle = "Confirm"; ObjectID = "kcV-xq-6hd"; */
+"kcV-xq-6hd.normalTitle" = "Confirm";
+
+/* Class = "UILabel"; text = "WED"; ObjectID = "l3V-Os-Nv2"; */
+"l3V-Os-Nv2.text" = "WED";
+
+/* Class = "UILabel"; text = "Course"; ObjectID = "l8H-Zo-TZh"; */
+"l8H-Zo-TZh.text" = "Course";
+
+/* Class = "UIButton"; normalTitle = "This Assignment has no specified time?"; ObjectID = "oQN-xA-a39"; */
+"oQN-xA-a39.normalTitle" = "This Assignment has no specified time?";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "r5o-mE-SOU"; */
+"r5o-mE-SOU.normalTitle" = "Button";
+
+/* Class = "UILabel"; text = "End Time"; ObjectID = "rNl-eO-m8l"; */
+"rNl-eO-m8l.text" = "End Time";
+
+/* Class = "UILabel"; text = "Describe your experiences in CS2210 below."; ObjectID = "s0s-R0-ni7"; */
+"s0s-R0-ni7.text" = "Describe your experiences in CS2210 below.";
+
+/* Class = "UILabel"; text = "Assignment"; ObjectID = "tj4-gs-MnI"; */
+"tj4-gs-MnI.text" = "Assignment";
+
+/* Class = "UILabel"; text = "This Assignment will be hidden from your Agenda until [Date]."; ObjectID = "tnR-Dv-JCx"; */
+"tnR-Dv-JCx.text" = "This Assignment will be hidden from your Agenda until [Date].";
+
+/* Class = "UILabel"; text = "Submit Review"; ObjectID = "v8e-an-yxT"; */
+"v8e-an-yxT.text" = "Submit Review";
+
+/* Class = "UILabel"; text = "THU"; ObjectID = "vPR-V4-Eml"; */
+"vPR-V4-Eml.text" = "THU";
+
+/* Class = "UIButton"; normalTitle = "This Assignment has no due date?"; ObjectID = "w9q-WI-xg8"; */
+"w9q-WI-xg8.normalTitle" = "This Assignment has no due date?";
+
+/* Class = "UITableViewController"; title = "Write Review"; ObjectID = "xSk-TE-BrW"; */
+"xSk-TE-BrW.title" = "Write Review";
+
+/* Class = "UITableViewController"; title = "Reminders"; ObjectID = "xWl-tY-Ghr"; */
+"xWl-tY-Ghr.title" = "Reminders";
+
+/* Class = "UIButton"; normalTitle = "Confirm"; ObjectID = "xab-db-Vha"; */
+"xab-db-Vha.normalTitle" = "Confirm";
+
+/* Class = "UILabel"; text = "Create Task"; ObjectID = "z3R-U1-D1T"; */
+"z3R-U1-D1T.text" = "Create Task";

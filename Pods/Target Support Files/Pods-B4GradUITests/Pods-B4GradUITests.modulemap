@@ -1,0 +1,6 @@
+framework module Pods_B4GradUITests {
+  umbrella header "Pods-B4GradUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}

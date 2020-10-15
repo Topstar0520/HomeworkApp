@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="EmptySearchResultsView" customModule="B4Grad" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <visualEffectView opaque="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Dvl-lm-zW9">
+                    <rect key="frame" x="20" y="20" width="560" height="560"/>
+                    <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="0Tf-vd-WIv">
+                        <rect key="frame" x="0.0" y="0.0" width="560" height="560"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="N1p-PS-L3z">
+                                <rect key="frame" x="40" y="169" width="480" height="223"/>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="It looks like we don't have that Course!" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumScaleFactor="0.80000000000000004" translatesAutoresizingMaskIntoConstraints="NO" id="tmE-NQ-9BR">
+                                <rect key="frame" x="40" y="304" width="480" height="20"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="748" misplaced="YES" text="Please Request it and we will let you know when it is added." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumScaleFactor="0.80000000000000004" translatesAutoresizingMaskIntoConstraints="NO" id="2dr-PA-dqz">
+                                <rect key="frame" x="40" y="337" width="480" height="17"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nFZ-bX-mnv">
+                                <rect key="frame" x="214" y="368" width="132" height="26"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                <inset key="contentEdgeInsets" minX="8" minY="3" maxX="8" maxY="3"/>
+                                <state key="normal" title="Request Course">
+                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="requestCoursesButtonTapped:" destination="iN0-l3-epB" eventType="primaryActionTriggered" id="r6Q-eq-h5R"/>
+                                </connections>
+                            </button>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="748" misplaced="YES" image="surprised" translatesAutoresizingMaskIntoConstraints="NO" id="VPD-Hp-uKi">
+                                <rect key="frame" x="223" y="169" width="115" height="115"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="115" id="Aj7-01-dpB"/>
+                                    <constraint firstAttribute="height" relation="lessThanOrEqual" constant="115" id="HqZ-wi-Wba"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="N1p-PS-L3z" firstAttribute="trailing" secondItem="2dr-PA-dqz" secondAttribute="trailing" id="7mn-MJ-nMJ"/>
+                            <constraint firstItem="2dr-PA-dqz" firstAttribute="leading" secondItem="0Tf-vd-WIv" secondAttribute="leading" constant="40" id="AmR-az-Vr5"/>
+                            <constraint firstItem="N1p-PS-L3z" firstAttribute="centerY" secondItem="0Tf-vd-WIv" secondAttribute="centerY" id="DZo-JS-3qK"/>
+                            <constraint firstItem="tmE-NQ-9BR" firstAttribute="top" secondItem="VPD-Hp-uKi" secondAttribute="bottom" constant="20" id="Gmg-eo-KLm">
+                                <variation key="heightClass=compact-widthClass=compact" constant="15"/>
+                            </constraint>
+                            <constraint firstItem="VPD-Hp-uKi" firstAttribute="centerX" secondItem="tmE-NQ-9BR" secondAttribute="centerX" id="Jlm-YH-bx7"/>
+                            <constraint firstItem="2dr-PA-dqz" firstAttribute="top" secondItem="tmE-NQ-9BR" secondAttribute="bottom" constant="13" id="LVT-NA-0in"/>
+                            <constraint firstItem="tmE-NQ-9BR" firstAttribute="top" relation="greaterThanOrEqual" secondItem="0Tf-vd-WIv" secondAttribute="top" constant="10" id="Lim-gy-chV"/>
+                            <constraint firstAttribute="trailing" secondItem="tmE-NQ-9BR" secondAttribute="trailing" constant="40" id="Lt2-jf-Zi5"/>
+                            <constraint firstItem="VPD-Hp-uKi" firstAttribute="top" secondItem="N1p-PS-L3z" secondAttribute="top" id="S01-gU-COJ"/>
+                            <constraint firstItem="N1p-PS-L3z" firstAttribute="top" relation="greaterThanOrEqual" secondItem="0Tf-vd-WIv" secondAttribute="top" constant="10" id="aDF-up-Qta"/>
+                            <constraint firstItem="nFZ-bX-mnv" firstAttribute="centerX" secondItem="0Tf-vd-WIv" secondAttribute="centerX" id="agG-at-W72"/>
+                            <constraint firstAttribute="trailing" secondItem="2dr-PA-dqz" secondAttribute="trailing" constant="40" id="bGW-Qs-R4m"/>
+                            <constraint firstItem="tmE-NQ-9BR" firstAttribute="centerX" secondItem="0Tf-vd-WIv" secondAttribute="centerX" id="c4X-1e-jBI"/>
+                            <constraint firstItem="tmE-NQ-9BR" firstAttribute="leading" secondItem="0Tf-vd-WIv" secondAttribute="leading" constant="40" id="cPb-xs-QWf"/>
+                            <constraint firstItem="nFZ-bX-mnv" firstAttribute="top" secondItem="2dr-PA-dqz" secondAttribute="bottom" constant="16" id="fEb-ft-fqV"/>
+                            <constraint firstItem="2dr-PA-dqz" firstAttribute="centerX" secondItem="0Tf-vd-WIv" secondAttribute="centerX" id="fbC-uc-Oo2"/>
+                            <constraint firstItem="nFZ-bX-mnv" firstAttribute="bottom" secondItem="N1p-PS-L3z" secondAttribute="bottom" id="yCc-bX-Gnu"/>
+                            <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="N1p-PS-L3z" secondAttribute="bottom" constant="10" id="yyc-sa-SME"/>
+                            <constraint firstItem="N1p-PS-L3z" firstAttribute="leading" secondItem="2dr-PA-dqz" secondAttribute="leading" id="zZB-ze-cJt"/>
+                        </constraints>
+                    </view>
+                    <blurEffect style="dark"/>
+                </visualEffectView>
+            </subviews>
+            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="Dvl-lm-zW9" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="20" id="G3u-6V-DD8"/>
+                <constraint firstAttribute="trailing" secondItem="Dvl-lm-zW9" secondAttribute="trailing" constant="20" id="POv-VZ-XVy"/>
+                <constraint firstAttribute="bottom" secondItem="Dvl-lm-zW9" secondAttribute="bottom" constant="20" id="b1P-Xr-fnZ"/>
+                <constraint firstItem="Dvl-lm-zW9" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="20" id="bnJ-Ik-LvZ"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="red-t7-mtL"/>
+            <connections>
+                <outlet property="faceImageView" destination="VPD-Hp-uKi" id="jS2-b2-bEz"/>
+                <outlet property="headerLabel" destination="tmE-NQ-9BR" id="Zak-ci-oXN"/>
+                <outlet property="requestCourseButton" destination="nFZ-bX-mnv" id="zDu-Xi-EPN"/>
+                <outlet property="subheaderLabel" destination="2dr-PA-dqz" id="jef-fP-yr9"/>
+                <outlet property="visualEffectView" destination="Dvl-lm-zW9" id="1rj-ou-L1r"/>
+            </connections>
+            <point key="canvasLocation" x="293" y="364"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="surprised" width="512" height="512"/>
+    </resources>
+</document>

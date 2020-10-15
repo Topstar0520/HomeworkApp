@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="NotificationBannerView" customModule="B4Grad" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IHY-mX-lxY">
+                    <rect key="frame" x="16" y="581.5" width="343" height="30.5"/>
+                    <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="AOz-Ba-Fqg">
+                        <rect key="frame" x="0.0" y="0.0" width="343" height="30.5"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BwC-5F-tqs">
+                                <rect key="frame" x="13" y="8" width="269" height="14.5"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Xbl-KS-Gk6">
+                                <rect key="frame" x="298" y="5" width="22" height="22"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="22" id="4BG-Nn-I59"/>
+                                    <constraint firstAttribute="width" constant="22" id="YPd-7K-u7r"/>
+                                </constraints>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <state key="normal" image="CoursesWhite"/>
+                                <connections>
+                                    <action selector="touchUpInside:" destination="iN0-l3-epB" eventType="touchUpInside" id="VR9-OO-Vj4"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="BwC-5F-tqs" firstAttribute="leading" secondItem="AOz-Ba-Fqg" secondAttribute="leadingMargin" constant="5" id="8yb-wg-Le0"/>
+                            <constraint firstItem="BwC-5F-tqs" firstAttribute="top" secondItem="AOz-Ba-Fqg" secondAttribute="topMargin" id="DNw-jT-vYu"/>
+                            <constraint firstItem="Xbl-KS-Gk6" firstAttribute="leading" secondItem="BwC-5F-tqs" secondAttribute="trailing" constant="16" id="F4c-TN-4CJ"/>
+                            <constraint firstItem="Xbl-KS-Gk6" firstAttribute="centerY" secondItem="AOz-Ba-Fqg" secondAttribute="centerY" id="LXo-Y5-cLV"/>
+                            <constraint firstAttribute="trailing" secondItem="BwC-5F-tqs" secondAttribute="trailing" constant="61" id="M7r-tC-IQA"/>
+                            <constraint firstAttribute="bottomMargin" secondItem="BwC-5F-tqs" secondAttribute="bottom" id="v2K-44-hV8"/>
+                        </constraints>
+                    </view>
+                    <blurEffect style="dark"/>
+                </visualEffectView>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="IHY-mX-lxY" secondAttribute="bottom" constant="55" id="80c-mn-XlG"/>
+                <constraint firstAttribute="trailingMargin" secondItem="IHY-mX-lxY" secondAttribute="trailing" id="Ih2-cC-5gK"/>
+                <constraint firstItem="IHY-mX-lxY" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="XmR-jv-JbU"/>
+                <constraint firstItem="IHY-mX-lxY" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leadingMargin" id="jwr-8n-IoQ"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="7PO-0W-cdX"/>
+            <connections>
+                <outlet property="titleLabel" destination="BwC-5F-tqs" id="gbM-D3-f3y"/>
+                <outlet property="visualEffectView" destination="IHY-mX-lxY" id="6LL-jd-Olq"/>
+            </connections>
+            <point key="canvasLocation" x="-63.5" y="237.5"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="CoursesWhite" width="100" height="100"/>
+    </resources>
+</document>

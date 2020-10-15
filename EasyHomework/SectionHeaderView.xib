@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="SectionHeaderView" customModule="B4Grad" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="General" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Hr-Xc-IJL">
+                    <rect key="frame" x="16" y="318.5" width="56.5" height="20"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                    <color key="textColor" red="0.76199919871794874" green="0.76199919871794874" blue="0.76199919871794874" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="detailDisclosure" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="K5b-Bp-76S">
+                    <rect key="frame" x="82.5" y="317.5" width="22" height="22"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="22" id="O1q-th-WLc"/>
+                        <constraint firstAttribute="height" constant="22" id="vEc-zP-b1d"/>
+                    </constraints>
+                    <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                </button>
+            </subviews>
+            <constraints>
+                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="K5b-Bp-76S" secondAttribute="trailing" constant="16" id="BHP-Le-96w"/>
+                <constraint firstItem="4Hr-Xc-IJL" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leadingMargin" id="KJr-P4-A1T"/>
+                <constraint firstItem="4Hr-Xc-IJL" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" constant="-5" id="OxX-RR-Bo2"/>
+                <constraint firstItem="K5b-Bp-76S" firstAttribute="centerY" secondItem="4Hr-Xc-IJL" secondAttribute="centerY" id="U1f-bd-NeQ"/>
+                <constraint firstItem="K5b-Bp-76S" firstAttribute="leading" secondItem="4Hr-Xc-IJL" secondAttribute="trailing" constant="10" id="y3E-LI-W2E"/>
+            </constraints>
+            <connections>
+                <outlet property="btnInfo" destination="K5b-Bp-76S" id="FC5-mw-XrL"/>
+                <outlet property="titleLabel" destination="4Hr-Xc-IJL" id="sUk-lX-HLN"/>
+            </connections>
+        </view>
+    </objects>
+</document>

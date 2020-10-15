@@ -1,0 +1,39 @@
+# NoteEditor Pro
+[image:note_3.jpg]
+
+We’re on the home stretch! If you’d like to see the rest of the NoteEditor tour, see [[Welcome to NoteEditor]] and [[Organize and publish]].
+
+## Additional Features
+NoteEditor and most of its core features are free to use on iPad, iPhone, and Mac. We want everyone to be able to write beautifully and organize notes with our unique tools.
+
+If you want to unlock some extra features and beautiful themes, and support NoteEditor’s future development, you can subscribe in-app to [NoteEditor Pro](NoteEditor://x-callback-url/open-NoteEditor-pro).  Subscribing to NoteEditor Pro unlocks:
+
+* *Sync* all your notes between NoteEditor for iPad, iPhone, and Mac. Powered by CloudKit. Learn more about NoteEditor's sync and autosave in [[Organize and publish]]. 
+* *Export* your notes to a variety of formats for publishing and sharing elsewhere.
+* *Beautiful Themes* - eight at launch, and more to come, to give you just the right, comfortable environment for your creativity to flourish.
+
+There are free trials for NoteEditor Pro, too. The monthly subscription gives you one free week to try it out. The yearly subscription gives you a free month. Check out [NoteEditor Pro](NoteEditor://x-callback-url/open-NoteEditor-pro) in the in-app settings on iPad, iPhone, or Mac.
+
+## Advanced Search
+NoteEditor can instantly search all your notes, but it also has a number of *search triggers* that can zero in on certain *types* of things in your notes.
+
+For example, you can add tasks to notes to help you plan what still needs to be done with them. On iOS, swipe the shortcut bar above the keyboard to the left, and tap the task button (a square with a checkmark). On a Mac, use Format -> Todo -> Toggle.
+
+Now, in NoteEditor’s search box, you can type `@todo` or `@task` in to find all your notes that still have tasks to finish. For bonus points, you can also search `@done` to find all notes with tasks that you’ve already completed.
+
+NoteEditor’s search triggers are: `@todo, @task, @done, @code @tagged, @untagged, @files, @images, @attachments`. 
+[Check out this video](https://vimeo.com/182400202) to see NoteEditor’s search features in action.
+
+Finally, you can use double quotes to search specific phrases, such as `"NoteEditor is cool"`
+
+## Tips 🎩
+All tags in NoteEditor are tappable and clickable. To give it a try, hide the keyboard and tap #welcome/pro — the Notes List will appear and show you all notes that contain it.
+
+On Mac, you can hide the Sidebar and/or Notes List to enjoy distraction-free writing (on iOS, this happens automatically 😉). Use the *layout selector* (the bottom right icon) to see your options.
+
+## Feedback 💬
+We would /love/ to hear your feedback at [NoteEditor@shinyfrog.net](mailto:NoteEditor@shinyfrog.net). 
+
+Thank you so much for trying the NoteEditor, and happy writing!
+
+🎉 🐻 🎉

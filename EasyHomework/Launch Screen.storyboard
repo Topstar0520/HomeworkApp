@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="rkT-i6-McA">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Item-->
+        <scene sceneID="O0i-Nf-kNQ">
+            <objects>
+                <navigationController id="rkT-i6-McA" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Item" id="1bd-Ue-qN4"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="RK6-rd-oYK">
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="S18-Hs-DjM" kind="relationship" relationship="rootViewController" id="sbZ-lE-rBf"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Fgc-Zf-dxs" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1483" y="-266"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="gfQ-WW-DrK">
+            <objects>
+                <viewController id="S18-Hs-DjM" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="ZTo-o1-3jM">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="DefaultBackground1" translatesAutoresizingMaskIntoConstraints="NO" id="zOx-sX-iKU">
+                                <rect key="frame" x="-10" y="-10" width="395" height="687"/>
+                            </imageView>
+                            <view alpha="0.30000001192092896" contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="HJO-hM-kK3">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="zOx-sX-iKU" firstAttribute="top" secondItem="ZTo-o1-3jM" secondAttribute="top" constant="-10" id="2ae-Ht-UqY"/>
+                            <constraint firstItem="HJO-hM-kK3" firstAttribute="top" secondItem="ZTo-o1-3jM" secondAttribute="top" id="5qD-vc-KIq"/>
+                            <constraint firstAttribute="bottom" secondItem="HJO-hM-kK3" secondAttribute="bottom" id="P6q-89-RdK"/>
+                            <constraint firstAttribute="trailing" secondItem="HJO-hM-kK3" secondAttribute="trailing" id="QNn-ta-1HO"/>
+                            <constraint firstAttribute="bottom" secondItem="zOx-sX-iKU" secondAttribute="bottom" constant="-10" id="eDm-t5-Iwv"/>
+                            <constraint firstItem="HJO-hM-kK3" firstAttribute="leading" secondItem="ZTo-o1-3jM" secondAttribute="leading" id="ksi-Oa-F1w"/>
+                            <constraint firstAttribute="trailing" secondItem="zOx-sX-iKU" secondAttribute="trailing" constant="-10" id="pyd-Tq-Rxy"/>
+                            <constraint firstItem="zOx-sX-iKU" firstAttribute="leading" secondItem="ZTo-o1-3jM" secondAttribute="leading" constant="-10" id="wiM-W4-KZ3"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="zc7-9w-IOB"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="n6S-1t-zI3"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="f4a-7K-Dst" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2190" y="-266"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="DefaultBackground1" width="564" height="564"/>
+    </resources>
+</document>

@@ -1,0 +1,549 @@
+
+/* Class = "UILabel"; text = "Due Date"; ObjectID = "0Tk-fh-B2A"; */
+"0Tk-fh-B2A.text" = "Due Date";
+
+/* Class = "UITextField"; placeholder = "Course Name (Ex. Physics)"; ObjectID = "1Ks-9O-BvF"; */
+"1Ks-9O-BvF.placeholder" = "Course Name (Ex. Physics)";
+
+/* Class = "UILabel"; text = "Fun"; ObjectID = "29E-xQ-Xrt"; */
+"29E-xQ-Xrt.text" = "Fun";
+
+/* Class = "UILabel"; text = "Course"; ObjectID = "2YD-l2-tdf"; */
+"2YD-l2-tdf.text" = "Course";
+
+/* Class = "UILabel"; text = "Location"; ObjectID = "2bt-vz-jFR"; */
+"2bt-vz-jFR.text" = "Location";
+
+/* Class = "UILabel"; text = "Section"; ObjectID = "2kA-fT-xLV"; */
+"2kA-fT-xLV.text" = "Section";
+
+/* Class = "UILabel"; text = "Fun"; ObjectID = "2lC-gU-QI7"; */
+"2lC-gU-QI7.text" = "Fun";
+
+/* Class = "UILabel"; text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sodales sed libero vehicula faucibus. Nulla lacinia enim tincidunt, porttitor ligula et, pellentesque eros. Vestibulum volutpat lacus sit amet volutpat viverra. Cras convallis consequat vulputate. Cras in accumsan enim. Sed vel nulla vel magna rutrum feugiat a eu ligula. Integer blandit, mi in tempus pretium, ante urna mollis enim, sed congue odio enim a elit. Aenean massa purus, porta et lorem in, dapibus egestas nibh. Cras fringilla vitae turpis id lacinia. Nam vitae condimentum nibh. Vestibulum sed arcu posuere, eleifend velit non, sollicitudin tortor. Integer facilisis pulvinar mauris, et ultrices augue interdum ac. Donec viverra in lacus a accumsan. Donec orci leo, cursus eu lorem non, molestie luctus erat. "; ObjectID = "2ua-DL-S8a"; */
+"2ua-DL-S8a.text" = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sodales sed libero vehicula faucibus. Nulla lacinia enim tincidunt, porttitor ligula et, pellentesque eros. Vestibulum volutpat lacus sit amet volutpat viverra. Cras convallis consequat vulputate. Cras in accumsan enim. Sed vel nulla vel magna rutrum feugiat a eu ligula. Integer blandit, mi in tempus pretium, ante urna mollis enim, sed congue odio enim a elit. Aenean massa purus, porta et lorem in, dapibus egestas nibh. Cras fringilla vitae turpis id lacinia. Nam vitae condimentum nibh. Vestibulum sed arcu posuere, eleifend velit non, sollicitudin tortor. Integer facilisis pulvinar mauris, et ultrices augue interdum ac. Donec viverra in lacus a accumsan. Donec orci leo, cursus eu lorem non, molestie luctus erat. ";
+
+/* Class = "UILabel"; text = "Anonymous"; ObjectID = "3GL-Zi-JyX"; */
+"3GL-Zi-JyX.text" = "Anonymous";
+
+/* Class = "UILabel"; text = "😐"; ObjectID = "3nw-6D-fhL"; */
+"3nw-6D-fhL.text" = "😐";
+
+/* Class = "UILabel"; text = "Course Code - Course Name"; ObjectID = "4Bg-Fj-2g6"; */
+"4Bg-Fj-2g6.text" = "Course Code - Course Name";
+
+/* Class = "UILabel"; text = "New Instructor"; ObjectID = "4pO-Kv-DMe"; */
+"4pO-Kv-DMe.text" = "New Instructor";
+
+/* Class = "UIButton"; normalTitle = "Time"; ObjectID = "5Kh-ta-wz4"; */
+"5Kh-ta-wz4.normalTitle" = "Time";
+
+/* Class = "UILabel"; text = "Feel free to make any necessary changes to this lab."; ObjectID = "5lc-LY-Ii0"; */
+"5lc-LY-Ii0.text" = "Feel free to make any necessary changes to this lab.";
+
+/* Class = "UIButton"; normalTitle = "Time"; ObjectID = "5xQ-I3-JEn"; */
+"5xQ-I3-JEn.normalTitle" = "Time";
+
+/* Class = "UILabel"; text = "Course Name"; ObjectID = "64d-SB-EC6"; */
+"64d-SB-EC6.text" = "Course Name";
+
+/* Class = "UILabel"; text = "CS2210"; ObjectID = "6Af-MJ-PAY"; */
+"6Af-MJ-PAY.text" = "CS2210";
+
+/* Class = "UILabel"; text = "Lectures"; ObjectID = "6CT-mi-p4V"; */
+"6CT-mi-p4V.text" = "Lectures";
+
+/* Class = "UILabel"; text = "🙂"; ObjectID = "75m-cE-s6h"; */
+"75m-cE-s6h.text" = "🙂";
+
+/* Class = "UILabel"; text = "😀"; ObjectID = "7h5-Ob-swT"; */
+"7h5-Ob-swT.text" = "😀";
+
+/* Class = "UILabel"; text = "🙂"; ObjectID = "7ks-xz-4hf"; */
+"7ks-xz-4hf.text" = "🙂";
+
+/* Class = "UILabel"; text = "End"; ObjectID = "7qs-al-cD3"; */
+"7qs-al-cD3.text" = "End";
+
+/* Class = "UILabel"; text = "Popular!"; ObjectID = "81Q-dD-tmI"; */
+"81Q-dD-tmI.text" = "Popular!";
+
+/* Class = "UILabel"; text = "Last Updated"; ObjectID = "8QK-TD-aLT"; */
+"8QK-TD-aLT.text" = "Last Updated";
+
+/* Class = "UIBarButtonItem"; title = " "; ObjectID = "8tv-5i-iMb"; */
+"8tv-5i-iMb.title" = " ";
+
+/* Class = "UITextField"; placeholder = "Midterm"; ObjectID = "8zy-NW-FsU"; */
+"8zy-NW-FsU.placeholder" = "Midterm";
+
+/* Class = "UILabel"; text = "Assignment 1"; ObjectID = "9Ar-ch-3CS"; */
+"9Ar-ch-3CS.text" = "Assignment 1";
+
+/* Class = "UILabel"; text = "Choose a lab created by fellow students or create your own."; ObjectID = "9NG-k5-Tvk"; */
+"9NG-k5-Tvk.text" = "Choose a lab created by fellow students or create your own.";
+
+/* Class = "UILabel"; text = "Select Lab"; ObjectID = "9fc-TT-uNO"; */
+"9fc-TT-uNO.text" = "Select Lab";
+
+/* Class = "UILabel"; text = "November 3, 2016"; ObjectID = "A0P-eU-Cej"; */
+"A0P-eU-Cej.text" = "November 3, 2016";
+
+/* Class = "UILabel"; text = "New Quiz"; ObjectID = "ALy-YT-pCo"; */
+"ALy-YT-pCo.text" = "New Quiz";
+
+/* Class = "UILabel"; text = "Labs"; ObjectID = "AOI-Lm-rJo"; */
+"AOI-Lm-rJo.text" = "Labs";
+
+/* Class = "UILabel"; text = "End"; ObjectID = "Cnx-0Z-UWC"; */
+"Cnx-0Z-UWC.text" = "End";
+
+/* Class = "UILabel"; text = "Location"; ObjectID = "D74-ix-Aan"; */
+"D74-ix-Aan.text" = "Location";
+
+/* Class = "UILabel"; text = "Start"; ObjectID = "DCx-40-U6Q"; */
+"DCx-40-U6Q.text" = "Start";
+
+/* Class = "UIButton"; normalTitle = "Time"; ObjectID = "DN6-NQ-XXw"; */
+"DN6-NQ-XXw.normalTitle" = "Time";
+
+/* Class = "UILabel"; text = "Location"; ObjectID = "DNB-hO-4l7"; */
+"DNB-hO-4l7.text" = "Location";
+
+/* Class = "UILabel"; text = "Select"; ObjectID = "DP9-jw-lhP"; */
+"DP9-jw-lhP.text" = "Select";
+
+/* Class = "UILabel"; text = "Fun"; ObjectID = "Dpj-8F-fZ5"; */
+"Dpj-8F-fZ5.text" = "Fun";
+
+/* Class = "UILabel"; text = "Anonymous's Schedule"; ObjectID = "E0m-Dg-LsK"; */
+"E0m-Dg-LsK.text" = "Anonymous's Schedule";
+
+/* Class = "UILabel"; text = "💩"; ObjectID = "EBi-Lf-986"; */
+"EBi-Lf-986.text" = "💩";
+
+/* Class = "UILabel"; text = "Use Schedule"; ObjectID = "EDG-Ux-qSW"; */
+"EDG-Ux-qSW.text" = "Use Schedule";
+
+/* Class = "UITextField"; placeholder = "Assignment 1"; ObjectID = "EUZ-xp-obX"; */
+"EUZ-xp-obX.placeholder" = "Assignment 1";
+
+/* Class = "UITextField"; text = "Final Exam Reminder"; ObjectID = "EUZ-xp-obX"; */
+"EUZ-xp-obX.text" = "Final Exam Reminder";
+
+/* Class = "UILabel"; text = "Start"; ObjectID = "FEG-HI-MKe"; */
+"FEG-HI-MKe.text" = "Start";
+
+/* Class = "UILabel"; text = "😀"; ObjectID = "Fcc-kx-DJL"; */
+"Fcc-kx-DJL.text" = "😀";
+
+/* Class = "UILabel"; text = "Zzz"; ObjectID = "Fpa-hN-XBd"; */
+"Fpa-hN-XBd.text" = "Zzz";
+
+/* Class = "UILabel"; text = "Quizzes"; ObjectID = "G6i-16-Z7j"; */
+"G6i-16-Z7j.text" = "Quizzes";
+
+/* Class = "UILabel"; text = "Most students found this review helpful."; ObjectID = "GcZ-Yt-aSR"; */
+"GcZ-Yt-aSR.text" = "Most students found this review helpful.";
+
+/* Class = "UILabel"; text = "End"; ObjectID = "Gu9-df-0rz"; */
+"Gu9-df-0rz.text" = "End";
+
+/* Class = "UITextField"; placeholder = "Course Code (Ex. CS1025)"; ObjectID = "GwJ-6X-FvB"; */
+"GwJ-6X-FvB.placeholder" = "Course Code (Ex. CS1025)";
+
+/* Class = "UILabel"; text = "Midterms"; ObjectID = "HX8-S5-tCV"; */
+"HX8-S5-tCV.text" = "Midterms";
+
+/* Class = "UILabel"; text = "Select"; ObjectID = "IAg-sb-uyQ"; */
+"IAg-sb-uyQ.text" = "Select";
+
+/* Class = "UILabel"; text = "Select"; ObjectID = "IEr-aE-arD"; */
+"IEr-aE-arD.text" = "Select";
+
+/* Class = "UILabel"; text = "Choose a tutorial created by fellow students or create your own."; ObjectID = "Imn-MP-ZeB"; */
+"Imn-MP-ZeB.text" = "Choose a tutorial created by fellow students or create your own.";
+
+/* Class = "UILabel"; text = "Start"; ObjectID = "Ip8-ih-Erg"; */
+"Ip8-ih-Erg.text" = "Start";
+
+/* Class = "UINavigationItem"; title = "Select Lab"; ObjectID = "IsF-TZ-Z8c"; */
+"IsF-TZ-Z8c.title" = "Select Lab";
+
+/* Class = "UILabel"; text = "Section"; ObjectID = "J8E-VT-en9"; */
+"J8E-VT-en9.text" = "Section";
+
+/* Class = "UILabel"; text = "Popular!"; ObjectID = "JJf-gn-unB"; */
+"JJf-gn-unB.text" = "Popular!";
+
+/* Class = "UIButton"; normalTitle = "M"; ObjectID = "JL6-nV-aDA"; */
+"JL6-nV-aDA.normalTitle" = "M";
+
+/* Class = "UILabel"; text = "Popular!"; ObjectID = "JMd-NE-zgC"; */
+"JMd-NE-zgC.text" = "Popular!";
+
+/* Class = "UILabel"; text = "Final"; ObjectID = "KZu-lJ-0ic"; */
+"KZu-lJ-0ic.text" = "Final";
+
+/* Class = "UILabel"; text = "Assignment 1"; ObjectID = "Kk9-h4-96d"; */
+"Kk9-h4-96d.text" = "Assignment 1";
+
+/* Class = "UITextField"; placeholder = "Quiz 1"; ObjectID = "Kkb-8G-qy5"; */
+"Kkb-8G-qy5.placeholder" = "Quiz 1";
+
+/* Class = "UIButton"; normalTitle = "Time"; ObjectID = "Krk-Fg-Rkm"; */
+"Krk-Fg-Rkm.normalTitle" = "Time";
+
+/* Class = "UILabel"; text = "New Assignment"; ObjectID = "LA9-Jw-fNh"; */
+"LA9-Jw-fNh.text" = "New Assignment";
+
+/* Class = "UILabel"; text = "Course"; ObjectID = "Lsu-47-Y4C"; */
+"Lsu-47-Y4C.text" = "Course";
+
+/* Class = "UILabel"; text = "Popular!"; ObjectID = "MX0-rp-6n5"; */
+"MX0-rp-6n5.text" = "Popular!";
+
+/* Class = "UILabel"; text = "New Final"; ObjectID = "N4x-EF-6sh"; */
+"N4x-EF-6sh.text" = "New Final";
+
+/* Class = "UIButton"; normalTitle = "Time"; ObjectID = "N4z-So-jiD"; */
+"N4z-So-jiD.normalTitle" = "Time";
+
+/* Class = "UILabel"; text = "Semester"; ObjectID = "NdX-bi-e06"; */
+"NdX-bi-e06.text" = "Semester";
+
+/* Class = "UILabel"; text = "Fun"; ObjectID = "Nvt-3R-Jpd"; */
+"Nvt-3R-Jpd.text" = "Fun";
+
+/* Class = "UILabel"; text = "Fun"; ObjectID = "O79-oA-tgG"; */
+"O79-oA-tgG.text" = "Fun";
+
+/* Class = "UITextField"; placeholder = "i.e.) PHYS12"; ObjectID = "Obx-bN-dcX"; */
+"Obx-bN-dcX.placeholder" = "i.e.) PHYS12";
+
+/* Class = "UITextField"; placeholder = "Name"; ObjectID = "Oob-48-63d"; */
+"Oob-48-63d.placeholder" = "Name";
+
+/* Class = "UILabel"; text = "Zzz"; ObjectID = "Otc-58-dXc"; */
+"Otc-58-dXc.text" = "Zzz";
+
+/* Class = "UILabel"; text = "Monday at 1:30PM"; ObjectID = "P7f-f9-XJj"; */
+"P7f-f9-XJj.text" = "Monday at 1:30PM";
+
+/* Class = "UILabel"; text = "Confirm that this schedule matches your syllabus. Feel free to make any necessary changes."; ObjectID = "PeE-NM-0Y1"; */
+"PeE-NM-0Y1.text" = "Confirm that this schedule matches your syllabus. Feel free to make any necessary changes.";
+
+/* Class = "UILabel"; text = "November 3, 2016"; ObjectID = "PqJ-Wp-ptI"; */
+"PqJ-Wp-ptI.text" = "November 3, 2016";
+
+/* Class = "UIButton"; normalTitle = "Time"; ObjectID = "Q1M-53-fMp"; */
+"Q1M-53-fMp.normalTitle" = "Time";
+
+/* Class = "UILabel"; text = "Tutorials"; ObjectID = "Q4I-Ug-LCD"; */
+"Q4I-Ug-LCD.text" = "Tutorials";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "QCH-ii-TEh"; */
+"QCH-ii-TEh.text" = "Label";
+
+/* Class = "UILabel"; text = "Begin New Term"; ObjectID = "QLL-kK-JT6"; */
+"QLL-kK-JT6.text" = "Begin New Term";
+
+/* Class = "UIButton"; normalTitle = "Cancel"; ObjectID = "QxJ-Ab-uxC"; */
+"QxJ-Ab-uxC.normalTitle" = "Cancel";
+
+/* Class = "UIButton"; normalTitle = "T"; ObjectID = "R7b-4i-q2C"; */
+"R7b-4i-q2C.normalTitle" = "T";
+
+/* Class = "UITableViewController"; title = "User Review"; ObjectID = "RMG-3C-4Di"; */
+"RMG-3C-4Di.title" = "User Review";
+
+/* Class = "UIButton"; normalTitle = "T"; ObjectID = "RSF-gU-qe3"; */
+"RSF-gU-qe3.normalTitle" = "T";
+
+/* Class = "UILabel"; text = "1"; ObjectID = "T3l-Sr-qsM"; */
+"T3l-Sr-qsM.text" = "1";
+
+/* Class = "UIButton"; normalTitle = "Time"; ObjectID = "Tjb-Xs-Z79"; */
+"Tjb-Xs-Z79.normalTitle" = "Time";
+
+/* Class = "UILabel"; text = "(3 Available)"; ObjectID = "UM2-Rj-6dw"; */
+"UM2-Rj-6dw.text" = "(3 Available)";
+
+/* Class = "UILabel"; text = "Assignment"; ObjectID = "UhB-YW-Eae"; */
+"UhB-YW-Eae.text" = "Assignment";
+
+/* Class = "UILabel"; text = "Section"; ObjectID = "UqK-L9-Xrr"; */
+"UqK-L9-Xrr.text" = "Section";
+
+/* Class = "UILabel"; text = "😕"; ObjectID = "V4s-hM-y0X"; */
+"V4s-hM-y0X.text" = "😕";
+
+/* Class = "UILabel"; text = "Select"; ObjectID = "Vot-lq-LBU"; */
+"Vot-lq-LBU.text" = "Select";
+
+/* Class = "UILabel"; text = "First"; ObjectID = "Vp6-rH-PiI"; */
+"Vp6-rH-PiI.text" = "First";
+
+/* Class = "UILabel"; text = "Feel free to make any necessary changes to this tutorial."; ObjectID = "Vy3-OT-sCx"; */
+"Vy3-OT-sCx.text" = "Feel free to make any necessary changes to this tutorial.";
+
+/* Class = "UILabel"; text = "Professor"; ObjectID = "WXw-0f-B7G"; */
+"WXw-0f-B7G.text" = "Professor";
+
+/* Class = "UILabel"; text = "Select"; ObjectID = "X3C-sk-d40"; */
+"X3C-sk-d40.text" = "Select";
+
+/* Class = "UILabel"; text = "Monday at 1:30PM"; ObjectID = "XC5-Y9-CsJ"; */
+"XC5-Y9-CsJ.text" = "Monday at 1:30PM";
+
+/* Class = "UILabel"; text = "No Reviews."; ObjectID = "XWC-2Q-dzm"; */
+"XWC-2Q-dzm.text" = "No Reviews.";
+
+/* Class = "UILabel"; text = "Professor"; ObjectID = "XWY-GA-AwI"; */
+"XWY-GA-AwI.text" = "Professor";
+
+/* Class = "UITextField"; placeholder = "Ex) NS-7"; ObjectID = "XpQ-v1-k6R"; */
+"XpQ-v1-k6R.placeholder" = "Ex) NS-7";
+
+/* Class = "UILabel"; text = "Zzz"; ObjectID = "YAf-SE-aTY"; */
+"YAf-SE-aTY.text" = "Zzz";
+
+/* Class = "UILabel"; text = "Course Code - Course Name"; ObjectID = "YGh-W3-Vb7"; */
+"YGh-W3-Vb7.text" = "Course Code - Course Name";
+
+/* Class = "UIButton"; normalTitle = "F"; ObjectID = "YM4-1r-ikM"; */
+"YM4-1r-ikM.normalTitle" = "F";
+
+/* Class = "UILabel"; text = "Select Tutorial"; ObjectID = "YXZ-Dd-X2o"; */
+"YXZ-Dd-X2o.text" = "Select Tutorial";
+
+/* Class = "UILabel"; text = "Use Lab"; ObjectID = "Yit-f8-1nY"; */
+"Yit-f8-1nY.text" = "Use Lab";
+
+/* Class = "UILabel"; text = "Final"; ObjectID = "Z43-4u-omp"; */
+"Z43-4u-omp.text" = "Final";
+
+/* Class = "UILabel"; text = "No Reviews"; ObjectID = "ZDr-ea-lNb"; */
+"ZDr-ea-lNb.text" = "No Reviews";
+
+/* Class = "UIButton"; normalTitle = "Confirm"; ObjectID = "Zzb-Iw-o5W"; */
+"Zzb-Iw-o5W.normalTitle" = "Confirm";
+
+/* Class = "UILabel"; text = "Create Course"; ObjectID = "aV9-mh-QNX"; */
+"aV9-mh-QNX.text" = "Create Course";
+
+/* Class = "UILabel"; text = "Last Updated"; ObjectID = "agz-4u-rrm"; */
+"agz-4u-rrm.text" = "Last Updated";
+
+/* Class = "UILabel"; text = "Location"; ObjectID = "axa-g3-CSB"; */
+"axa-g3-CSB.text" = "Location";
+
+/* Class = "UILabel"; text = "Due Date"; ObjectID = "brR-WH-A1k"; */
+"brR-WH-A1k.text" = "Due Date";
+
+/* Class = "UILabel"; text = "(3 Available)"; ObjectID = "brZ-sY-t67"; */
+"brZ-sY-t67.text" = "(3 Available)";
+
+/* Class = "UILabel"; text = "Due in 3 days."; ObjectID = "bwJ-Lt-Phy"; */
+"bwJ-Lt-Phy.text" = "Due in 3 days.";
+
+/* Class = "UILabel"; text = "Set Date"; ObjectID = "c4x-Fx-f05"; */
+"c4x-Fx-f05.text" = "Set Date";
+
+/* Class = "UITableViewController"; title = "New Course"; ObjectID = "cOv-yZ-k4P"; */
+"cOv-yZ-k4P.title" = "New Course";
+
+/* Class = "UIButton"; normalTitle = "T"; ObjectID = "cPU-FM-aXq"; */
+"cPU-FM-aXq.normalTitle" = "T";
+
+/* Class = "UIButton"; normalTitle = "M"; ObjectID = "cUN-bi-T2f"; */
+"cUN-bi-T2f.normalTitle" = "M";
+
+/* Class = "UILabel"; text = "Course Code"; ObjectID = "dH3-TR-7rI"; */
+"dH3-TR-7rI.text" = "Course Code";
+
+/* Class = "UILabel"; text = "Fun"; ObjectID = "eCy-ia-p7i"; */
+"eCy-ia-p7i.text" = "Fun";
+
+/* Class = "UILabel"; text = "1"; ObjectID = "fmw-82-tpO"; */
+"fmw-82-tpO.text" = "1";
+
+/* Class = "UILabel"; text = "No Lectures for CS1025 Have Occurred Yet!"; ObjectID = "frc-nA-t1C"; */
+"frc-nA-t1C.text" = "No Lectures for CS1025 Have Occurred Yet!";
+
+/* Class = "UITextField"; placeholder = "Ex) NS-7"; ObjectID = "g83-xE-APi"; */
+"g83-xE-APi.placeholder" = "Ex) NS-7";
+
+/* Class = "UILabel"; text = "Reviews"; ObjectID = "gO3-RZ-Jvg"; */
+"gO3-RZ-Jvg.text" = "Reviews";
+
+/* Class = "UILabel"; text = "Zzz"; ObjectID = "gm7-jO-Avl"; */
+"gm7-jO-Avl.text" = "Zzz";
+
+/* Class = "UILabel"; text = "Clear Existing Courses & their Tasks."; ObjectID = "h4n-e3-JCz"; */
+"h4n-e3-JCz.text" = "Clear Existing Courses & their Tasks.";
+
+/* Class = "UILabel"; text = "Popular!"; ObjectID = "hJt-KI-EiY"; */
+"hJt-KI-EiY.text" = "Popular!";
+
+/* Class = "UIButton"; normalTitle = "T"; ObjectID = "hsF-wd-fPk"; */
+"hsF-wd-fPk.normalTitle" = "T";
+
+/* Class = "UILabel"; text = "Faculty"; ObjectID = "iP2-N2-Mzb"; */
+"iP2-N2-Mzb.text" = "Faculty";
+
+/* Class = "UILabel"; text = "End"; ObjectID = "ibk-xO-uCN"; */
+"ibk-xO-uCN.text" = "End";
+
+/* Class = "UILabel"; text = "Popular!"; ObjectID = "iqk-zV-kzl"; */
+"iqk-zV-kzl.text" = "Popular!";
+
+/* Class = "UILabel"; text = "Section"; ObjectID = "izy-Dh-9gp"; */
+"izy-Dh-9gp.text" = "Section";
+
+/* Class = "UILabel"; text = "Zzz"; ObjectID = "j1d-7H-pOW"; */
+"j1d-7H-pOW.text" = "Zzz";
+
+/* Class = "UIButton"; normalTitle = "Time"; ObjectID = "jOX-N8-gEM"; */
+"jOX-N8-gEM.normalTitle" = "Time";
+
+/* Class = "UILabel"; text = "Use Tutorial"; ObjectID = "jVj-tB-yRe"; */
+"jVj-tB-yRe.text" = "Use Tutorial";
+
+/* Class = "UILabel"; text = "Schedules"; ObjectID = "jdO-2t-5cq"; */
+"jdO-2t-5cq.text" = "Schedules";
+
+/* Class = "UILabel"; text = "Start"; ObjectID = "jkT-Qs-ik2"; */
+"jkT-Qs-ik2.text" = "Start";
+
+/* Class = "UILabel"; text = "New Midterm"; ObjectID = "jtO-Qk-dQT"; */
+"jtO-Qk-dQT.text" = "New Midterm";
+
+/* Class = "UILabel"; text = "(1)"; ObjectID = "jtu-aP-kag"; */
+"jtu-aP-kag.text" = "(1)";
+
+/* Class = "UINavigationItem"; title = "Select Tutorial"; ObjectID = "k2B-NS-Xm4"; */
+"k2B-NS-Xm4.title" = "Select Tutorial";
+
+/* Class = "UIButton"; normalTitle = "Time"; ObjectID = "kEv-bL-qtL"; */
+"kEv-bL-qtL.normalTitle" = "Time";
+
+/* Class = "UINavigationItem"; title = "Courses"; ObjectID = "kMY-OZ-ckB"; */
+"kMY-OZ-ckB.title" = "Courses";
+
+/* Class = "UILabel"; text = "Due Date"; ObjectID = "kSX-vB-kP0"; */
+"kSX-vB-kP0.text" = "Due Date";
+
+/* Class = "UIButton"; normalTitle = "Time"; ObjectID = "lar-xG-61t"; */
+"lar-xG-61t.normalTitle" = "Time";
+
+/* Class = "UIButton"; normalTitle = "Time"; ObjectID = "loB-Fj-VMG"; */
+"loB-Fj-VMG.normalTitle" = "Time";
+
+/* Class = "UIButton"; normalTitle = "Time"; ObjectID = "m45-Wx-Yux"; */
+"m45-Wx-Yux.normalTitle" = "Time";
+
+/* Class = "UITextField"; placeholder = "i.e) Physics"; ObjectID = "m4C-dl-b6x"; */
+"m4C-dl-b6x.placeholder" = "i.e) Physics";
+
+/* Class = "UILabel"; text = "Section"; ObjectID = "nEx-It-5kJ"; */
+"nEx-It-5kJ.text" = "Section";
+
+/* Class = "UILabel"; text = "Due in 3 days."; ObjectID = "nlO-eh-4Qf"; */
+"nlO-eh-4Qf.text" = "Due in 3 days.";
+
+/* Class = "UILabel"; text = "Zzz"; ObjectID = "npL-Oj-Ip5"; */
+"npL-Oj-Ip5.text" = "Zzz";
+
+/* Class = "UILabel"; text = "Section"; ObjectID = "oA7-QD-TQB"; */
+"oA7-QD-TQB.text" = "Section";
+
+/* Class = "UIButton"; normalTitle = "Time"; ObjectID = "oXn-4o-et5"; */
+"oXn-4o-et5.normalTitle" = "Time";
+
+/* Class = "UILabel"; text = "Last Updated"; ObjectID = "ogw-X7-gO6"; */
+"ogw-X7-gO6.text" = "Last Updated";
+
+/* Class = "UILabel"; text = "💩"; ObjectID = "ov2-YA-SY1"; */
+"ov2-YA-SY1.text" = "💩";
+
+/* Class = "UILabel"; text = "😕"; ObjectID = "qMY-zV-S4z"; */
+"qMY-zV-S4z.text" = "😕";
+
+/* Class = "UILabel"; text = "Search for Your Courses at Western University or its Associated Colleges."; ObjectID = "qRn-8s-FJi"; */
+"qRn-8s-FJi.text" = "Search for Your Courses at Western University or its Associated Colleges.";
+
+/* Class = "UILabel"; text = "Is there a final exam for this course?"; ObjectID = "rI4-f7-Sbj"; */
+"rI4-f7-Sbj.text" = "Is there a final exam for this course?";
+
+/* Class = "UILabel"; text = "End"; ObjectID = "rKl-Hu-9qu"; */
+"rKl-Hu-9qu.text" = "End";
+
+/* Class = "UIButton"; normalTitle = "Filter"; ObjectID = "rTa-RN-vVy"; */
+"rTa-RN-vVy.normalTitle" = "Filter";
+
+/* Class = "UIButton"; normalTitle = "F"; ObjectID = "rWf-tF-Nni"; */
+"rWf-tF-Nni.normalTitle" = "F";
+
+/* Class = "UILabel"; text = "Semester"; ObjectID = "rZb-Kb-svQ"; */
+"rZb-Kb-svQ.text" = "Semester";
+
+/* Class = "UILabel"; text = "Summer 2016"; ObjectID = "rj3-9Y-7sB"; */
+"rj3-9Y-7sB.text" = "Summer 2016";
+
+/* Class = "UILabel"; text = "University"; ObjectID = "s5n-wp-yZe"; */
+"s5n-wp-yZe.text" = "University";
+
+/* Class = "UITextField"; placeholder = "Assignment 1"; ObjectID = "sBr-nB-ouJ"; */
+"sBr-nB-ouJ.placeholder" = "Assignment 1";
+
+/* Class = "UILabel"; text = "1"; ObjectID = "sQ8-Pi-167"; */
+"sQ8-Pi-167.text" = "1";
+
+/* Class = "UILabel"; text = "No Reviews."; ObjectID = "sjB-2a-6T3"; */
+"sjB-2a-6T3.text" = "No Reviews.";
+
+/* Class = "UINavigationItem"; title = "Schedules"; ObjectID = "sxQ-cg-l3M"; */
+"sxQ-cg-l3M.title" = "Schedules";
+
+/* Class = "UIButton"; normalTitle = "Time"; ObjectID = "sz9-xf-mW9"; */
+"sz9-xf-mW9.normalTitle" = "Time";
+
+/* Class = "UILabel"; text = "CS2210"; ObjectID = "tuF-Ma-Wvi"; */
+"tuF-Ma-Wvi.text" = "CS2210";
+
+/* Class = "UILabel"; text = "Schedules made by students in CS2208 are listed below. You may choose to use one of their schedules, or create your own."; ObjectID = "uQw-aB-So6"; */
+"uQw-aB-So6.text" = "Schedules made by students in CS2208 are listed below. You may choose to use one of their schedules, or create your own.";
+
+/* Class = "UILabel"; text = "Popular!"; ObjectID = "url-ct-vnv"; */
+"url-ct-vnv.text" = "Popular!";
+
+/* Class = "UILabel"; text = "General"; ObjectID = "w1l-4L-rho"; */
+"w1l-4L-rho.text" = "General";
+
+/* Class = "UILabel"; text = "Assignments"; ObjectID = "wq8-mI-DA0"; */
+"wq8-mI-DA0.text" = "Assignments";
+
+/* Class = "UILabel"; text = "Labs/Tutorials (Optional)"; ObjectID = "wvo-BU-0Dh"; */
+"wvo-BU-0Dh.text" = "Labs/Tutorials (Optional)";
+
+/* Class = "UILabel"; text = "😐"; ObjectID = "xBc-pG-Fmi"; */
+"xBc-pG-Fmi.text" = "😐";
+
+/* Class = "UIButton"; normalTitle = "Time"; ObjectID = "xRh-Xs-mMc"; */
+"xRh-Xs-mMc.normalTitle" = "Time";
+
+/* Class = "UIButton"; normalTitle = "W"; ObjectID = "y2S-yQ-8To"; */
+"y2S-yQ-8To.normalTitle" = "W";
+
+/* Class = "UILabel"; text = "Start"; ObjectID = "y48-9a-A7J"; */
+"y48-9a-A7J.text" = "Start";
+
+/* Class = "UILabel"; text = "(1)"; ObjectID = "yRo-NF-OGP"; */
+"yRo-NF-OGP.text" = "(1)";
+
+/* Class = "UIBarButtonItem"; title = "Cancel"; ObjectID = "yd5-m7-qcj"; */
+"yd5-m7-qcj.title" = "Cancel";
+
+/* Class = "UIButton"; normalTitle = "W"; ObjectID = "zUR-GR-wd9"; */
+"zUR-GR-wd9.normalTitle" = "W";
